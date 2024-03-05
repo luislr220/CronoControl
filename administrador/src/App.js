@@ -9,7 +9,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<SolicitudHorario/>}/>
-          <Route path='/validar' element={<ValidarSolis/>}></Route>
+          <Route path='/validar' element={<ValidarSolis/>}/>
         </Routes>
       </Router>
     </div>

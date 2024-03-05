@@ -12,13 +12,10 @@ export default function Turnos() {
       <Navigation />
       <div className="container1">
         <div className="TSeleccionaArea">
-          <h2>Selecciona tu área</h2>
-          <Form.Select aria-label="Default select example" className="dropdowncolor">
-            <option>Escoge el área al que perteneces</option>
-            <option value="1">área 1</option>
-            <option value="2">área 2</option>
-            <option value="3">área 3</option>
-          </Form.Select>
+          <h2>Ingresa tu nombre</h2>
+          <Form.Group controlId="formNombre">
+            <Form.Control type="text" placeholder="Ingrese su nombre"/>
+          </Form.Group>
         </div>
 
         <div className="TSeleccionaHorario">
