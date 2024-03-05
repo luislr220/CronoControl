@@ -1,0 +1,57 @@
+h1 {
+    background-color: #5A9AFB; /* Color de fondo deseado */
+    padding: 10px; /* Añadir espacio alrededor del contenido */
+    padding: 1%;
+    margin: 0%;
+    color: white;
+}
+
+table {
+    width: 80%; 
+    border: 0px solid black; 
+    border-collapse: collapse; 
+    margin: auto; 
+}
+
+th, td {
+    padding: 8px;
+}
+
+#cont{
+    padding: 5%;
+    background-color: #E9E9E9;
+    font-size: 24px;
+}
+
+.es1{
+    color: white;
+    background-color: #5A9AFB; 
+}
+
+.col-md-4 button {
+    width: 45px; /* Ancho del botón */
+    height: 45px; /* Altura del botón */
+    background-color: white; /* Fondo blanco */
+    font-size: 20px; /* Tamaño de fuente */
+    margin: 5px; /* Margen */
+    border: 0px;
+}
+
+.col-md-4 input[type="number"] {
+    background-color: white; /* Fondo blanco */ 
+    width: 41px; /* Ancho del campo numérico */
+    height: 41px; /* Altura del campo numérico */
+    font-size: 18px; /* Tamaño de fuente */
+    margin: 35px; /* Margen */
+    text-align: center; /* Centrar el texto horizontalmente */
+    border: 0px;
+}
+
+.custom-input {
+    width: calc(100% - 40px); /* Esto ajusta el ancho del input para que se vea como el de Bootstrap */
+    padding: 8px; /* Agrega el mismo padding que el de Bootstrap */
+    border: none; /* Quita el borde */
+    background-color: white; /* Fondo blanco */
+    color: black; /* Texto negro */
+    margin-right: 10px; /* Espacio entre el label y el input */
+}
