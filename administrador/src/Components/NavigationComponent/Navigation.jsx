@@ -12,6 +12,7 @@ export default function Navigation() {
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="me-auto">
           <Nav.Link href="/">Solicitud de Horario</Nav.Link>
+          <Nav.Link href="/validar">Validar solicitud</Nav.Link>
         </Nav>
       </Navbar.Collapse>
     </Container>
