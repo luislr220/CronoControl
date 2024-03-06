@@ -1,0 +1,30 @@
+.AGEMcontenedor1 {
+  padding: 4%;
+}
+
+.AGEMTable {
+  text-align: justify;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.AGEMBotonContainer {
+  display: flex;
+  justify-content: space-between; /* Espacio entre los elementos */
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.AGEMBuscador {
+  width: calc(30% - 25px); /* Resta el ancho del icono de búsqueda */
+  background-image: url("../../../../public/search.png");
+  background-size: 20px 20px; /* Tamaño de la imagen */
+  background-repeat: no-repeat; /* Evita la repetición de la imagen */
+  background-position: right center; /* Posición de la imagen */
+}
+
+
+.AGEMTitulo{
+    margin: 2%;
+    text-align: left;
+}
