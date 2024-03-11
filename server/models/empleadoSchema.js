@@ -9,6 +9,7 @@ const empleadoSchema = new mongoose.Schema({
   Contrasena: { type: String, required: true },
   Region: { type: String, required: true },
   AreaTrabajo: { type: String, required: true },
+  Rol:{type:String, require:true}
 });
 
 module.exports = mongoose.model("Empleado", empleadoSchema);
