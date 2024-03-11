@@ -6,12 +6,12 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var empleadoRoutes = require('./routes/empleadoRoutes'); // Cambio aquí
 
 var app = express();
 
 let dotenv = require('dotenv');
 dotenv.config();
-
 
 let mongo = require('./config/dbconfig');
 
@@ -27,6 +27,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/empleados', empleadoRoutes); // Cambio aquí
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const Asistente = require("./asistente");
 
 const eventosSchema = new mongoose.Schema({
   evento: { type: String, required: true , unique: true},
