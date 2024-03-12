@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Button, FormControl, Table, Form, Modal } from "react-bootstrap";
-import { format } from 'date-fns';
+import { format } from "date-fns";
+import { FaFilter } from "react-icons/fa";
 import "../AgregarEmpleadoComponent/css/agregarEmpleado.css";
 import Navigation from "../NavigationComponent/Navigation";
 
 export default function AgregarEmpleado() {
   const [empleados, setEmpleados] = useState([]);
   const [filtro, setFiltro] = useState("");
-  const opcionesRol = ["Empleado"];
+  const [showFiltroRegion, setShowFiltroRegion] = useState(false);
   const [nuevoEmpleado, setNuevoEmpleado] = useState({
     Nombre: "",
     AppE: "",
@@ -33,7 +34,11 @@ export default function AgregarEmpleado() {
       AreaTrabajo: "",
       Rol: "",
     });
+
   const [mostrarModalActualizar, setMostrarModalActualizar] = useState(false);
+
+  const [filtroRegion, setFiltroRegion] = useState(""); // Nuevo estado para el filtro por región
+  const [filtroArea, setFiltroArea] = useState(""); // Nuevo estado para el filtro por región
 
   useEffect(() => {
     // Función para obtener la lista de empleados desde el backend
@@ -169,6 +174,52 @@ export default function AgregarEmpleado() {
             value={filtro}
             onChange={handleFiltroChange}
           />
+          <FaFilter onClick={() => setShowFiltroRegion(!showFiltroRegion)} />
+          <Modal
+            show={showFiltroRegion}
+            onHide={() => setShowFiltroRegion(false)}
+          >
+            <Modal.Header closeButton>
+              <Modal.Title>Filtrar datos</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Form>
+                <Form.Group controlId="formRegion">
+                  <Form.Label>Selecciona una región</Form.Label>
+                  <Form.Control
+                    as="select"
+                    value={filtroRegion}
+                    onChange={(e) => setFiltroRegion(e.target.value)}
+                  >
+                    <option value="">Todas las regiones</option>
+                    <option value="Guanajuato">Guanajuato</option>
+                    <option value="América">América</option>
+                  </Form.Control>
+                </Form.Group>
+
+                <Form.Group controlId="formArea">
+                  <Form.Label>Selecciona una Área</Form.Label>
+                  <Form.Control
+                    as="select"
+                    value={filtroArea}
+                    onChange={(e) => setFiltroArea(e.target.value)}
+                  >
+                    <option value="">Todas las áreas</option>
+                    <option value="Desarrollo web">Desarrollo web</option>
+                    <option value="Base de datos">Base de datos</option>
+                  </Form.Control>
+                </Form.Group>
+              </Form>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button
+                variant="secondary"
+                onClick={() => setShowFiltroRegion(false)}
+              >
+                Cerrar
+              </Button>
+            </Modal.Footer>
+          </Modal>
         </div>
         <Modal
           show={mostrarFormulario}
@@ -251,20 +302,15 @@ export default function AgregarEmpleado() {
                   onChange={handleInputChange}
                 />
               </Form.Group>
+              {/* Eliminamos el dropdown de rol y lo reemplazamos por un campo de texto */}
               <Form.Group controlId="formRol">
                 <Form.Label>Rol</Form.Label>
-                <Form.Control
-                  as="select"
+                <FormControl
+                  type="text"
                   name="Rol"
                   value={nuevoEmpleado.Rol}
                   onChange={handleInputChange}
-                >
-                  {opcionesRol.map((rol, index) => (
-                    <option key={index} value={rol}>
-                      {rol}
-                    </option>
-                  ))}
-                </Form.Control>
+                />
               </Form.Group>
             </Form>
           </Modal.Body>
@@ -402,18 +448,17 @@ export default function AgregarEmpleado() {
               </Form.Group>
               <Form.Group controlId="formRol">
                 <Form.Label>Rol</Form.Label>
-                <Form.Control
-                  as="select"
+                <FormControl
+                  type="text"
                   name="Rol"
-                  value={nuevoEmpleado.Rol}
-                  onChange={handleInputChange}
-                >
-                  {opcionesRol.map((rol, index) => (
-                    <option key={index} value={rol}>
-                      {rol}
-                    </option>
-                  ))}
-                </Form.Control>
+                  value={valoresEmpleadoSeleccionado.Rol}
+                  onChange={(e) =>
+                    setValoresEmpleadoSeleccionado({
+                      ...valoresEmpleadoSeleccionado,
+                      Rol: e.target.value,
+                    })
+                  }
+                />
               </Form.Group>
             </Form>
           </Modal.Body>
@@ -446,14 +491,26 @@ export default function AgregarEmpleado() {
             {empleados
               .filter((empleado) =>
                 `${empleado.Nombre} ${empleado.AppE} ${empleado.ApmE}`
-                  .toLowerCase()
+                  ?.toLowerCase()
                   .includes(filtro.toLowerCase())
+              )
+              .filter((empleado) =>
+                // Aplicar filtro por región
+                empleado.Region.toLowerCase().includes(
+                  filtroRegion.toLowerCase()
+                )
+              )
+              .filter((empleado) =>
+                // Aplicar filtro por área
+                empleado.AreaTrabajo.toLowerCase().includes(
+                  filtroArea.toLowerCase()
+                )
               )
               .map((empleado, index) => (
                 <tr key={index}>
                   <td>{index + 1}</td>
                   <td>{`${empleado.Nombre} ${empleado.AppE} ${empleado.ApmE}`}</td>
-                  <td>{format(new Date(empleado.FechaNac), 'dd/MM/yyyy')}</td>
+                  <td>{format(new Date(empleado.FechaNac), "dd/MM/yyyy")}</td>
                   <td>{empleado.Correo}</td>
                   <td>{empleado.Region}</td>
                   <td>{empleado.AreaTrabajo}</td>
