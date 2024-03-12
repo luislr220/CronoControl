@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Button, FormControl, Table, Form, Modal } from "react-bootstrap";
+import { format } from 'date-fns';
 import "../AgregarEmpleadoComponent/css/agregarEmpleado.css";
 import Navigation from "../NavigationComponent/Navigation";
 
 export default function AgregarEmpleado() {
   const [empleados, setEmpleados] = useState([]);
   const [filtro, setFiltro] = useState("");
+  const opcionesRol = ["Empleado"];
   const [nuevoEmpleado, setNuevoEmpleado] = useState({
     Nombre: "",
     AppE: "",
@@ -19,17 +21,18 @@ export default function AgregarEmpleado() {
   });
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [empleadoSeleccionado, setEmpleadoSeleccionado] = useState(null);
-  const [valoresEmpleadoSeleccionado, setValoresEmpleadoSeleccionado] = useState({
-    Nombre: "",
-    AppE: "",
-    ApmE: "",
-    FechaNac: "",
-    Correo: "",
-    Contrasena: "",
-    Region: "",
-    AreaTrabajo: "",
-    Rol: "",
-  });
+  const [valoresEmpleadoSeleccionado, setValoresEmpleadoSeleccionado] =
+    useState({
+      Nombre: "",
+      AppE: "",
+      ApmE: "",
+      FechaNac: "",
+      Correo: "",
+      Contrasena: "",
+      Region: "",
+      AreaTrabajo: "",
+      Rol: "",
+    });
   const [mostrarModalActualizar, setMostrarModalActualizar] = useState(false);
 
   useEffect(() => {
@@ -250,12 +253,18 @@ export default function AgregarEmpleado() {
               </Form.Group>
               <Form.Group controlId="formRol">
                 <Form.Label>Rol</Form.Label>
-                <FormControl
-                  type="text"
+                <Form.Control
+                  as="select"
                   name="Rol"
                   value={nuevoEmpleado.Rol}
                   onChange={handleInputChange}
-                />
+                >
+                  {opcionesRol.map((rol, index) => (
+                    <option key={index} value={rol}>
+                      {rol}
+                    </option>
+                  ))}
+                </Form.Control>
               </Form.Group>
             </Form>
           </Modal.Body>
@@ -273,10 +282,7 @@ export default function AgregarEmpleado() {
         </Modal>
 
         {/* Modal para actualizar */}
-        <Modal
-          show={mostrarModalActualizar}
-          onHide={cerrarModalActualizar}
-        >
+        <Modal show={mostrarModalActualizar} onHide={cerrarModalActualizar}>
           <Modal.Header closeButton>
             <Modal.Title>Actualizar Empleado</Modal.Title>
           </Modal.Header>
@@ -394,19 +400,20 @@ export default function AgregarEmpleado() {
                   }
                 />
               </Form.Group>
-              <Form.Group controlId="formRolActualizar">
+              <Form.Group controlId="formRol">
                 <Form.Label>Rol</Form.Label>
-                <FormControl
-                  type="text"
+                <Form.Control
+                  as="select"
                   name="Rol"
-                  value={valoresEmpleadoSeleccionado.Rol}
-                  onChange={(e) =>
-                    setValoresEmpleadoSeleccionado({
-                      ...valoresEmpleadoSeleccionado,
-                      Rol: e.target.value,
-                    })
-                  }
-                />
+                  value={nuevoEmpleado.Rol}
+                  onChange={handleInputChange}
+                >
+                  {opcionesRol.map((rol, index) => (
+                    <option key={index} value={rol}>
+                      {rol}
+                    </option>
+                  ))}
+                </Form.Control>
               </Form.Group>
             </Form>
           </Modal.Body>
@@ -425,6 +432,9 @@ export default function AgregarEmpleado() {
             <tr>
               <th>No.</th>
               <th>Nombre</th>
+              <th>Fecha Nacimiento</th>
+              <th>Correo</th>
+              <th>Región</th>
               <th>Área</th>
               <th>Rol</th>
               <th>Actualizar</th>
@@ -443,6 +453,9 @@ export default function AgregarEmpleado() {
                 <tr key={index}>
                   <td>{index + 1}</td>
                   <td>{`${empleado.Nombre} ${empleado.AppE} ${empleado.ApmE}`}</td>
+                  <td>{format(new Date(empleado.FechaNac), 'dd/MM/yyyy')}</td>
+                  <td>{empleado.Correo}</td>
+                  <td>{empleado.Region}</td>
                   <td>{empleado.AreaTrabajo}</td>
                   <td>{empleado.Rol}</td>
                   <td>
