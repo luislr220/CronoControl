@@ -15,6 +15,7 @@ export default function Navigation() {
             <Nav.Link href="/validar">Validar solicitud</Nav.Link>
             <Nav.Link href="/agregarUsuario">Agregar Usuarios</Nav.Link>
             <Nav.Link href="/agregarEmpleado">Agregar Empleado</Nav.Link>
+            <Nav.Link href="/turnoCrud">Turno</Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Container>
