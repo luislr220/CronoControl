@@ -13,7 +13,7 @@ export default function Navigation() {
           <Nav className="me-auto">
             <Nav.Link href="/">Solicitud de Horario</Nav.Link>
             <Nav.Link href="/validar">Validar solicitud</Nav.Link>
-            <Nav.Link href="/agregarUsuario">Agregar Usuarios</Nav.Link>
+            <Nav.Link href="/agregarUsuario">Agregar Administrador</Nav.Link>
             <Nav.Link href="/agregarEmpleado">Agregar Empleado</Nav.Link>
             <Nav.Link href="/turnoCrud">Turno</Nav.Link>
           </Nav>
