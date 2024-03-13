@@ -15,10 +15,9 @@ export default function AgregarEmpleado() {
     ApmE: "",
     FechaNac: "",
     Correo: "",
-    Contrasena: "",
-    Region: "",
-    AreaTrabajo: "",
-    Rol: "",
+    Region: "Guanajuato", // Valor por defecto para Region
+    AreaTrabajo: "Desarrollo web", // Valor por defecto para AreaTrabajo
+    Rol: "Empleado",
   });
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [empleadoSeleccionado, setEmpleadoSeleccionado] = useState(null);
@@ -29,10 +28,9 @@ export default function AgregarEmpleado() {
       ApmE: "",
       FechaNac: "",
       Correo: "",
-      Contrasena: "",
-      Region: "",
-      AreaTrabajo: "",
-      Rol: "",
+      Region: "Guanajuato", // Establecer valor por defecto
+      AreaTrabajo: "Desarrollo web", // Establecer valor por defecto
+      Rol: "Empleado", // Establecer valor por defecto
     });
 
   const [mostrarModalActualizar, setMostrarModalActualizar] = useState(false);
@@ -60,7 +58,11 @@ export default function AgregarEmpleado() {
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    setNuevoEmpleado({ ...nuevoEmpleado, [name]: value });
+    setNuevoEmpleado((prevState) => {
+      const updatedState = { ...prevState, [name]: value };
+      console.log("Nuevo estado de nuevoEmpleado:", updatedState);
+      return updatedState;
+    });
   };
 
   const handleFiltroChange = (event) => {
@@ -68,17 +70,31 @@ export default function AgregarEmpleado() {
   };
 
   const agregarEmpleado = async () => {
+    // Validar que los campos requeridos estén llenos
+    if (!nuevoEmpleado.Region || !nuevoEmpleado.AreaTrabajo) {
+      console.error("Error: Todos los campos son requeridos.");
+      // Aquí puedes manejar el error, por ejemplo, mostrando un mensaje al usuario.
+      return;
+    }
+
+    // Añadir el rol al objeto de nuevo empleado
+    const nuevoEmpleadoConRol = { ...nuevoEmpleado, Rol: "Empleado" };
+
     try {
       const response = await fetch("http://localhost:3002/empleados", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(nuevoEmpleado),
+        body: JSON.stringify(nuevoEmpleadoConRol), // Enviar el nuevo objeto con el rol
       });
+
       if (!response.ok) {
-        throw new Error("No se pudo agregar el empleado");
+        const errorData = await response.text(); // Intenta capturar cualquier respuesta no JSON
+        console.error("Error en la respuesta:", errorData);
+        throw new Error(`Error al agregar empleado: ${errorData}`);
       }
+
       const data = await response.json();
       setEmpleados([...empleados, data]);
       setNuevoEmpleado({
@@ -87,10 +103,9 @@ export default function AgregarEmpleado() {
         ApmE: "",
         FechaNac: "",
         Correo: "",
-        Contrasena: "",
         Region: "",
         AreaTrabajo: "",
-        Rol: "",
+        Rol: "", // Limpiar el campo Rol después de agregar un empleado
       });
       setMostrarFormulario(false);
     } catch (error) {
@@ -117,7 +132,13 @@ export default function AgregarEmpleado() {
 
   const abrirModalActualizar = (empleado) => {
     setEmpleadoSeleccionado(empleado);
-    setValoresEmpleadoSeleccionado(empleado);
+    const fechaFormateada = new Date(empleado.FechaNac)
+      .toISOString()
+      .split("T")[0]; //Convierte la fecha ISO8601 en un formato leible
+    setValoresEmpleadoSeleccionado({
+      ...empleado, // Usa directamente el objeto 'empleado' en lugar de asignar campo por campo
+      FechaNac: fechaFormateada,
+    });
     setMostrarModalActualizar(true);
   };
 
@@ -193,7 +214,9 @@ export default function AgregarEmpleado() {
                   >
                     <option value="">Todas las regiones</option>
                     <option value="Guanajuato">Guanajuato</option>
-                    <option value="América">América</option>
+                    <option value="Celaya">Celaya</option>
+                    <option value="Leon">Leon</option>
+                    <option value="Dolores Hidalgo">Dolores Hidalgo</option>
                   </Form.Control>
                 </Form.Group>
 
@@ -207,6 +230,7 @@ export default function AgregarEmpleado() {
                     <option value="">Todas las áreas</option>
                     <option value="Desarrollo web">Desarrollo web</option>
                     <option value="Base de datos">Base de datos</option>
+                    <option value="Diseño">Diseño</option>
                   </Form.Control>
                 </Form.Group>
               </Form>
@@ -275,42 +299,46 @@ export default function AgregarEmpleado() {
                   onChange={handleInputChange}
                 />
               </Form.Group>
-              <Form.Group controlId="formContrasena">
-                <Form.Label>Contraseña</Form.Label>
-                <FormControl
-                  type="password"
-                  name="Contrasena"
-                  value={nuevoEmpleado.Contrasena}
-                  onChange={handleInputChange}
-                />
-              </Form.Group>
               <Form.Group controlId="formRegion">
-                <Form.Label>Región</Form.Label>
-                <FormControl
-                  type="text"
+                <Form.Label>Region</Form.Label>
+                <Form.Control
+                  as="select"
                   name="Region"
                   value={nuevoEmpleado.Region}
                   onChange={handleInputChange}
-                />
+                >
+                  <option value="Guanajuato">Guanajuato</option>
+                  <option value="Celaya">Celaya</option>
+                  <option value="Leon">Leon</option>
+                  <option value="Dolores Hidalgo">Dolores Hidalgo</option>
+                </Form.Control>
               </Form.Group>
+
               <Form.Group controlId="formArea">
                 <Form.Label>Área de Trabajo</Form.Label>
-                <FormControl
-                  type="text"
+                <Form.Control
+                  as="select"
                   name="AreaTrabajo"
                   value={nuevoEmpleado.AreaTrabajo}
                   onChange={handleInputChange}
-                />
+                >
+                  <option value="Desarrollo web">Desarrollo web</option>
+                  <option value="Base de datos">Base de datos</option>
+                  <option value="Diseño">Diseño</option>
+                </Form.Control>
               </Form.Group>
-              {/* Eliminamos el dropdown de rol y lo reemplazamos por un campo de texto */}
+
               <Form.Group controlId="formRol">
                 <Form.Label>Rol</Form.Label>
-                <FormControl
-                  type="text"
+                <Form.Control
+                  as="select"
                   name="Rol"
                   value={nuevoEmpleado.Rol}
                   onChange={handleInputChange}
-                />
+                  disabled // Deshabilitar el campo para evitar cambios
+                >
+                  <option value="Empleado">Empleado</option>
+                </Form.Control>
               </Form.Group>
             </Form>
           </Modal.Body>
@@ -404,24 +432,10 @@ export default function AgregarEmpleado() {
                   }
                 />
               </Form.Group>
-              <Form.Group controlId="formContrasenaActualizar">
-                <Form.Label>Contraseña</Form.Label>
-                <FormControl
-                  type="password"
-                  name="Contrasena"
-                  value={valoresEmpleadoSeleccionado.Contrasena}
-                  onChange={(e) =>
-                    setValoresEmpleadoSeleccionado({
-                      ...valoresEmpleadoSeleccionado,
-                      Contrasena: e.target.value,
-                    })
-                  }
-                />
-              </Form.Group>
               <Form.Group controlId="formRegionActualizar">
-                <Form.Label>Región</Form.Label>
-                <FormControl
-                  type="text"
+                <Form.Label>Region</Form.Label>
+                <Form.Control
+                  as="select"
                   name="Region"
                   value={valoresEmpleadoSeleccionado.Region}
                   onChange={(e) =>
@@ -430,12 +444,18 @@ export default function AgregarEmpleado() {
                       Region: e.target.value,
                     })
                   }
-                />
+                >
+                  <option value="Guanajuato">Guanajuato</option>
+                  <option value="Celaya">Celaya</option>
+                  <option value="Leon">Leon</option>
+                  <option value="Dolores Hidalgo">Dolores Hidalgo</option>
+                </Form.Control>
               </Form.Group>
+
               <Form.Group controlId="formAreaActualizar">
                 <Form.Label>Área de Trabajo</Form.Label>
-                <FormControl
-                  type="text"
+                <Form.Control
+                  as="select"
                   name="AreaTrabajo"
                   value={valoresEmpleadoSeleccionado.AreaTrabajo}
                   onChange={(e) =>
@@ -444,12 +464,16 @@ export default function AgregarEmpleado() {
                       AreaTrabajo: e.target.value,
                     })
                   }
-                />
+                >
+                  <option value="Desarrollo web">Desarrollo web</option>
+                  <option value="Base de datos">Base de datos</option>
+                  <option value="Diseño">Diseño</option>
+                </Form.Control>
               </Form.Group>
-              <Form.Group controlId="formRol">
+              <Form.Group controlId="formRolActualizar">
                 <Form.Label>Rol</Form.Label>
-                <FormControl
-                  type="text"
+                <Form.Control
+                  as="select"
                   name="Rol"
                   value={valoresEmpleadoSeleccionado.Rol}
                   onChange={(e) =>
@@ -457,8 +481,12 @@ export default function AgregarEmpleado() {
                       ...valoresEmpleadoSeleccionado,
                       Rol: e.target.value,
                     })
+                    
                   }
-                />
+                  disabled // Deshabilitar el campo para evitar cambios
+                >
+                  <option value="Empleado">Empleado</option>
+                </Form.Control>
               </Form.Group>
             </Form>
           </Modal.Body>
@@ -510,7 +538,7 @@ export default function AgregarEmpleado() {
                 <tr key={index}>
                   <td>{index + 1}</td>
                   <td>{`${empleado.Nombre} ${empleado.AppE} ${empleado.ApmE}`}</td>
-                  <td>{format(new Date(empleado.FechaNac), "dd/MM/yyyy")}</td>
+                  <td>{format(new Date(empleado.FechaNac), "yyyy-MM-dd")}</td>
                   <td>{empleado.Correo}</td>
                   <td>{empleado.Region}</td>
                   <td>{empleado.AreaTrabajo}</td>
