@@ -1,0 +1,31 @@
+.contenedor {
+    padding: 4%;
+  }
+  
+  .table {
+    text-align: justify;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  
+  .boton-container {
+    display: flex;
+    justify-content: space-between; /* Espacio entre los elementos */
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .buscador {
+    width: calc(30% - 25px); /* Resta el ancho del icono de búsqueda */
+    background-image: url("../../../../public/search.png");
+    background-size: 20px 20px; /* Tamaño de la imagen */
+    background-repeat: no-repeat; /* Evita la repetición de la imagen */
+    background-position: right center; /* Posición de la imagen */
+    margin-left: 60%; /* Ajusta el margen a la derecha */
+  }
+  
+  .titulo {
+    margin: 2%;
+    text-align: left;
+  }
+  
