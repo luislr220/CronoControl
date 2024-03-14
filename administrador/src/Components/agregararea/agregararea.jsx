@@ -1,0 +1,256 @@
+import React, { useState, useEffect } from "react";
+import { Button, FormControl, Table, Form, Modal } from "react-bootstrap";
+import Navigation from "../NavigationComponent/Navigation";
+
+export default function AreasTrabajo() {
+  const [areas, setAreas] = useState([]);
+  const [nuevaArea, setNuevaArea] = useState({
+    nombre: "",
+    sede: "",
+  });
+  const [mostrarFormulario, setMostrarFormulario] = useState(false);
+  const [areaSeleccionada, setAreaSeleccionada] = useState(null);
+  const [valoresAreaSeleccionada, setValoresAreaSeleccionada] = useState({
+    nombre: "",
+    sede: "",
+  });
+  const [mostrarModalActualizar, setMostrarModalActualizar] = useState(false);
+
+  useEffect(() => {
+    const fetchAreas = async () => {
+      try {
+        const response = await fetch("http://localhost:3002/areas");
+        if (!response.ok) {
+          throw new Error("No se pudo obtener la lista de áreas");
+        }
+        const data = await response.json();
+        setAreas(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchAreas();
+  }, []);
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setNuevaArea((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const agregarArea = async () => {
+    try {
+      const response = await fetch("http://localhost:3002/areas", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(nuevaArea),
+      });
+
+      if (!response.ok) {
+        throw new Error("No se pudo agregar el área");
+      }
+
+      const data = await response.json();
+      setAreas([...areas, data]);
+      setNuevaArea({ nombre: "", sede: "" });
+      setMostrarFormulario(false);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const eliminarArea = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:3002/areas/${id}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) {
+        throw new Error("No se pudo eliminar el área");
+      }
+      const nuevasAreas = areas.filter((area) => area._id !== id);
+      setAreas(nuevasAreas);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const abrirModalActualizar = (area) => {
+    setAreaSeleccionada(area);
+    setValoresAreaSeleccionada({ ...area });
+    setMostrarModalActualizar(true);
+  };
+
+  const cerrarModalActualizar = () => {
+    setAreaSeleccionada(null);
+    setMostrarModalActualizar(false);
+  };
+
+  const actualizarArea = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:3002/areas/${areaSeleccionada._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(valoresAreaSeleccionada),
+        }
+      );
+      if (!response.ok) {
+        throw new Error("No se pudo actualizar el área");
+      }
+      const data = await response.json();
+      const index = areas.findIndex((a) => a._id === areaSeleccionada._id);
+      const nuevasAreas = [...areas];
+      nuevasAreas[index] = data;
+      setAreas(nuevasAreas);
+      cerrarModalActualizar();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  return (
+    <div>
+      <Navigation />
+      <h2 className="titulo">Gestión de Áreas de Trabajo</h2>
+      <div className="contenedor">
+        <div className="boton-container">
+          <Button
+            variant="success"
+            className="boton-verde"
+            onClick={() => setMostrarFormulario(true)}
+          >
+            Agregar
+          </Button>{" "}
+        </div>
+        <Modal show={mostrarFormulario} onHide={() => setMostrarFormulario(false)}>
+          <Modal.Header closeButton>
+            <Modal.Title>Agregar Área de Trabajo</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form>
+              <Form.Group controlId="formNombre">
+                <Form.Label>Nombre</Form.Label>
+                <FormControl
+                  type="text"
+                  name="nombre"
+                  value={nuevaArea.nombre}
+                  onChange={handleInputChange}
+                />
+              </Form.Group>
+              <Form.Group controlId="formSede">
+                <Form.Label>Sede</Form.Label>
+                <FormControl
+                  type="text"
+                  name="sede"
+                  value={nuevaArea.sede}
+                  onChange={handleInputChange}
+                />
+              </Form.Group>
+            </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setMostrarFormulario(false)}>
+              Cancelar
+            </Button>
+            <Button variant="primary" onClick={agregarArea}>
+              Agregar
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
+        {/* Modal para actualizar */}
+        <Modal show={mostrarModalActualizar} onHide={cerrarModalActualizar}>
+          <Modal.Header closeButton>
+            <Modal.Title>Actualizar Área de Trabajo</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form>
+              <Form.Group controlId="formNombreActualizar">
+                <Form.Label>Nombre</Form.Label>
+                <FormControl
+                  type="text"
+                  name="nombre"
+                  value={valoresAreaSeleccionada.nombre}
+                  onChange={(e) =>
+                    setValoresAreaSeleccionada({
+                      ...valoresAreaSeleccionada,
+                      nombre: e.target.value,
+                    })
+                  }
+                />
+              </Form.Group>
+              <Form.Group controlId="formSedeActualizar">
+                <Form.Label>Sede</Form.Label>
+                <FormControl
+                  type="text"
+                  name="sede"
+                  value={valoresAreaSeleccionada.sede}
+                  onChange={(e) =>
+                    setValoresAreaSeleccionada({
+                      ...valoresAreaSeleccionada,
+                      sede: e.target.value,
+                    })
+                  }
+                />
+              </Form.Group>
+            </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={cerrarModalActualizar}>
+              Cancelar
+            </Button>
+            <Button variant="primary" onClick={actualizarArea}>
+              Actualizar
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
+        <Table className="table">
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>Nombre</th>
+              <th>Sede</th>
+              <th>Actualizar</th>
+              <th>Eliminar</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {areas.map((area, index) => (
+              <tr key={index}>
+                <td>{index + 1}</td>
+                <td>{area.nombre}</td>
+                <td>{area.sede}</td>
+                <td>
+                  <Button
+                    variant="info"
+                    onClick={() => abrirModalActualizar(area)}
+                  >
+                    Actualizar
+                  </Button>{" "}
+                </td>
+                <td>
+                  <Button
+                    variant="danger"
+                    onClick={() => eliminarArea(area._id)}
+                  >
+                    Eliminar
+                  </Button>{" "}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      </div>
+    </div>
+  );
+}
