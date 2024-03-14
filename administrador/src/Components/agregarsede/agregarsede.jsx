@@ -64,6 +64,23 @@ export default function GestionarSedes() {
     }
   };
 
+  const eliminarSede = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:3002/sedes/${id}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) {
+        throw new Error("No se pudo eliminar la sede");
+      }
+      const nuevasSedes = sedes.filter(
+        (sedes) => sedes._id !== id
+      );
+      setSedes(nuevasSedes);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div>
       <Navigation />
@@ -133,6 +150,7 @@ export default function GestionarSedes() {
               <th>No.</th>
               <th>Nombre</th>
               <th>Ubicación</th>
+              <th>Eliminar</th>
             </tr>
           </thead>
           <tbody>
@@ -145,6 +163,14 @@ export default function GestionarSedes() {
                   <td>{index + 1}</td>
                   <td>{sede.nombre}</td>
                   <td>{sede.ubicacion}</td>
+                  <td>
+                    <Button
+                      variant="danger"
+                      onClick={() => eliminarSede(sede._id)}
+                    >
+                      Eliminar
+                    </Button>{" "}
+                  </td>
                 </tr>
               ))}
           </tbody>

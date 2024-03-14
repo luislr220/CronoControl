@@ -54,7 +54,7 @@ router.post("/", empleadoController.validarCorreoUnico, async (req, res) => {
 });
 
 // Ruta para actualizar un empleado existente
-router.patch("/:id", async (req, res) => {
+router.patch("/:id", empleadoController.validarCorreoUnico,async (req, res) => {
   try {
     // Busca el empleado por su ID
     const empleado = await Empleado.findById(req.params.id);
