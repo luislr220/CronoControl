@@ -1,33 +1,37 @@
 const express = require("express");
 const router = express.Router();
+const empleadoController = require('../controllers/empleadoController');
 const cors = require("cors"); // Importa cors
-const Administrador = require("../models/administradorSchema");
+const empleado = require("../models/empleadoSchema");
+
 
 router.use(cors());
 
-// Ruta para obtener todos los empleados, con opción de seleccionar campos específicos
+// Ruta para obtener todos los adminitrador, con opción de seleccionar campos específicos
 router.get("/", async (req, res) => {
   try {
     // Verifica si se especificaron campos específicos en la solicitud
     const camposSeleccionados = req.query.campos;
-    let query = Administrador.find();
+    let query = empleado.find();
     // Si se especificaron campos, se seleccionan esos campos
     if (camposSeleccionados) {
       const camposArray = camposSeleccionados.split(",");
       query = query.select(camposArray.join(" "));
     }
-    // Ejecuta la consulta y envía la lista de empleados como respuesta
-    const administrador = await query.exec();
-    res.json(administrador);
+    // Ejecuta la consulta y envía la lista de empleado como respuesta
+    const empleado = await query.exec();
+    res.json(empleado);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
 
+
+
 // Ruta para crear un nuevo empleado
-router.post("/", async (req, res) => {
-  // Crea un nuevo objeto Empleado con los datos recibidos en el cuerpo de la solicitud
-  const nuevoAdministrador = new Administrador({
+router.post("/", empleadoController.validarCorreoUnico, async (req, res) => {
+  // Crea un nuevo objeto empleado con los datos recibidos en el cuerpo de la solicitud
+  const nuevoempleado = new empleado({
     Nombre: req.body.Nombre,
     AppE: req.body.AppE,
     ApmE: req.body.ApmE,
@@ -40,9 +44,9 @@ router.post("/", async (req, res) => {
 
   try {
     // Guarda el nuevo empleado en la base de datos
-    const administradorGuardado = await nuevoAdministrador.save();
+    const empleadoGuardado = await nuevoempleado.save();
     // Responde con el nuevo empleado creado
-    res.status(201).json(administradorGuardado);
+    res.status(201).json(empleadoGuardado);
   } catch (error) {
     // Si ocurre un error, responde con un código de estado 400 y un mensaje de error
     res.status(400).json({ message: error.message });
@@ -53,42 +57,42 @@ router.post("/", async (req, res) => {
 router.patch("/:id", async (req, res) => {
   try {
     // Busca el empleado por su ID
-    const administrador = await Administrador.findById(req.params.id);
-    if (!administrador) {
+    const empleado = await empleado.findById(req.params.id);
+    if (!empleado) {
       // Si no se encuentra el empleado, devuelve un error 404
-      return res.status(404).json({ message: "Empleado no encontrado" });
+      return res.status(404).json({ message: "empleado no encontrado" });
     }
 
     // Actualiza los campos del empleado con los datos recibidos en el cuerpo de la solicitud
     if (req.body.Nombre) {
-      administrador.Nombre = req.body.Nombre;
+      empleado.Nombre = req.body.Nombre;
     }
     if (req.body.AppE) {
-      administrador.AppE = req.body.AppE;
+      empleado.AppE = req.body.AppE;
     }
     if (req.body.ApmE) {
-      administrador.ApmE = req.body.ApmE;
+      empleado.ApmE = req.body.ApmE;
     }
     if (req.body.FechaNac) {
-      administrador.FechaNac = req.body.FechaNac;
+      empleado.FechaNac = req.body.FechaNac;
     }
     if (req.body.Correo) {
-      administrador.Correo = req.body.Correo;
+      empleado.Correo = req.body.Correo;
     }
     if (req.body.Region) {
-      administrador.Region = req.body.Region;
+      empleado.Region = req.body.Region;
     }
     if (req.body.AreaTrabajo) {
-      administrador.AreaTrabajo = req.body.AreaTrabajo;
+      empleado.AreaTrabajo = req.body.AreaTrabajo;
     }
     if (req.body.Rol) {
-      administrador.Rol = req.body.Rol;
+      empleado.Rol = req.body.Rol;
     }
 
     // Guarda los cambios en la base de datos
-    const administradorActualizado = await administrador.save();
+    const empleadoActualizado = await empleado.save();
     // Responde con el empleado actualizado
-    res.json(administradorActualizado);
+    res.json(empleadoActualizado);
   } catch (error) {
     // Si ocurre un error, responde con un código de estado 400 y un mensaje de error
     res.status(400).json({ message: error.message });
@@ -99,8 +103,8 @@ router.patch("/:id", async (req, res) => {
 router.delete("/:id", async (req, res) => {
   try {
     // Busca y elimina el empleado por su ID
-    const administradorEliminado = await Administrador.findByIdAndDelete(req.params.id);
-    if (!administradorEliminado) {
+    const empleadoEliminado = await Empleado.findByIdAndDelete(req.params.id);
+    if (!empleadoEliminado) {
       // Si no se encuentra el empleado, devuelve un error 404
       return res.status(404).json({ message: "Empleado no encontrado" });
     }

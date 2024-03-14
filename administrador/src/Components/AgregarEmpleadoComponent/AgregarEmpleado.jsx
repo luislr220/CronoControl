@@ -1,14 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { Button, FormControl, Table, Form, Modal } from "react-bootstrap";
+import {
+  Button,
+  FormControl,
+  Table,
+  Form,
+  Modal,
+  Alert,
+} from "react-bootstrap";
 import { format } from "date-fns";
-import { FaFilter } from "react-icons/fa";
 import "../AgregarEmpleadoComponent/css/agregarEmpleado.css";
 import Navigation from "../NavigationComponent/Navigation";
 
 export default function AgregarEmpleado() {
   const [empleados, setEmpleados] = useState([]);
   const [filtro, setFiltro] = useState("");
-  const [showFiltroRegion, setShowFiltroRegion] = useState(false);
   const [nuevoEmpleado, setNuevoEmpleado] = useState({
     Nombre: "",
     AppE: "",
@@ -37,6 +42,10 @@ export default function AgregarEmpleado() {
 
   const [filtroRegion, setFiltroRegion] = useState(""); // Nuevo estado para el filtro por región
   const [filtroArea, setFiltroArea] = useState(""); // Nuevo estado para el filtro por región
+  const [filtroApellidoModal, setFiltroApellidoModal] = useState(""); // Estado para filtrar por apellido
+  const [errorCorreoDuplicado, setErrorCorreoDuplicado] = useState("");
+  const [errorCorreoDuplicadoActualizar, setErrorCorreoDuplicadoActualizar] =
+    useState("");
 
   useEffect(() => {
     // Función para obtener la lista de empleados desde el backend
@@ -58,11 +67,22 @@ export default function AgregarEmpleado() {
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    setNuevoEmpleado((prevState) => {
-      const updatedState = { ...prevState, [name]: value };
-      console.log("Nuevo estado de nuevoEmpleado:", updatedState);
-      return updatedState;
-    });
+    if (name === "filtroApellidoModal") {
+      setFiltroApellidoModal(value);
+    } else if (mostrarModalActualizar) {
+      // Asegúrate de que solo se actualice el estado cuando se muestre el formulario de actualización
+      setValoresEmpleadoSeleccionado((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
+      setErrorCorreoDuplicadoActualizar(""); // Limpia el estado de errorCorreoDuplicadoActualizar cuando se realiza un cambio en el formulario de actualización
+    } else {
+      setNuevoEmpleado((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
+      setErrorCorreoDuplicado(""); // Limpia el estado de errorCorreoDuplicado cuando se realiza un cambio en el formulario de agregar
+    }
   };
 
   const handleFiltroChange = (event) => {
@@ -74,6 +94,16 @@ export default function AgregarEmpleado() {
     if (!nuevoEmpleado.Region || !nuevoEmpleado.AreaTrabajo) {
       console.error("Error: Todos los campos son requeridos.");
       // Aquí puedes manejar el error, por ejemplo, mostrando un mensaje al usuario.
+      return;
+    }
+
+    // Verificar si el correo electrónico ya está en uso
+    const correoExistente = empleados.find(
+      (empleado) => empleado.Correo === nuevoEmpleado.Correo
+    );
+
+    if (correoExistente) {
+      setErrorCorreoDuplicado("Este correo electrónico ya está en uso");
       return;
     }
 
@@ -108,6 +138,9 @@ export default function AgregarEmpleado() {
         Rol: "", // Limpiar el campo Rol después de agregar un empleado
       });
       setMostrarFormulario(false);
+
+      // Limpiar el estado de errorCorreoDuplicado
+      setErrorCorreoDuplicado("");
     } catch (error) {
       console.error(error);
     }
@@ -149,6 +182,20 @@ export default function AgregarEmpleado() {
 
   const actualizarEmpleado = async () => {
     try {
+      // Verificar si el correo electrónico ya está en uso
+      const correoExistente = empleados.find(
+        (empleado) =>
+          empleado.Correo === valoresEmpleadoSeleccionado.Correo &&
+          empleado._id !== empleadoSeleccionado._id
+      );
+
+      if (correoExistente) {
+        setErrorCorreoDuplicadoActualizar(
+          "Este correo electrónico ya está en uso"
+        );
+        return;
+      }
+
       const response = await fetch(
         `http://localhost:3002/empleados/${empleadoSeleccionado._id}`,
         {
@@ -172,6 +219,7 @@ export default function AgregarEmpleado() {
       cerrarModalActualizar();
     } catch (error) {
       console.error(error);
+      setErrorCorreoDuplicadoActualizar("Error al actualizar el empleado");
     }
   };
 
@@ -190,60 +238,42 @@ export default function AgregarEmpleado() {
           </Button>{" "}
           <FormControl
             type="text"
-            placeholder="Buscar empleado..."
+            placeholder="Buscar por nombre..."
             className="AGEMBuscador"
             value={filtro}
             onChange={handleFiltroChange}
           />
-          <FaFilter onClick={() => setShowFiltroRegion(!showFiltroRegion)} />
-          <Modal
-            show={showFiltroRegion}
-            onHide={() => setShowFiltroRegion(false)}
+          <FormControl
+            type="text"
+            placeholder="Buscar por apellido..."
+            className="AGEMBuscador"
+            value={filtroApellidoModal}
+            name="filtroApellidoModal"
+            onChange={handleInputChange}
+          />
+          <Form.Control
+            as="select"
+            className="AGEMBuscador"
+            value={filtroRegion}
+            onChange={(e) => setFiltroRegion(e.target.value)}
           >
-            <Modal.Header closeButton>
-              <Modal.Title>Filtrar datos</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <Form>
-                <Form.Group controlId="formRegion">
-                  <Form.Label>Selecciona una región</Form.Label>
-                  <Form.Control
-                    as="select"
-                    value={filtroRegion}
-                    onChange={(e) => setFiltroRegion(e.target.value)}
-                  >
-                    <option value="">Todas las regiones</option>
-                    <option value="Guanajuato">Guanajuato</option>
-                    <option value="Celaya">Celaya</option>
-                    <option value="Leon">Leon</option>
-                    <option value="Dolores Hidalgo">Dolores Hidalgo</option>
-                  </Form.Control>
-                </Form.Group>
-
-                <Form.Group controlId="formArea">
-                  <Form.Label>Selecciona una Área</Form.Label>
-                  <Form.Control
-                    as="select"
-                    value={filtroArea}
-                    onChange={(e) => setFiltroArea(e.target.value)}
-                  >
-                    <option value="">Todas las áreas</option>
-                    <option value="Desarrollo web">Desarrollo web</option>
-                    <option value="Base de datos">Base de datos</option>
-                    <option value="Diseño">Diseño</option>
-                  </Form.Control>
-                </Form.Group>
-              </Form>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button
-                variant="secondary"
-                onClick={() => setShowFiltroRegion(false)}
-              >
-                Cerrar
-              </Button>
-            </Modal.Footer>
-          </Modal>
+            <option value="">Todas las regiones</option>
+            <option value="Guanajuato">Guanajuato</option>
+            <option value="Celaya">Celaya</option>
+            <option value="Leon">Leon</option>
+            <option value="Dolores Hidalgo">Dolores Hidalgo</option>
+          </Form.Control>
+          <Form.Control
+            as="select"
+            className="AGEMBuscador"
+            value={filtroArea}
+            onChange={(e) => setFiltroArea(e.target.value)}
+          >
+            <option value="">Todas las áreas</option>
+            <option value="Desarrollo web">Desarrollo web</option>
+            <option value="Base de datos">Base de datos</option>
+            <option value="Diseño">Diseño</option>
+          </Form.Control>
         </div>
         <Modal
           show={mostrarFormulario}
@@ -298,7 +328,11 @@ export default function AgregarEmpleado() {
                   value={nuevoEmpleado.Correo}
                   onChange={handleInputChange}
                 />
+                {errorCorreoDuplicado && (
+                  <Alert variant="danger">{errorCorreoDuplicado}</Alert>
+                )}
               </Form.Group>
+
               <Form.Group controlId="formRegion">
                 <Form.Label>Region</Form.Label>
                 <Form.Control
@@ -424,13 +458,13 @@ export default function AgregarEmpleado() {
                   type="email"
                   name="Correo"
                   value={valoresEmpleadoSeleccionado.Correo}
-                  onChange={(e) =>
-                    setValoresEmpleadoSeleccionado({
-                      ...valoresEmpleadoSeleccionado,
-                      Correo: e.target.value,
-                    })
-                  }
+                  onChange={handleInputChange}
                 />
+                {errorCorreoDuplicadoActualizar && (
+                  <Alert variant="danger">
+                    {errorCorreoDuplicadoActualizar}
+                  </Alert>
+                )}
               </Form.Group>
               <Form.Group controlId="formRegionActualizar">
                 <Form.Label>Region</Form.Label>
@@ -481,7 +515,6 @@ export default function AgregarEmpleado() {
                       ...valoresEmpleadoSeleccionado,
                       Rol: e.target.value,
                     })
-                    
                   }
                   disabled // Deshabilitar el campo para evitar cambios
                 >
@@ -533,6 +566,11 @@ export default function AgregarEmpleado() {
                 empleado.AreaTrabajo.toLowerCase().includes(
                   filtroArea.toLowerCase()
                 )
+              )
+              .filter((empleado) =>
+                `${empleado.AppE} ${empleado.ApmE}`
+                  ?.toLowerCase()
+                  .startsWith(filtroApellidoModal.toLowerCase())
               )
               .map((empleado, index) => (
                 <tr key={index}>
