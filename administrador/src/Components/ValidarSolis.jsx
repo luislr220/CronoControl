@@ -62,9 +62,6 @@ const Solicitudes = () => {
       <Container className="col-12">
         <div class="container">
           <div class="row">
-            <div class="col">
-              <h1>Validar Solicitudes</h1>
-            </div>
             <br></br>
             <div class="col-5">
               <form className="d-flex">
