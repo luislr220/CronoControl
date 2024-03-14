@@ -13,8 +13,9 @@ import Navigation from "../NavigationComponent/Navigation";
 
 export default function AgregarEmpleado() {
   const [empleados, setEmpleados] = useState([]);
-  const [filtro, setFiltro] = useState("");
+  const [filtro, setFiltro] = useState(""); // Filtro por nombre
   const [sedes, setSedes] = useState([]);
+  const [areas, setAreas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [nuevoEmpleado, setNuevoEmpleado] = useState({
     Nombre: "",
@@ -23,7 +24,7 @@ export default function AgregarEmpleado() {
     FechaNac: "",
     Correo: "",
     Region: "",
-    AreaTrabajo: "Desarrollo web", // Valor por defecto para AreaTrabajo
+    AreaTrabajo: "",
     Rol: "Empleado",
   });
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
@@ -36,21 +37,21 @@ export default function AgregarEmpleado() {
       FechaNac: "",
       Correo: "",
       Region: "",
-      AreaTrabajo: "Desarrollo web", // Establecer valor por defecto
+      AreaTrabajo: "",
       Rol: "Empleado", // Establecer valor por defecto
     });
 
   const [mostrarModalActualizar, setMostrarModalActualizar] = useState(false);
 
   const [filtroRegion, setFiltroRegion] = useState(""); // Nuevo estado para el filtro por región
-  const [filtroArea, setFiltroArea] = useState(""); // Nuevo estado para el filtro por región
+  const [filtroArea, setFiltroArea] = useState(""); // Nuevo estado para el filtro por Área
   const [filtroApellidoModal, setFiltroApellidoModal] = useState(""); // Estado para filtrar por apellido
   const [errorCorreoDuplicado, setErrorCorreoDuplicado] = useState("");
   const [errorCorreoDuplicadoActualizar, setErrorCorreoDuplicadoActualizar] =
     useState("");
 
   useEffect(() => {
-    // Función para obtener la lista de empleados desde el backend
+    // Función para obtener la lista de empleados, las áres y sedes desde el backend
     const fetchEmpleados = async () => {
       try {
         const response = await fetch("http://localhost:3002/empleados");
@@ -79,8 +80,24 @@ export default function AgregarEmpleado() {
       }
     };
 
-    fetchSedes();
+    const fetchAreas = async () => {
+      try {
+        const response = await fetch("http://localhost:3002/areas");
+        if (!response.ok) {
+          throw new Error("No se pudo obtener la lista de areas");
+        }
+        const data = await response.json();
+        setAreas(data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchEmpleados();
+    fetchSedes();
+    fetchAreas();
   }, []);
 
   const handleInputChange = (event) => {
@@ -293,9 +310,15 @@ export default function AgregarEmpleado() {
             onChange={(e) => setFiltroArea(e.target.value)}
           >
             <option value="">Todas las áreas</option>
-            <option value="Desarrollo web">Desarrollo web</option>
-            <option value="Base de datos">Base de datos</option>
-            <option value="Diseño">Diseño</option>
+            {loading ? (
+              <option disabled>Cargando sedes...</option>
+            ) : (
+              areas.map((area) => (
+                <option key={area._id} value={area.nombre}>
+                  {area.nombre}
+                </option>
+              ))
+            )}
           </Form.Control>
         </div>
         <Modal
@@ -360,7 +383,7 @@ export default function AgregarEmpleado() {
                 <Form.Label>Región</Form.Label>
                 <Form.Control
                   as="select"
-                  name="Region" // Cambia el nombre del campo a "Region"
+                  name="Region"
                   value={nuevoEmpleado.Region}
                   onChange={handleInputChange}
                 >
@@ -385,9 +408,16 @@ export default function AgregarEmpleado() {
                   value={nuevoEmpleado.AreaTrabajo}
                   onChange={handleInputChange}
                 >
-                  <option value="Desarrollo web">Desarrollo web</option>
-                  <option value="Base de datos">Base de datos</option>
-                  <option value="Diseño">Diseño</option>
+                  <option value="">Selecciona una área</option>
+                  {loading ? (
+                    <option disabled>Cargando áreas...</option>
+                  ) : (
+                    areas.map((area) => (
+                      <option key={area._id} value={area.nombre}>
+                        {area.nombre}
+                      </option>
+                    ))
+                  )}
                 </Form.Control>
               </Form.Group>
 
@@ -500,12 +530,12 @@ export default function AgregarEmpleado() {
                 <Form.Label>Región</Form.Label>
                 <Form.Control
                   as="select"
-                  name="Region" // Cambia el nombre del campo a Region
-                  value={valoresEmpleadoSeleccionado.Region} // Utiliza valoresEmpleadoSeleccionado.Region en lugar de valoresEmpleadoSeleccionado.RegionSeleccionada
+                  name="Region"
+                  value={valoresEmpleadoSeleccionado.Region}
                   onChange={(e) =>
                     setValoresEmpleadoSeleccionado({
                       ...valoresEmpleadoSeleccionado,
-                      Region: e.target.value, // Asegúrate de actualizar correctamente el campo Region en el estado
+                      Region: e.target.value,
                     })
                   }
                 >
@@ -531,9 +561,12 @@ export default function AgregarEmpleado() {
                     })
                   }
                 >
-                  <option value="Desarrollo web">Desarrollo web</option>
-                  <option value="Base de datos">Base de datos</option>
-                  <option value="Diseño">Diseño</option>
+                  <option value="">Selecciona una área</option>
+                  {areas.map((area) => (
+                    <option key={area._id} value={area.nombre}>
+                      {area.nombre}
+                    </option>
+                  ))}
                 </Form.Control>
               </Form.Group>
               <Form.Group controlId="formRolActualizar">
@@ -583,8 +616,7 @@ export default function AgregarEmpleado() {
           <tbody>
             {empleados
               .filter((empleado) =>
-                `${empleado.Nombre} ${empleado.AppE} ${empleado.ApmE}`
-                  ?.toLowerCase()
+                empleado.Nombre.toLowerCase()
                   .includes(filtro.toLowerCase())
               )
               .filter((empleado) =>
@@ -600,6 +632,7 @@ export default function AgregarEmpleado() {
                 )
               )
               .filter((empleado) =>
+                  //Aplicar Filtro por apellido
                 `${empleado.AppE} ${empleado.ApmE}`
                   ?.toLowerCase()
                   .startsWith(filtroApellidoModal.toLowerCase())
