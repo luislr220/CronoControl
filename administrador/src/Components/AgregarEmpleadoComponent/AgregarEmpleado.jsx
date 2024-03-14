@@ -52,6 +52,7 @@ export default function AgregarEmpleado() {
   // Estado para las áreas de trabajo disponibles basadas en la región seleccionada
   const [areasPorRegion, setAreasPorRegion] = useState([]);
   const [areasPorRegionActualizar, setAreasPorRegionActualizar] = useState([]);
+  const areasFiltradas = areas.filter((area) => area.sede === filtroRegion);
 
   useEffect(() => {
     // Función para obtener la lista de empleados, las áres y sedes desde el backend
@@ -67,7 +68,6 @@ export default function AgregarEmpleado() {
         console.error(error);
       }
     };
-
     const fetchSedes = async () => {
       try {
         const response = await fetch("http://localhost:3002/sedes");
@@ -142,8 +142,8 @@ export default function AgregarEmpleado() {
       ...prevState,
       Region: regionSeleccionada,
     }));
-    filtrarAreasPorRegion(regionSeleccionada);
-    setFiltroArea("");
+    filtrarAreasPorRegion(regionSeleccionada); // Añadimos esta línea para actualizar las áreas disponibles
+    setFiltroArea(""); // Limpiamos el filtro de área al cambiar la región seleccionada
   };
 
   const agregarEmpleado = async () => {
@@ -339,13 +339,17 @@ export default function AgregarEmpleado() {
           >
             <option value="">Todas las áreas</option>
             {loading ? (
-              <option disabled>Cargando sedes...</option>
+              <option disabled>Cargando áreas...</option>
             ) : (
-              areas.map((area) => (
-                <option key={area._id} value={area.nombre}>
-                  {area.nombre}
-                </option>
-              ))
+              areasFiltradas.map(
+                (
+                  area // Utilizamos areasFiltradas aquí
+                ) => (
+                  <option key={area._id} value={area.nombre}>
+                    {area.nombre}
+                  </option>
+                )
+              )
             )}
           </Form.Control>
         </div>
