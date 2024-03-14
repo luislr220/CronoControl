@@ -49,6 +49,9 @@ export default function AgregarEmpleado() {
   const [errorCorreoDuplicado, setErrorCorreoDuplicado] = useState("");
   const [errorCorreoDuplicadoActualizar, setErrorCorreoDuplicadoActualizar] =
     useState("");
+  // Estado para las áreas de trabajo disponibles basadas en la región seleccionada
+  const [areasPorRegion, setAreasPorRegion] = useState([]);
+  const [areasPorRegionActualizar, setAreasPorRegionActualizar] = useState([]);
 
   useEffect(() => {
     // Función para obtener la lista de empleados, las áres y sedes desde el backend
@@ -122,6 +125,25 @@ export default function AgregarEmpleado() {
 
   const handleFiltroChange = (event) => {
     setFiltro(event.target.value);
+  };
+
+  // Función para filtrar las áreas de trabajo disponibles basadas en la región seleccionada
+  const filtrarAreasPorRegion = (regionSeleccionada) => {
+    const areasFiltradas = areas.filter(
+      (area) => area.sede === regionSeleccionada
+    );
+    setAreasPorRegion(areasFiltradas);
+  };
+
+  // Función para manejar el cambio en la región seleccionada
+  const handleRegionChange = (event) => {
+    const regionSeleccionada = event.target.value;
+    setNuevoEmpleado((prevState) => ({
+      ...prevState,
+      Region: regionSeleccionada,
+    }));
+    filtrarAreasPorRegion(regionSeleccionada);
+    setFiltroArea("");
   };
 
   const agregarEmpleado = async () => {
@@ -208,6 +230,12 @@ export default function AgregarEmpleado() {
       FechaNac: fechaFormateada,
     });
     setMostrarModalActualizar(true);
+
+    // Filtrar las áreas por región seleccionada
+    const areasFiltradas = areas.filter(
+      (area) => area.sede === empleado.Region
+    );
+    setAreasPorRegionActualizar(areasFiltradas);
   };
 
   const cerrarModalActualizar = () => {
@@ -385,7 +413,7 @@ export default function AgregarEmpleado() {
                   as="select"
                   name="Region"
                   value={nuevoEmpleado.Region}
-                  onChange={handleInputChange}
+                  onChange={handleRegionChange}
                 >
                   <option value="">Selecciona una región</option>
                   {loading ? (
@@ -412,7 +440,7 @@ export default function AgregarEmpleado() {
                   {loading ? (
                     <option disabled>Cargando áreas...</option>
                   ) : (
-                    areas.map((area) => (
+                    areasPorRegion.map((area) => (
                       <option key={area._id} value={area.nombre}>
                         {area.nombre}
                       </option>
@@ -532,12 +560,18 @@ export default function AgregarEmpleado() {
                   as="select"
                   name="Region"
                   value={valoresEmpleadoSeleccionado.Region}
-                  onChange={(e) =>
+                  onChange={(e) => {
+                    const regionSeleccionada = e.target.value;
                     setValoresEmpleadoSeleccionado({
                       ...valoresEmpleadoSeleccionado,
-                      Region: e.target.value,
-                    })
-                  }
+                      Region: regionSeleccionada,
+                    });
+                    // Filtrar las áreas por región seleccionada
+                    const areasFiltradas = areas.filter(
+                      (area) => area.sede === regionSeleccionada
+                    );
+                    setAreasPorRegionActualizar(areasFiltradas);
+                  }}
                 >
                   <option value="">Selecciona una región</option>
                   {sedes.map((sede) => (
@@ -562,13 +596,14 @@ export default function AgregarEmpleado() {
                   }
                 >
                   <option value="">Selecciona una área</option>
-                  {areas.map((area) => (
+                  {areasPorRegionActualizar.map((area) => (
                     <option key={area._id} value={area.nombre}>
                       {area.nombre}
                     </option>
                   ))}
                 </Form.Control>
               </Form.Group>
+
               <Form.Group controlId="formRolActualizar">
                 <Form.Label>Rol</Form.Label>
                 <Form.Control
@@ -616,8 +651,7 @@ export default function AgregarEmpleado() {
           <tbody>
             {empleados
               .filter((empleado) =>
-                empleado.Nombre.toLowerCase()
-                  .includes(filtro.toLowerCase())
+                empleado.Nombre.toLowerCase().includes(filtro.toLowerCase())
               )
               .filter((empleado) =>
                 // Aplicar filtro por región
@@ -632,7 +666,7 @@ export default function AgregarEmpleado() {
                 )
               )
               .filter((empleado) =>
-                  //Aplicar Filtro por apellido
+                //Aplicar Filtro por apellido
                 `${empleado.AppE} ${empleado.ApmE}`
                   ?.toLowerCase()
                   .startsWith(filtroApellidoModal.toLowerCase())
