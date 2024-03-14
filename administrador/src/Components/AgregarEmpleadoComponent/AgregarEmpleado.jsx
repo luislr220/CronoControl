@@ -14,13 +14,15 @@ import Navigation from "../NavigationComponent/Navigation";
 export default function AgregarEmpleado() {
   const [empleados, setEmpleados] = useState([]);
   const [filtro, setFiltro] = useState("");
+  const [sedes, setSedes] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [nuevoEmpleado, setNuevoEmpleado] = useState({
     Nombre: "",
     AppE: "",
     ApmE: "",
     FechaNac: "",
     Correo: "",
-    Region: "Guanajuato", // Valor por defecto para Region
+    Region: "",
     AreaTrabajo: "Desarrollo web", // Valor por defecto para AreaTrabajo
     Rol: "Empleado",
   });
@@ -33,7 +35,7 @@ export default function AgregarEmpleado() {
       ApmE: "",
       FechaNac: "",
       Correo: "",
-      Region: "Guanajuato", // Establecer valor por defecto
+      Region: "",
       AreaTrabajo: "Desarrollo web", // Establecer valor por defecto
       Rol: "Empleado", // Establecer valor por defecto
     });
@@ -62,6 +64,22 @@ export default function AgregarEmpleado() {
       }
     };
 
+    const fetchSedes = async () => {
+      try {
+        const response = await fetch("http://localhost:3002/sedes");
+        if (!response.ok) {
+          throw new Error("No se pudo obtener la lista de sedes");
+        }
+        const data = await response.json();
+        setSedes(data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSedes();
     fetchEmpleados();
   }, []);
 
@@ -258,10 +276,15 @@ export default function AgregarEmpleado() {
             onChange={(e) => setFiltroRegion(e.target.value)}
           >
             <option value="">Todas las regiones</option>
-            <option value="Guanajuato">Guanajuato</option>
-            <option value="Celaya">Celaya</option>
-            <option value="Leon">Leon</option>
-            <option value="Dolores Hidalgo">Dolores Hidalgo</option>
+            {loading ? (
+              <option disabled>Cargando sedes...</option>
+            ) : (
+              sedes.map((sede) => (
+                <option key={sede._id} value={sede.nombre}>
+                  {sede.nombre}
+                </option>
+              ))
+            )}
           </Form.Control>
           <Form.Control
             as="select"
@@ -334,17 +357,23 @@ export default function AgregarEmpleado() {
               </Form.Group>
 
               <Form.Group controlId="formRegion">
-                <Form.Label>Region</Form.Label>
+                <Form.Label>Región</Form.Label>
                 <Form.Control
                   as="select"
-                  name="Region"
+                  name="Region" // Cambia el nombre del campo a "Region"
                   value={nuevoEmpleado.Region}
                   onChange={handleInputChange}
                 >
-                  <option value="Guanajuato">Guanajuato</option>
-                  <option value="Celaya">Celaya</option>
-                  <option value="Leon">Leon</option>
-                  <option value="Dolores Hidalgo">Dolores Hidalgo</option>
+                  <option value="">Selecciona una región</option>
+                  {loading ? (
+                    <option disabled>Cargando sedes...</option>
+                  ) : (
+                    sedes.map((sede) => (
+                      <option key={sede._id} value={sede.nombre}>
+                        {sede.nombre}
+                      </option>
+                    ))
+                  )}
                 </Form.Control>
               </Form.Group>
 
@@ -466,23 +495,26 @@ export default function AgregarEmpleado() {
                   </Alert>
                 )}
               </Form.Group>
+
               <Form.Group controlId="formRegionActualizar">
-                <Form.Label>Region</Form.Label>
+                <Form.Label>Región</Form.Label>
                 <Form.Control
                   as="select"
-                  name="Region"
-                  value={valoresEmpleadoSeleccionado.Region}
+                  name="Region" // Cambia el nombre del campo a Region
+                  value={valoresEmpleadoSeleccionado.Region} // Utiliza valoresEmpleadoSeleccionado.Region en lugar de valoresEmpleadoSeleccionado.RegionSeleccionada
                   onChange={(e) =>
                     setValoresEmpleadoSeleccionado({
                       ...valoresEmpleadoSeleccionado,
-                      Region: e.target.value,
+                      Region: e.target.value, // Asegúrate de actualizar correctamente el campo Region en el estado
                     })
                   }
                 >
-                  <option value="Guanajuato">Guanajuato</option>
-                  <option value="Celaya">Celaya</option>
-                  <option value="Leon">Leon</option>
-                  <option value="Dolores Hidalgo">Dolores Hidalgo</option>
+                  <option value="">Selecciona una región</option>
+                  {sedes.map((sede) => (
+                    <option key={sede._id} value={sede.nombre}>
+                      {sede.nombre}
+                    </option>
+                  ))}
                 </Form.Control>
               </Form.Group>
 

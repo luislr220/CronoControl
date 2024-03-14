@@ -4,6 +4,7 @@ import Navigation from "../NavigationComponent/Navigation";
 
 export default function AreasTrabajo() {
   const [areas, setAreas] = useState([]);
+  const [sedes, setSedes] = useState([]);
   const [nuevaArea, setNuevaArea] = useState({
     nombre: "",
     sede: "",
@@ -30,7 +31,21 @@ export default function AreasTrabajo() {
       }
     };
 
+    const fetchSedes = async () => {
+      try {
+        const response = await fetch("http://localhost:3002/sedes");
+        if (!response.ok) {
+          throw new Error("No se pudo obtener la lista de sedes");
+        }
+        const data = await response.json();
+        setSedes(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
     fetchAreas();
+    fetchSedes();
   }, []);
 
   const handleInputChange = (event) => {
@@ -95,7 +110,7 @@ export default function AreasTrabajo() {
       const response = await fetch(
         `http://localhost:3002/areas/${areaSeleccionada._id}`,
         {
-          method: "PUT",
+          method: "PATCH",
           headers: {
             "Content-Type": "application/json",
           },
@@ -130,7 +145,10 @@ export default function AreasTrabajo() {
             Agregar
           </Button>{" "}
         </div>
-        <Modal show={mostrarFormulario} onHide={() => setMostrarFormulario(false)}>
+        <Modal
+          show={mostrarFormulario}
+          onHide={() => setMostrarFormulario(false)}
+        >
           <Modal.Header closeButton>
             <Modal.Title>Agregar Área de Trabajo</Modal.Title>
           </Modal.Header>
@@ -147,17 +165,27 @@ export default function AreasTrabajo() {
               </Form.Group>
               <Form.Group controlId="formSede">
                 <Form.Label>Sede</Form.Label>
-                <FormControl
-                  type="text"
+                <Form.Control
+                  as="select"
                   name="sede"
                   value={nuevaArea.sede}
                   onChange={handleInputChange}
-                />
+                >
+                  <option value="">Selecciona una sede</option>
+                  {sedes.map((sede) => (
+                    <option key={sede._id} value={sede.nombre}>
+                      {sede.nombre}
+                    </option>
+                  ))}
+                </Form.Control>
               </Form.Group>
             </Form>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={() => setMostrarFormulario(false)}>
+            <Button
+              variant="secondary"
+              onClick={() => setMostrarFormulario(false)}
+            >
               Cancelar
             </Button>
             <Button variant="primary" onClick={agregarArea}>
@@ -189,8 +217,8 @@ export default function AreasTrabajo() {
               </Form.Group>
               <Form.Group controlId="formSedeActualizar">
                 <Form.Label>Sede</Form.Label>
-                <FormControl
-                  type="text"
+                <Form.Control
+                  as="select"
                   name="sede"
                   value={valoresAreaSeleccionada.sede}
                   onChange={(e) =>
@@ -199,7 +227,14 @@ export default function AreasTrabajo() {
                       sede: e.target.value,
                     })
                   }
-                />
+                >
+                  <option value="">Selecciona una sede</option>
+                  {sedes.map((sede) => (
+                    <option key={sede._id} value={sede.nombre}>
+                      {sede.nombre}
+                    </option>
+                  ))}
+                </Form.Control>
               </Form.Group>
             </Form>
           </Modal.Body>

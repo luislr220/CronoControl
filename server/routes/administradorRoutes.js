@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const empleadoController = require('../controllers/empleadoController');
 const cors = require("cors"); // Importa cors
-const empleado = require("../models/empleadoSchema");
+const Administrador = require("../models/administradorSchema");
 
 
 router.use(cors());
@@ -12,15 +12,15 @@ router.get("/", async (req, res) => {
   try {
     // Verifica si se especificaron campos específicos en la solicitud
     const camposSeleccionados = req.query.campos;
-    let query = empleado.find();
+    let query = Administrador.find();
     // Si se especificaron campos, se seleccionan esos campos
     if (camposSeleccionados) {
       const camposArray = camposSeleccionados.split(",");
       query = query.select(camposArray.join(" "));
     }
-    // Ejecuta la consulta y envía la lista de empleado como respuesta
-    const empleado = await query.exec();
-    res.json(empleado);
+    // Ejecuta la consulta y envía la lista de administrador como respuesta
+    const administrador = await query.exec();
+    res.json(administrador);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -28,10 +28,10 @@ router.get("/", async (req, res) => {
 
 
 
-// Ruta para crear un nuevo empleado
+// Ruta para crear un nuevo Administrador
 router.post("/", empleadoController.validarCorreoUnico, async (req, res) => {
-  // Crea un nuevo objeto empleado con los datos recibidos en el cuerpo de la solicitud
-  const nuevoempleado = new empleado({
+  // Crea un nuevo objeto Administrador con los datos recibidos en el cuerpo de la solicitud
+  const nuevoAdministrador = new Administrador({
     Nombre: req.body.Nombre,
     AppE: req.body.AppE,
     ApmE: req.body.ApmE,
@@ -43,24 +43,24 @@ router.post("/", empleadoController.validarCorreoUnico, async (req, res) => {
   });
 
   try {
-    // Guarda el nuevo empleado en la base de datos
-    const empleadoGuardado = await nuevoempleado.save();
-    // Responde con el nuevo empleado creado
-    res.status(201).json(empleadoGuardado);
+    // Guarda el nuevo administrador en la base de datos
+    const administradorGuardado = await nuevoAdministrador.save();
+    // Responde con el nuevo administrador creado
+    res.status(201).json(administradorGuardado);
   } catch (error) {
     // Si ocurre un error, responde con un código de estado 400 y un mensaje de error
     res.status(400).json({ message: error.message });
   }
 });
 
-// Ruta para actualizar un empleado existente
+// Ruta para actualizar un administrador existente
 router.patch("/:id", async (req, res) => {
   try {
-    // Busca el empleado por su ID
-    const empleado = await empleado.findById(req.params.id);
-    if (!empleado) {
-      // Si no se encuentra el empleado, devuelve un error 404
-      return res.status(404).json({ message: "empleado no encontrado" });
+    // Busca el administrador por su ID
+    const administrador = await Administrador.findById(req.params.id);
+    if (!administrador) {
+      // Si no se encuentra el administrador, devuelve un error 404
+      return res.status(404).json({ message: "Administrador no encontrado" });
     }
 
     // Actualiza los campos del empleado con los datos recibidos en el cuerpo de la solicitud
