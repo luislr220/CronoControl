@@ -270,7 +270,7 @@ export default function TurnoCrud() {
       </Modal>
       <Modal show={mostrarModalActualizar} onHide={cerrarModalActualizar}>
         <Modal.Header closeButton>
-          <Modal.Title>Actualizar Empleado</Modal.Title>
+          <Modal.Title>Actualizar Turno</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
