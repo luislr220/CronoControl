@@ -40,6 +40,7 @@ app.use('/empleados', empleadoRoutes); // Usa las rutas para empleados
 app.use('/turnos', turnoRoutes);
 app.use('/sedes', sedeRoutes); // Usa las rutas para sedes
 app.use('/areas', areaRoutes); // Usa las rutas de áreas
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
