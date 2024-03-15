@@ -289,7 +289,7 @@ export default function AgregarUsuario() {
   return (
     <div>
       <Navigation />
-      <h2 className="AGEMTitulo">Dar de alta a empleado</h2>
+      <h2 className="AGEMTitulo">Dar de alta a Administrador</h2>
       <div className="AGEMcontenedor1">
         <div className="AGEMBotonContainer">
           <Button
@@ -320,7 +320,7 @@ export default function AgregarUsuario() {
             value={filtroRegion}
             onChange={(e) => setFiltroRegion(e.target.value)}
           >
-            <option value="">Todas las regiones</option>
+            <option value="">Todas las sedes</option>
             {loading ? (
               <option disabled>Cargando sedes...</option>
             ) : (
@@ -412,14 +412,14 @@ export default function AgregarUsuario() {
               </Form.Group>
 
               <Form.Group controlId="formRegion">
-                <Form.Label>Región</Form.Label>
+                <Form.Label>Sede</Form.Label>
                 <Form.Control
                   as="select"
                   name="Region"
                   value={nuevoAdministrador.Region}
                   onChange={handleRegionChange}
                 >
-                  <option value="">Selecciona una región</option>
+                  <option value="">Selecciona una Sede</option>
                   {loading ? (
                     <option disabled>Cargando sedes...</option>
                   ) : (
@@ -559,7 +559,7 @@ export default function AgregarUsuario() {
               </Form.Group>
 
               <Form.Group controlId="formRegionActualizar">
-                <Form.Label>Región</Form.Label>
+                <Form.Label>Sede</Form.Label>
                 <Form.Control
                   as="select"
                   name="Region"
@@ -577,7 +577,7 @@ export default function AgregarUsuario() {
                     setAreasPorRegionActualizar(areasFiltradas);
                   }}
                 >
-                  <option value="">Selecciona una región</option>
+                  <option value="">Selecciona una sede</option>
                   {sedes.map((sede) => (
                     <option key={sede._id} value={sede.nombre}>
                       {sede.nombre}
@@ -644,7 +644,7 @@ export default function AgregarUsuario() {
               <th>Nombre</th>
               <th>Fecha Nacimiento</th>
               <th>Correo</th>
-              <th>Región</th>
+              <th>Sede</th>
               <th>Área</th>
               <th>Rol</th>
               <th>Actualizar</th>
