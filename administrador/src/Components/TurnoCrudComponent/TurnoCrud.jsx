@@ -1,17 +1,22 @@
-import React from 'react'
-import Navigation from '../NavigationComponent/Navigation'
-import { Button, FormControl, Table } from 'react-bootstrap'
+import React, { useState } from 'react';
+import Navigation from '../NavigationComponent/Navigation';
+import { Button, FormControl, Table, Modal, Form } from 'react-bootstrap';
 
 export default function TurnoCrud() {
+  const [showAddTurnoModal, setShowAddTurnoModal] = useState(false);
+
+  const handleClose = () => setShowAddTurnoModal(false);
+  const handleShow = () => setShowAddTurnoModal(true);
+
   return (
     <div>
-        <Navigation/>
-        <h2 className="AGEMTitulo">Turno</h2>
+      <Navigation />
+      <h2 className="AGEMTitulo">Turno</h2>
 
-        <div className="AGEMcontenedor1">
+      <div className="AGEMcontenedor1">
       
         <div className="AGEMBotonContainer">
-          <Button variant="success" className="AGEMBotonverde">
+          <Button variant="success" className="AGEMBotonverde" onClick={handleShow}>
             Agregar
           </Button>{" "}
           <FormControl
@@ -54,7 +59,53 @@ export default function TurnoCrud() {
           </tbody>
         </Table>
       </div>
-    </div>
-  )
-}
 
+      {/* Floating Add Turno Modal */}
+      <Modal show={showAddTurnoModal} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Agregar Turno</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group controlId="formNombreTurno">
+              <Form.Label>Nombre del Turno</Form.Label>
+              <Form.Control type="text" placeholder="Ingrese el nombre del turno" />
+            </Form.Group>
+            <Form.Group controlId="formHoraInicio">
+              <Form.Label>Hora de Inicio</Form.Label>
+              <Form.Control type="time" placeholder="Ingrese la hora de inicio" />
+            </Form.Group>
+            <Form.Group controlId="formHoraFinal">
+              <Form.Label>Hora Final</Form.Label>
+              <Form.Control type="time" placeholder="Ingrese la hora final" />
+            </Form.Group>
+            <Form.Group controlId="formArea">
+              <Form.Label>Área</Form.Label>
+              <Form.Control type="text" placeholder="Ingrese el área" />
+            </Form.Group>
+            <Form.Group controlId="formCupo">
+              <Form.Label>Cupo</Form.Label>
+              <Form.Control type="number" placeholder="Ingrese el cupo" />
+            </Form.Group>
+            <Form.Group controlId="formEstado">
+              <Form.Label>Estado</Form.Label>
+              <Form.Control as="select">
+                <option>Activo</option>
+                <option>Inactivo</option>
+              </Form.Control>
+            </Form.Group>
+            {/* Otros campos del formulario */}
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Cancelar
+          </Button>
+          <Button variant="primary" onClick={handleClose}>
+            Guardar
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </div>
+  );
+}
