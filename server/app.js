@@ -14,7 +14,7 @@ var areaRoutes = require('./routes/areaRoutes'); // Importa las rutas de áreas
 var cors = require('cors');
 var app = express();
 
-let dotenv = require('dotenv');
+let dotenv = require('dotenv');   
 dotenv.config();
 
 let mongo = require('./config/dbconfig');
