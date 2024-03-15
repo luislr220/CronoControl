@@ -1,23 +1,25 @@
 import './App.css';
-import {BrowserRouter as Router,Route,Routes} from 'react-router-dom';
-import SolicitudHorario from './Components/SolicitudHorarioComponent/SolicitudHorario';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import ValidarSolis from "./Components/ValidarSolisComponent/ValidarSolis";
 import AgregarUsuario from './Components/AgregarUsuarioComponent/AgregarUsuario';
 import AgregarEmpleado from './Components/AgregarEmpleadoComponent/AgregarEmpleado';
 import TurnoCrud from './Components/TurnoCrudComponent/TurnoCrud';
 import MenuLateral from './Components/MenuLateral/MenuLateral';
+import AgregarSede from './Components/agregarsede/agregarsede';
+import AgregarArea from './Components/agregararea/agregararea'; // Agrega esta línea para la gestión de áreas de trabajo
 
 function App() {
   return (
     <div className="App">
       <Router>
         <Routes>
-          <Route path="/" element={<SolicitudHorario/>}/>
-          <Route path='/validar' element={<ValidarSolis/>}/>
-          <Route path='/agregarUsuario' element={<AgregarUsuario/>}/>
-          <Route path='/agregarEmpleado' element={<AgregarEmpleado/>}/>
-          <Route path='/turnoCrud' element={<TurnoCrud/>}/>
-          <Route path='/menu' element={<MenuLateral/>}/>
+          <Route path='/' element={<ValidarSolis />} />
+          <Route path='/agregarUsuario' element={<AgregarUsuario />} />
+          <Route path='/agregarEmpleado' element={<AgregarEmpleado />} />
+          <Route path='/turnoCrud' element={<TurnoCrud />} />
+          <Route path='/menu' element={<MenuLateral />} />
+          <Route path='/agregarSede' element={<AgregarSede />} />
+          <Route path='/agregarArea' element={<AgregarArea />} /> {/* Agrega esta línea para la gestión de áreas de trabajo */}
         </Routes>
       </Router>
     </div>

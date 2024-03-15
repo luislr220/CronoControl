@@ -1,23 +1,31 @@
 import React, { useState, useEffect } from "react";
-import { Button, FormControl, Table, Form, Modal } from "react-bootstrap";
-import { format } from 'date-fns';
+import {
+  Button,
+  FormControl,
+  Table,
+  Form,
+  Modal,
+  Alert,
+} from "react-bootstrap";
+import { format } from "date-fns";
 import "../AgregarEmpleadoComponent/css/agregarEmpleado.css";
 import Navigation from "../NavigationComponent/Navigation";
 
 export default function AgregarEmpleado() {
   const [empleados, setEmpleados] = useState([]);
-  const [filtro, setFiltro] = useState("");
-  const opcionesRol = ["Empleado"];
+  const [filtro, setFiltro] = useState(""); // Filtro por nombre
+  const [sedes, setSedes] = useState([]);
+  const [areas, setAreas] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [nuevoEmpleado, setNuevoEmpleado] = useState({
     Nombre: "",
     AppE: "",
     ApmE: "",
     FechaNac: "",
     Correo: "",
-    Contrasena: "",
     Region: "",
     AreaTrabajo: "",
-    Rol: "",
+    Rol: "Empleado",
   });
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [empleadoSeleccionado, setEmpleadoSeleccionado] = useState(null);
@@ -28,15 +36,22 @@ export default function AgregarEmpleado() {
       ApmE: "",
       FechaNac: "",
       Correo: "",
-      Contrasena: "",
       Region: "",
       AreaTrabajo: "",
-      Rol: "",
+      Rol: "Empleado", // Establecer valor por defecto
     });
+
   const [mostrarModalActualizar, setMostrarModalActualizar] = useState(false);
 
+  const [filtroRegion, setFiltroRegion] = useState(""); // Nuevo estado para el filtro por región
+  const [filtroArea, setFiltroArea] = useState(""); // Nuevo estado para el filtro por Área
+  const [filtroApellidoModal, setFiltroApellidoModal] = useState(""); // Estado para filtrar por apellido
+  const [errorCorreoDuplicado, setErrorCorreoDuplicado] = useState("");
+  const [errorCorreoDuplicadoActualizar, setErrorCorreoDuplicadoActualizar] =
+    useState("");
+
   useEffect(() => {
-    // Función para obtener la lista de empleados desde el backend
+    // Función para obtener la lista de empleados, las áres y sedes desde el backend
     const fetchEmpleados = async () => {
       try {
         const response = await fetch("http://localhost:3002/empleados");
@@ -50,12 +65,59 @@ export default function AgregarEmpleado() {
       }
     };
 
+    const fetchSedes = async () => {
+      try {
+        const response = await fetch("http://localhost:3002/sedes");
+        if (!response.ok) {
+          throw new Error("No se pudo obtener la lista de sedes");
+        }
+        const data = await response.json();
+        setSedes(data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const fetchAreas = async () => {
+      try {
+        const response = await fetch("http://localhost:3002/areas");
+        if (!response.ok) {
+          throw new Error("No se pudo obtener la lista de areas");
+        }
+        const data = await response.json();
+        setAreas(data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchEmpleados();
+    fetchSedes();
+    fetchAreas();
   }, []);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    setNuevoEmpleado({ ...nuevoEmpleado, [name]: value });
+    if (name === "filtroApellidoModal") {
+      setFiltroApellidoModal(value);
+    } else if (mostrarModalActualizar) {
+      // Asegúrate de que solo se actualice el estado cuando se muestre el formulario de actualización
+      setValoresEmpleadoSeleccionado((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
+      setErrorCorreoDuplicadoActualizar(""); // Limpia el estado de errorCorreoDuplicadoActualizar cuando se realiza un cambio en el formulario de actualización
+    } else {
+      setNuevoEmpleado((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
+      setErrorCorreoDuplicado(""); // Limpia el estado de errorCorreoDuplicado cuando se realiza un cambio en el formulario de agregar
+    }
   };
 
   const handleFiltroChange = (event) => {
@@ -63,17 +125,41 @@ export default function AgregarEmpleado() {
   };
 
   const agregarEmpleado = async () => {
+    // Validar que los campos requeridos estén llenos
+    if (!nuevoEmpleado.Region || !nuevoEmpleado.AreaTrabajo) {
+      console.error("Error: Todos los campos son requeridos.");
+      // Aquí puedes manejar el error, por ejemplo, mostrando un mensaje al usuario.
+      return;
+    }
+
+    // Verificar si el correo electrónico ya está en uso
+    const correoExistente = empleados.find(
+      (empleado) => empleado.Correo === nuevoEmpleado.Correo
+    );
+
+    if (correoExistente) {
+      setErrorCorreoDuplicado("Este correo electrónico ya está en uso");
+      return;
+    }
+
+    // Añadir el rol al objeto de nuevo empleado
+    const nuevoEmpleadoConRol = { ...nuevoEmpleado, Rol: "Empleado" };
+
     try {
       const response = await fetch("http://localhost:3002/empleados", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(nuevoEmpleado),
+        body: JSON.stringify(nuevoEmpleadoConRol), // Enviar el nuevo objeto con el rol
       });
+
       if (!response.ok) {
-        throw new Error("No se pudo agregar el empleado");
+        const errorData = await response.text(); // Intenta capturar cualquier respuesta no JSON
+        console.error("Error en la respuesta:", errorData);
+        throw new Error(`Error al agregar empleado: ${errorData}`);
       }
+
       const data = await response.json();
       setEmpleados([...empleados, data]);
       setNuevoEmpleado({
@@ -82,12 +168,14 @@ export default function AgregarEmpleado() {
         ApmE: "",
         FechaNac: "",
         Correo: "",
-        Contrasena: "",
         Region: "",
         AreaTrabajo: "",
-        Rol: "",
+        Rol: "", // Limpiar el campo Rol después de agregar un empleado
       });
       setMostrarFormulario(false);
+
+      // Limpiar el estado de errorCorreoDuplicado
+      setErrorCorreoDuplicado("");
     } catch (error) {
       console.error(error);
     }
@@ -112,7 +200,13 @@ export default function AgregarEmpleado() {
 
   const abrirModalActualizar = (empleado) => {
     setEmpleadoSeleccionado(empleado);
-    setValoresEmpleadoSeleccionado(empleado);
+    const fechaFormateada = new Date(empleado.FechaNac)
+      .toISOString()
+      .split("T")[0]; //Convierte la fecha ISO8601 en un formato leible
+    setValoresEmpleadoSeleccionado({
+      ...empleado, // Usa directamente el objeto 'empleado' en lugar de asignar campo por campo
+      FechaNac: fechaFormateada,
+    });
     setMostrarModalActualizar(true);
   };
 
@@ -123,6 +217,20 @@ export default function AgregarEmpleado() {
 
   const actualizarEmpleado = async () => {
     try {
+      // Verificar si el correo electrónico ya está en uso
+      const correoExistente = empleados.find(
+        (empleado) =>
+          empleado.Correo === valoresEmpleadoSeleccionado.Correo &&
+          empleado._id !== empleadoSeleccionado._id
+      );
+
+      if (correoExistente) {
+        setErrorCorreoDuplicadoActualizar(
+          "Este correo electrónico ya está en uso"
+        );
+        return;
+      }
+
       const response = await fetch(
         `http://localhost:3002/empleados/${empleadoSeleccionado._id}`,
         {
@@ -146,6 +254,7 @@ export default function AgregarEmpleado() {
       cerrarModalActualizar();
     } catch (error) {
       console.error(error);
+      setErrorCorreoDuplicadoActualizar("Error al actualizar el empleado");
     }
   };
 
@@ -164,11 +273,53 @@ export default function AgregarEmpleado() {
           </Button>{" "}
           <FormControl
             type="text"
-            placeholder="Buscar empleado..."
+            placeholder="Buscar por nombre..."
             className="AGEMBuscador"
             value={filtro}
             onChange={handleFiltroChange}
           />
+          <FormControl
+            type="text"
+            placeholder="Buscar por apellido..."
+            className="AGEMBuscador"
+            value={filtroApellidoModal}
+            name="filtroApellidoModal"
+            onChange={handleInputChange}
+          />
+          <Form.Control
+            as="select"
+            className="AGEMBuscador"
+            value={filtroRegion}
+            onChange={(e) => setFiltroRegion(e.target.value)}
+          >
+            <option value="">Todas las regiones</option>
+            {loading ? (
+              <option disabled>Cargando sedes...</option>
+            ) : (
+              sedes.map((sede) => (
+                <option key={sede._id} value={sede.nombre}>
+                  {sede.nombre}
+                </option>
+              ))
+            )}
+          </Form.Control>
+          <Form.Control
+            as="select"
+            className="AGEMBuscador"
+            value={filtroArea}
+            onChange={(e) => setFiltroArea(e.target.value)}
+          >
+            <option value="">Todas las áreas</option>
+            {loading ? (
+              <option disabled>Cargando sedes...</option>
+            ) : (
+              areas.map((area) => (
+                <option key={area._id} value={area.nombre}>
+                  {area.nombre}
+                </option>
+              ))
+            )}
+          </Form.Control>
         </div>
         <Modal
           show={mostrarFormulario}
@@ -223,34 +374,53 @@ export default function AgregarEmpleado() {
                   value={nuevoEmpleado.Correo}
                   onChange={handleInputChange}
                 />
+                {errorCorreoDuplicado && (
+                  <Alert variant="danger">{errorCorreoDuplicado}</Alert>
+                )}
               </Form.Group>
-              <Form.Group controlId="formContrasena">
-                <Form.Label>Contraseña</Form.Label>
-                <FormControl
-                  type="password"
-                  name="Contrasena"
-                  value={nuevoEmpleado.Contrasena}
-                  onChange={handleInputChange}
-                />
-              </Form.Group>
+
               <Form.Group controlId="formRegion">
                 <Form.Label>Región</Form.Label>
-                <FormControl
-                  type="text"
+                <Form.Control
+                  as="select"
                   name="Region"
                   value={nuevoEmpleado.Region}
                   onChange={handleInputChange}
-                />
+                >
+                  <option value="">Selecciona una región</option>
+                  {loading ? (
+                    <option disabled>Cargando sedes...</option>
+                  ) : (
+                    sedes.map((sede) => (
+                      <option key={sede._id} value={sede.nombre}>
+                        {sede.nombre}
+                      </option>
+                    ))
+                  )}
+                </Form.Control>
               </Form.Group>
+
               <Form.Group controlId="formArea">
                 <Form.Label>Área de Trabajo</Form.Label>
-                <FormControl
-                  type="text"
+                <Form.Control
+                  as="select"
                   name="AreaTrabajo"
                   value={nuevoEmpleado.AreaTrabajo}
                   onChange={handleInputChange}
-                />
+                >
+                  <option value="">Selecciona una área</option>
+                  {loading ? (
+                    <option disabled>Cargando áreas...</option>
+                  ) : (
+                    areas.map((area) => (
+                      <option key={area._id} value={area.nombre}>
+                        {area.nombre}
+                      </option>
+                    ))
+                  )}
+                </Form.Control>
               </Form.Group>
+
               <Form.Group controlId="formRol">
                 <Form.Label>Rol</Form.Label>
                 <Form.Control
@@ -258,12 +428,9 @@ export default function AgregarEmpleado() {
                   name="Rol"
                   value={nuevoEmpleado.Rol}
                   onChange={handleInputChange}
+                  disabled // Deshabilitar el campo para evitar cambios
                 >
-                  {opcionesRol.map((rol, index) => (
-                    <option key={index} value={rol}>
-                      {rol}
-                    </option>
-                  ))}
+                  <option value="Empleado">Empleado</option>
                 </Form.Control>
               </Form.Group>
             </Form>
@@ -350,32 +517,19 @@ export default function AgregarEmpleado() {
                   type="email"
                   name="Correo"
                   value={valoresEmpleadoSeleccionado.Correo}
-                  onChange={(e) =>
-                    setValoresEmpleadoSeleccionado({
-                      ...valoresEmpleadoSeleccionado,
-                      Correo: e.target.value,
-                    })
-                  }
+                  onChange={handleInputChange}
                 />
+                {errorCorreoDuplicadoActualizar && (
+                  <Alert variant="danger">
+                    {errorCorreoDuplicadoActualizar}
+                  </Alert>
+                )}
               </Form.Group>
-              <Form.Group controlId="formContrasenaActualizar">
-                <Form.Label>Contraseña</Form.Label>
-                <FormControl
-                  type="password"
-                  name="Contrasena"
-                  value={valoresEmpleadoSeleccionado.Contrasena}
-                  onChange={(e) =>
-                    setValoresEmpleadoSeleccionado({
-                      ...valoresEmpleadoSeleccionado,
-                      Contrasena: e.target.value,
-                    })
-                  }
-                />
-              </Form.Group>
+
               <Form.Group controlId="formRegionActualizar">
                 <Form.Label>Región</Form.Label>
-                <FormControl
-                  type="text"
+                <Form.Control
+                  as="select"
                   name="Region"
                   value={valoresEmpleadoSeleccionado.Region}
                   onChange={(e) =>
@@ -384,12 +538,20 @@ export default function AgregarEmpleado() {
                       Region: e.target.value,
                     })
                   }
-                />
+                >
+                  <option value="">Selecciona una región</option>
+                  {sedes.map((sede) => (
+                    <option key={sede._id} value={sede.nombre}>
+                      {sede.nombre}
+                    </option>
+                  ))}
+                </Form.Control>
               </Form.Group>
+
               <Form.Group controlId="formAreaActualizar">
                 <Form.Label>Área de Trabajo</Form.Label>
-                <FormControl
-                  type="text"
+                <Form.Control
+                  as="select"
                   name="AreaTrabajo"
                   value={valoresEmpleadoSeleccionado.AreaTrabajo}
                   onChange={(e) =>
@@ -398,21 +560,30 @@ export default function AgregarEmpleado() {
                       AreaTrabajo: e.target.value,
                     })
                   }
-                />
+                >
+                  <option value="">Selecciona una área</option>
+                  {areas.map((area) => (
+                    <option key={area._id} value={area.nombre}>
+                      {area.nombre}
+                    </option>
+                  ))}
+                </Form.Control>
               </Form.Group>
-              <Form.Group controlId="formRol">
+              <Form.Group controlId="formRolActualizar">
                 <Form.Label>Rol</Form.Label>
                 <Form.Control
                   as="select"
                   name="Rol"
-                  value={nuevoEmpleado.Rol}
-                  onChange={handleInputChange}
+                  value={valoresEmpleadoSeleccionado.Rol}
+                  onChange={(e) =>
+                    setValoresEmpleadoSeleccionado({
+                      ...valoresEmpleadoSeleccionado,
+                      Rol: e.target.value,
+                    })
+                  }
+                  disabled // Deshabilitar el campo para evitar cambios
                 >
-                  {opcionesRol.map((rol, index) => (
-                    <option key={index} value={rol}>
-                      {rol}
-                    </option>
-                  ))}
+                  <option value="Empleado">Empleado</option>
                 </Form.Control>
               </Form.Group>
             </Form>
@@ -445,15 +616,32 @@ export default function AgregarEmpleado() {
           <tbody>
             {empleados
               .filter((empleado) =>
-                `${empleado.Nombre} ${empleado.AppE} ${empleado.ApmE}`
-                  .toLowerCase()
+                empleado.Nombre.toLowerCase()
                   .includes(filtro.toLowerCase())
+              )
+              .filter((empleado) =>
+                // Aplicar filtro por región
+                empleado.Region.toLowerCase().includes(
+                  filtroRegion.toLowerCase()
+                )
+              )
+              .filter((empleado) =>
+                // Aplicar filtro por área
+                empleado.AreaTrabajo.toLowerCase().includes(
+                  filtroArea.toLowerCase()
+                )
+              )
+              .filter((empleado) =>
+                  //Aplicar Filtro por apellido
+                `${empleado.AppE} ${empleado.ApmE}`
+                  ?.toLowerCase()
+                  .startsWith(filtroApellidoModal.toLowerCase())
               )
               .map((empleado, index) => (
                 <tr key={index}>
                   <td>{index + 1}</td>
                   <td>{`${empleado.Nombre} ${empleado.AppE} ${empleado.ApmE}`}</td>
-                  <td>{format(new Date(empleado.FechaNac), 'dd/MM/yyyy')}</td>
+                  <td>{format(new Date(empleado.FechaNac), "yyyy-MM-dd")}</td>
                   <td>{empleado.Correo}</td>
                   <td>{empleado.Region}</td>
                   <td>{empleado.AreaTrabajo}</td>

@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const empleadoSchema = new mongoose.Schema({
+const administradorSchema = new mongoose.Schema({
   Nombre: { type: String, required: true },
   AppE: { type: String, required: true },
   ApmE: { type: String, required: true },
@@ -11,4 +11,4 @@ const empleadoSchema = new mongoose.Schema({
   Rol:{type:String, require:true}
 });
 
-module.exports = mongoose.model("Empleado", empleadoSchema);
+module.exports = mongoose.model("Administrador", administradorSchema);
