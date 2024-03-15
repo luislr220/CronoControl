@@ -15,12 +15,6 @@ var areaRoutes = require('./routes/areaRoutes'); // Importa las rutas de áreas
 var administradorRoutes = require('./routes/administradorRoutes'); // Importa las rutas de administrsdor
 var contratoRoutes = require('./routes/contratoRoutes');
 var cors = require('cors');
-var empleadoRoutes = require('./routes/empleadoRoutes'); // Rutas para empleados
-var sedeRoutes = require('./routes/sedeRoutes'); // Rutas para sedes
-var areaRoutes = require('./routes/areaRoutes'); // Importa las rutas de áreas
-var administradorRoutes = require('./routes/administradorRoutes'); // Importa las rutas de administrsdor
-var contratoRoutes = require('./routes/contratoRoutes');
-var cors = require('cors');
 var app = express();
 
 let dotenv = require('dotenv');   
@@ -49,15 +43,9 @@ app.use('/users', usersRouter);
 app.use('/empleados', empleadoRoutes); // Usa las rutas para empleados
 app.use('/turnos', turnoRoutes);
 app.use('/sedes', sedeRoutes); // Usa las rutas para sedes
-<<<<<<< HEAD
-app.use('/areas', areaRoutes); // Usa las rutas de áreasapp.use('/turnos', turnoRoutes);
-
-app.use('/administrador', administradorRoutes); // Usa las rutas de áreas
+app.use('/areas', areaRoutes);
+app.use('/administrador', administradorRoutes); 
 app.use('/contratos', contratoRoutes);
-=======
-app.use('/areas', areaRoutes); // Usa las rutas de áreas
->>>>>>> Cristel
-
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
