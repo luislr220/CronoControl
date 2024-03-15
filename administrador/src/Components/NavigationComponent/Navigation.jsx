@@ -16,7 +16,7 @@ export default function Navigation() {
             <Nav.Link href="/agregarEmpleado">Agregar Empleado</Nav.Link>
             <Nav.Link href="/agregarSede">Agregar Sede</Nav.Link>
             <Nav.Link href="/agregarArea">Agregar Área</Nav.Link>
-            <Nav.Link href="/turnoCrud">Turno</Nav.Link>
+            <Nav.Link href="/turnoCrud">Agregar Turno</Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Container>
