@@ -8,6 +8,7 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var empleadoRoutes = require('./routes/empleadoRoutes'); // Cambio aquí
+var turnoRoutes = require('./routes/turnoRoutes');
 
 var app = express();
 
