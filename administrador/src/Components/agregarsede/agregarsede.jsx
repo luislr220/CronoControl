@@ -5,11 +5,13 @@ import "../agregarsede/css/sede.css";
 
 export default function GestionarSedes() {
   const [sedes, setSedes] = useState([]);
-  const [filtro, setFiltro] = useState("");
+  const [filtroNombre, setFiltroNombre] = useState("");
+  const [filtroUbicacion, setFiltroUbicacion] = useState("");
   const [nuevaSede, setNuevaSede] = useState({
     nombre: "",
     ubicacion: ""
   });
+  const [sedeEditando, setSedeEditando] = useState(null);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
 
   useEffect(() => {
@@ -37,8 +39,12 @@ export default function GestionarSedes() {
     }));
   };
 
-  const handleFiltroChange = (event) => {
-    setFiltro(event.target.value);
+  const handleFiltroNombreChange = (event) => {
+    setFiltroNombre(event.target.value);
+  };
+
+  const handleFiltroUbicacionChange = (event) => {
+    setFiltroUbicacion(event.target.value);
   };
 
   const agregarSede = async () => {
@@ -64,6 +70,33 @@ export default function GestionarSedes() {
     }
   };
 
+  const editarSede = async () => {
+    try {
+      const response = await fetch(`http://localhost:3002/sedes/${sedeEditando._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(nuevaSede), // Cambiar a nuevaSede
+      });
+  
+      if (!response.ok) {
+        throw new Error("No se pudo editar la sede");
+      }
+  
+      const data = await response.json();
+      const index = sedes.findIndex(sede => sede._id === sedeEditando._id);
+      const nuevasSedes = [...sedes];
+      nuevasSedes[index] = data;
+      setSedes(nuevasSedes);
+      setSedeEditando(null);
+      setMostrarFormulario(false);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
+
   const eliminarSede = async (id) => {
     try {
       const response = await fetch(`http://localhost:3002/sedes/${id}`, {
@@ -73,7 +106,7 @@ export default function GestionarSedes() {
         throw new Error("No se pudo eliminar la sede");
       }
       const nuevasSedes = sedes.filter(
-        (sedes) => sedes._id !== id
+        (sede) => sede._id !== id
       );
       setSedes(nuevasSedes);
     } catch (error) {
@@ -81,33 +114,56 @@ export default function GestionarSedes() {
     }
   };
 
+  const mostrarEditarSede = (sede) => {
+    setSedeEditando(sede);
+    setNuevaSede({
+      nombre: sede.nombre,
+      ubicacion: sede.ubicacion
+    });
+    setMostrarFormulario(true);
+  };
+
   return (
     <div>
       <Navigation />
-      <h2 className="titulo">Gestionar Sedes</h2>
-      <div className="contenedor">
-        <div className="boton-container">
+      <div className="AGEMcontenedor1">
+        <h2 className="AGEMTitulo">Gestionar Sedes</h2>
+        <div className="AGEMBotonContainer">
           <Button
             variant="success"
-            className="boton-verde"
-            onClick={() => setMostrarFormulario(true)}
+            className="AGEMBotonAgregar"
+            onClick={() => {
+              setSedeEditando(null);
+              setMostrarFormulario(true);
+            }}
           >
             Agregar Sede
           </Button>{" "}
           <FormControl
             type="text"
-            placeholder="Buscar sede..."
-            className="buscador"
-            value={filtro}
-            onChange={handleFiltroChange}
+            placeholder="Buscar por nombre..."
+            className="AGEMBuscador"
+            value={filtroNombre}
+            onChange={handleFiltroNombreChange}
+          />
+          <FormControl
+            type="text"
+            placeholder="Buscar por ubicación..."
+            className="AGEMBuscador"
+            value={filtroUbicacion}
+            onChange={handleFiltroUbicacionChange}
           />
         </div>
         <Modal
           show={mostrarFormulario}
-          onHide={() => setMostrarFormulario(false)}
+          onHide={() => {
+            setSedeEditando(null);
+            setMostrarFormulario(false);
+            setNuevaSede({ nombre: "", ubicacion: "" });
+          }}
         >
           <Modal.Header closeButton>
-            <Modal.Title>Agregar Sede</Modal.Title>
+            <Modal.Title>{sedeEditando ? 'Acualizar Sede' : 'Agregar Sede'}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <Form>
@@ -134,29 +190,35 @@ export default function GestionarSedes() {
           <Modal.Footer>
             <Button
               variant="secondary"
-              onClick={() => setMostrarFormulario(false)}
+              onClick={() => {
+                setSedeEditando(null);
+                setMostrarFormulario(false);
+                setNuevaSede({ nombre: "", ubicacion: "" });
+              }}
             >
               Cancelar
             </Button>
-            <Button variant="primary" onClick={agregarSede}>
-              Agregar
+            <Button variant="info" onClick={sedeEditando ? editarSede : agregarSede}>
+              {sedeEditando ? 'Actualizar' : 'Agregar'}
             </Button>
           </Modal.Footer>
         </Modal>
 
-        <Table className="table">
+        <Table className="AGEMTable">
           <thead>
             <tr>
               <th>No.</th>
               <th>Nombre</th>
               <th>Ubicación</th>
+              <th>Editar</th>
               <th>Eliminar</th>
             </tr>
           </thead>
           <tbody>
             {sedes
               .filter((sede) =>
-                sede.nombre.toLowerCase().includes(filtro.toLowerCase())
+                sede.nombre.toLowerCase().includes(filtroNombre.toLowerCase()) &&
+                sede.ubicacion.toLowerCase().includes(filtroUbicacion.toLowerCase())
               )
               .map((sede, index) => (
                 <tr key={index}>
@@ -165,8 +227,18 @@ export default function GestionarSedes() {
                   <td>{sede.ubicacion}</td>
                   <td>
                     <Button
+                      variant="info"
+                      onClick={() => mostrarEditarSede(sede)}
+                      className="AGEMBotonEditar"
+                    >
+                      Actualizar
+                    </Button>{" "}
+                  </td>
+                  <td>
+                    <Button
                       variant="danger"
                       onClick={() => eliminarSede(sede._id)}
+                      className="AGEMBotonEliminar"
                     >
                       Eliminar
                     </Button>{" "}

@@ -11,6 +11,7 @@ var empleadoRoutes = require('./routes/empleadoRoutes'); // Rutas para empleados
 var sedeRoutes = require('./routes/sedeRoutes'); // Rutas para sedes
 var areaRoutes = require('./routes/areaRoutes'); // Importa las rutas de áreas
 var administradorRoutes = require('./routes/administradorRoutes'); // Importa las rutas de administrsdor
+var contratoRoutes = require('./routes/contratoRoutes');
 var cors = require('cors');
 var app = express();
 
@@ -41,6 +42,7 @@ app.use('/sedes', sedeRoutes); // Usa las rutas para sedes
 app.use('/areas', areaRoutes); // Usa las rutas de áreasapp.use('/turnos', turnoRoutes);
 
 app.use('/administrador', administradorRoutes); // Usa las rutas de áreas
+app.use('/contratos', contratoRoutes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

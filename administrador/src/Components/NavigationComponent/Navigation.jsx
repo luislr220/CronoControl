@@ -26,6 +26,10 @@ export default function Navigation() {
               <NavDropdown.Item href="/agregarArea">
                 Agregar Área
               </NavDropdown.Item>
+              <NavDropdown.Item href="/agregarContrato">
+                Agregar Contrato
+              </NavDropdown.Item>
+
             </NavDropdown>
           </Nav>
         </Navbar.Collapse>
