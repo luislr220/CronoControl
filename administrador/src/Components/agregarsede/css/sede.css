@@ -1,31 +1,42 @@
-.sedesContenedor {
-    padding: 4%;
-  }
-  
-  .sedesTabla {
-    text-align: justify;
+/* Estilos para el contenedor principal */
+.contenedor {
+  padding: 4%;
+}
+
+/* Estilos para la tabla */
+.table {
+  text-align: justify;
   border-radius: 10px;
   overflow: hidden;
-  }
-  
-  .sedesBotonContainer {
-    display: flex;
-    justify-content: space-between; /* Espacio entre los elementos */
-    align-items: center;
-    margin-bottom: 10px;
-  }
-  
-  .sedesBuscador {
-    width: calc(30% - 25px); /* Resta el ancho del icono de búsqueda */
-  background-image: url("../../../../public/search.png");
-  background-size: 20px 20px; /* Tamaño de la imagen */
-  background-repeat: no-repeat; /* Evita la repetición de la imagen */
-  background-position: right center; /* Posición de la imagen */
-  margin-left: 60%; /* Ajusta el margen a la derecha */
-  }
-  
-  .sedesTitulo {
-    margin: 2%;
-    text-align: left;
-  }
-  
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.table th,
+.table td {
+  padding: 8px;
+  border: 1px solid #dddddd;
+}
+
+.table th {
+  background-color: #f2f2f2; /* Color de fondo para las cabeceras */
+}
+
+/* Estilos para el contenedor de botones y buscador */
+.boton-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.filtro {
+  margin-left: 10px;
+}
+
+/* Estilos para el título */
+.titulo {
+  margin: 2%;
+  text-align: left;
+  color: #333333; /* Color del texto */
+}

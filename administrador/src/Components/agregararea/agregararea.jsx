@@ -16,6 +16,8 @@ export default function AreasTrabajo() {
     sede: "",
   });
   const [mostrarModalActualizar, setMostrarModalActualizar] = useState(false);
+  const [filtroArea, setFiltroArea] = useState("");
+  const [filtroSede, setFiltroSede] = useState("");
 
   useEffect(() => {
     const fetchAreas = async () => {
@@ -144,6 +146,20 @@ export default function AreasTrabajo() {
           >
             Agregar
           </Button>{" "}
+          <FormControl
+            type="text"
+            placeholder="Filtrar por área..."
+            className="filtro"
+            value={filtroArea}
+            onChange={(e) => setFiltroArea(e.target.value)}
+          />
+          <FormControl
+            type="text"
+            placeholder="Filtrar por sede..."
+            className="filtro"
+            value={filtroSede}
+            onChange={(e) => setFiltroSede(e.target.value)}
+          />
         </div>
         <Modal
           show={mostrarFormulario}
@@ -260,29 +276,36 @@ export default function AreasTrabajo() {
           </thead>
 
           <tbody>
-            {areas.map((area, index) => (
-              <tr key={index}>
-                <td>{index + 1}</td>
-                <td>{area.nombre}</td>
-                <td>{area.sede}</td>
-                <td>
-                  <Button
-                    variant="info"
-                    onClick={() => abrirModalActualizar(area)}
-                  >
-                    Actualizar
-                  </Button>{" "}
-                </td>
-                <td>
-                  <Button
-                    variant="danger"
-                    onClick={() => eliminarArea(area._id)}
-                  >
-                    Eliminar
-                  </Button>{" "}
-                </td>
-              </tr>
-            ))}
+            {areas
+              .filter((area) =>
+                area.nombre.toLowerCase().includes(filtroArea.toLowerCase())
+              )
+              .filter((area) =>
+                area.sede.toLowerCase().includes(filtroSede.toLowerCase())
+              )
+              .map((area, index) => (
+                <tr key={index}>
+                  <td>{index + 1}</td>
+                  <td>{area.nombre}</td>
+                  <td>{area.sede}</td>
+                  <td>
+                    <Button
+                      variant="info"
+                      onClick={() => abrirModalActualizar(area)}
+                    >
+                      Actualizar
+                    </Button>{" "}
+                  </td>
+                  <td>
+                    <Button
+                      variant="danger"
+                      onClick={() => eliminarArea(area._id)}
+                    >
+                      Eliminar
+                    </Button>{" "}
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </Table>
       </div>
