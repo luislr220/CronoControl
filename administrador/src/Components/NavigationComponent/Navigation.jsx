@@ -13,6 +13,7 @@ export default function Navigation() {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
             <Nav.Link href="/">Validar solicitud</Nav.Link>
+<<<<<<< HEAD
             <Nav.Link href="/turnoCrud">Turno</Nav.Link>
 
             <NavDropdown title="Más opciones" id="basic-nav-dropdown">
@@ -31,6 +32,13 @@ export default function Navigation() {
               </NavDropdown.Item>
 
             </NavDropdown>
+=======
+            <Nav.Link href="/agregarUsuario">Agregar Administrador</Nav.Link>
+            <Nav.Link href="/agregarEmpleado">Agregar Empleado</Nav.Link>
+            <Nav.Link href="/agregarSede">Agregar Sede</Nav.Link>
+            <Nav.Link href="/agregarArea">Agregar Área</Nav.Link>
+            <Nav.Link href="/turnoCrud">Agregar Turno</Nav.Link>
+>>>>>>> Cristel
           </Nav>
         </Navbar.Collapse>
       </Container>
