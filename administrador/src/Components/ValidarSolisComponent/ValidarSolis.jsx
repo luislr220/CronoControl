@@ -1,68 +1,40 @@
 import React, { useState, useEffect } from "react";
 import { Container } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "./css/vali.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch, faCircleUser } from "@fortawesome/free-solid-svg-icons";
+import {
+  faSearch,
+  faCheck,
+  faCircleUser,
+  faX,
+} from "@fortawesome/free-solid-svg-icons";
 import Navigation from "../NavigationComponent/Navigation";
-import "../ValidarSolisComponent/css/vali.css";
 
-const Solicitudes = () => {
-  const [solicitudes, setSolicitudes] = useState([]);
-  const [loading, setLoading] = useState(true);
+const App = () => {
+  const [turnos, setTurnos] = useState([]);
 
   useEffect(() => {
-    const fetchSolicitudes = async () => {
+    const fetchTurnos = async () => {
       try {
-        const response = await fetch("http://localhost:3002/empleados");
+        const response = await fetch("http://localhost:3002/turnos");
         if (!response.ok) {
-          throw new Error("No se pudo obtener la lista de solicitudes");
+          throw new Error("No se pudo obtener la lista de turnos");
         }
         const data = await response.json();
-        setSolicitudes(data);
+        setTurnos(data);
       } catch (error) {
         console.error(error);
-        // Podrías mostrar algún tipo de mensaje de error al usuario aquí
-      } finally {
-        setLoading(false);
       }
     };
 
-    fetchSolicitudes();
+    fetchTurnos();
   }, []);
-
-  const handleAceptarSolicitud = async (id) => {
-    try {
-      const response = await fetch(`http://localhost:3002/solicitudes/${id}/aceptar`, {
-        method: "PATCH",
-      });
-      if (!response.ok) {
-        throw new Error("No se pudo aceptar la solicitud");
-      }
-      // Actualizar el estado local o realizar alguna otra acción necesaria
-    } catch (error) {
-      console.error(error);
-      // Podrías mostrar algún tipo de mensaje de error al usuario aquí
-    }
-  };
-
-  const handleDenegarSolicitud = async (id) => {
-    try {
-      const response = await fetch(`http://localhost:3002/solicitudes/${id}/denegar`, {
-        method: "PATCH",
-      });
-      if (!response.ok) {
-        throw new Error("No se pudo denegar la solicitud");
-      }
-      // Actualizar el estado local o realizar alguna otra acción necesaria
-    } catch (error) {
-      console.error(error);
-      // Podrías mostrar algún tipo de mensaje de error al usuario aquí
-    }
-  };
 
   return (
     <div>
       <Navigation />
+      {/* Contenido Principal */}
       <Container className="col-12">
         <div className="container">
           <div className="row">
@@ -90,72 +62,52 @@ const Solicitudes = () => {
         <br></br>
         <div className="container">
           <div className="row">
-            <div className="col">
-              <button type="button" className="btn btn-light">
-                Actualizar
-              </button>
-            </div>
-            <div className="col-1">
-              <button type="button" className="btn btn-success btn-sm">
-                Aceptar todo
-              </button>
-            </div>
-            <div className="col-1">
-              <button type="button" className="btn btn-danger btn-sm">
-                Denegar todo
-              </button>
-            </div>
-          </div>
-        </div>
-        <br></br>
-        <div className="col-12">
-          <div className="row">
-            {loading ? (
-              <p>Cargando...</p>
-            ) : (
-              <table className="table rounded">
-                <thead>
-                  <tr>
-                    <th></th>
-                    <th>Empleado</th>
-                    <th>Turno</th>
-                    <th>Horario</th>
-                    <th>Notas</th>
-                    <th className="col-1">Validar</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {solicitudes.map((solicitud, index) => (
-                    <tr key={index}>
-                      <td>
-                        <FontAwesomeIcon
-                          icon={faCircleUser}
-                          style={{ color: "#000000", fontSize: "1.5rem" }}
-                        />
-                      </td>
-                      <td>{solicitud.name}</td>
-                      <td>{solicitud.shift}</td>
-                      <td>{solicitud.hours}</td>
-                      <td>{solicitud.role}</td>
-                      <td style={{ textAlign: "center" }}>
-                        <button
-                          className="btn btn-success btn-sm"
-                          onClick={() => handleAceptarSolicitud(solicitud.id)}
-                        >
-                          ✅
-                        </button>
-                        <button
-                          className="btn btn-primary btn-sm"
-                          onClick={() => handleDenegarSolicitud(solicitud.id)}
-                        >
-                          ❌
-                        </button>
-                      </td>
+            <div className="col-12">
+              <div className="row">
+                <table className="table rounded">
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th>Empleado</th>
+                      <th>Turno</th>
+                      <th>Horario</th>
+                      <th>Notas</th>
+                      <th className="col-1">Validar</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
+                  </thead>
+                  <tbody>
+                    {turnos.map((turno, index) => (
+                      <tr key={index}>
+                        <td>
+                          <FontAwesomeIcon
+                            icon={faCircleUser}
+                            style={{ color: "#000000", fontSize: "1.5rem" }}
+                          />
+                        </td>
+                        <td>{turno.Nombre}</td>
+                        <td>{turno.HoraInicio}</td>
+                        <td>{turno.HoraFinal}</td>
+                        <td>{turno.role}</td>
+                        <td style={{ textAlign: "center" }}>
+                          <span style={{ marginRight: "30px" }}>
+                            <FontAwesomeIcon
+                              icon={faCheck}
+                              style={{ color: "#63E6BE" }}
+                            />
+                          </span>
+                          <span>
+                            <FontAwesomeIcon
+                              icon={faX}
+                              style={{ color: "#e50606" }}
+                            />
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
         </div>
       </Container>
@@ -163,4 +115,4 @@ const Solicitudes = () => {
   );
 };
 
-export default Solicitudes;
+export default App;
