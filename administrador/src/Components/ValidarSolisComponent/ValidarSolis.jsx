@@ -94,18 +94,18 @@ const App = () => {
                         <td>{turno.role}</td>
                         <td style={{ textAlign: "center" }}>
                           <Button
-                            variant="success"
+                            variant="btn btn-outline-success"
                             size="sm"
                             onClick={() => handleEliminar(index)}
                           >
-                            Aceptar
+                             ✅
                           </Button>{" "}
                           <Button
-                            variant="danger"
+                            variant="btn btn-outline-danger"
                             size="sm"
                             onClick={() => handleEliminar(index)}
                           >
-                            Denegar
+                             ❌
                           </Button>
                         </td>
                       </tr>
