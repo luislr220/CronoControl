@@ -4,7 +4,6 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require('cors'); // Importa el middleware cors
-var cors = require('cors'); // Importa el middleware cors
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -12,12 +11,11 @@ var empleadoRoutes = require('./routes/empleadoRoutes'); // Cambio aquí
 var turnoRoutes = require('./routes/turnoRoutes');
 var sedeRoutes = require('./routes/sedeRoutes'); // Rutas para sedes
 var areaRoutes = require('./routes/areaRoutes'); // Importa las rutas de áreas
-var administradorRoutes = require('./routes/administradorRoutes'); // Importa las rutas de administrsdor
+var administradorRoutes = require('./routes/administradorRoutes'); // Importa las rutas de administrador
 var contratoRoutes = require('./routes/contratoRoutes');
-var cors = require('cors');
 var app = express();
 
-let dotenv = require('dotenv');   
+let dotenv = require('dotenv');
 dotenv.config();
 
 let mongo = require('./config/dbconfig');
@@ -26,8 +24,7 @@ let mongo = require('./config/dbconfig');
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-app.use(cors()); // Usa el middleware cors
-app.use(cors()); // Usa el middleware cors
+app.use(cors()); // Usa el middleware cors una vez
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -44,7 +41,7 @@ app.use('/empleados', empleadoRoutes); // Usa las rutas para empleados
 app.use('/turnos', turnoRoutes);
 app.use('/sedes', sedeRoutes); // Usa las rutas para sedes
 app.use('/areas', areaRoutes);
-app.use('/administrador', administradorRoutes); 
+app.use('/administrador', administradorRoutes);
 app.use('/contratos', contratoRoutes);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
