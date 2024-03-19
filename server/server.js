@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
 const app = express();
-const PORT = 3003;
+const PORT = 3002;
 
 // Middleware
 app.use(bodyParser.json());
