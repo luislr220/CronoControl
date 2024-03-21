@@ -6,7 +6,9 @@ import AgregarEmpleado from './Components/AgregarEmpleadoComponent/AgregarEmplea
 import TurnoCrud from './Components/TurnoCrudComponent/TurnoCrud';
 import MenuLateral from './Components/MenuLateral/MenuLateral';
 import AgregarSede from './Components/agregarsede/agregarsede';
-import AgregarArea from './Components/agregararea/agregararea'; // Agrega esta línea para la gestión de áreas de trabajo
+import AgregarArea from './Components/agregararea/agregararea';
+import AgregarContrato from './Components/contratos/agregarContrato';
+
 
 function App() {
   return (
@@ -19,7 +21,9 @@ function App() {
           <Route path='/turnoCrud' element={<TurnoCrud />} />
           <Route path='/menu' element={<MenuLateral />} />
           <Route path='/agregarSede' element={<AgregarSede />} />
-          <Route path='/agregarArea' element={<AgregarArea />} /> {/* Agrega esta línea para la gestión de áreas de trabajo */}
+          <Route path='/agregarArea' element={<AgregarArea />} />
+          <Route path='/ValidarSolis' element={<ValidarSolis />} />
+          <Route path='/agregarContrato' element={<AgregarContrato />} />
         </Routes>
       </Router>
     </div>

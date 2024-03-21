@@ -320,7 +320,7 @@ export default function AgregarEmpleado() {
             value={filtroRegion}
             onChange={(e) => setFiltroRegion(e.target.value)}
           >
-            <option value="">Todas las regiones</option>
+            <option value="">Todas las sedes</option>
             {loading ? (
               <option disabled>Cargando sedes...</option>
             ) : (
@@ -353,6 +353,8 @@ export default function AgregarEmpleado() {
             )}
           </Form.Control>
         </div>
+
+        {/* Modal para insertar */}
         <Modal
           show={mostrarFormulario}
           onHide={() => setMostrarFormulario(false)}
@@ -412,14 +414,14 @@ export default function AgregarEmpleado() {
               </Form.Group>
 
               <Form.Group controlId="formRegion">
-                <Form.Label>Región</Form.Label>
+                <Form.Label>Sede</Form.Label>
                 <Form.Control
                   as="select"
                   name="Region"
                   value={nuevoEmpleado.Region}
                   onChange={handleRegionChange}
                 >
-                  <option value="">Selecciona una región</option>
+                  <option value="">Selecciona una sede</option>
                   {loading ? (
                     <option disabled>Cargando sedes...</option>
                   ) : (
@@ -559,7 +561,7 @@ export default function AgregarEmpleado() {
               </Form.Group>
 
               <Form.Group controlId="formRegionActualizar">
-                <Form.Label>Región</Form.Label>
+                <Form.Label>Sede</Form.Label>
                 <Form.Control
                   as="select"
                   name="Region"
@@ -577,7 +579,7 @@ export default function AgregarEmpleado() {
                     setAreasPorRegionActualizar(areasFiltradas);
                   }}
                 >
-                  <option value="">Selecciona una región</option>
+                  <option value="">Selecciona una sede</option>
                   {sedes.map((sede) => (
                     <option key={sede._id} value={sede.nombre}>
                       {sede.nombre}
@@ -644,7 +646,7 @@ export default function AgregarEmpleado() {
               <th>Nombre</th>
               <th>Fecha Nacimiento</th>
               <th>Correo</th>
-              <th>Región</th>
+              <th>Sede</th>
               <th>Área</th>
               <th>Rol</th>
               <th>Actualizar</th>
