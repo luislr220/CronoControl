@@ -30,25 +30,32 @@ router.post(
   "/",
   administradorController.validarCorreoUnico,
   async (req, res) => {
-    // Crea un nuevo objeto Administrador con los datos recibidos en el cuerpo de la solicitud
-    const nuevoAdministrador = new Administrador({
-      Nombre: req.body.Nombre,
-      AppE: req.body.AppE,
-      ApmE: req.body.ApmE,
-      FechaNac: req.body.FechaNac,
-      Correo: req.body.Correo,
-      Region: req.body.Region,
-      AreaTrabajo: req.body.AreaTrabajo,
-      Rol: req.body.Rol,
-    });
-
     try {
-      // Guarda el nuevo administrador en la base de datos
-      const administradorGuardado = await nuevoAdministrador.save();
-      // Responde con el nuevo administrador creado
-      res.status(201).json(administradorGuardado);
+      const {
+        Nombre,
+        AppE,
+        ApmE,
+        FechaNac,
+        Correo,
+        Contraseña,
+        Region,
+        AreaTrabajo,
+        Rol,
+      } = req.body;
+      const nuevoAdministrador = new Administrador({
+        Nombre,
+        AppE,
+        ApmE,
+        FechaNac,
+        Correo,
+        Contraseña,
+        Region,
+        AreaTrabajo,
+        Rol,
+      });
+      await nuevoAdministrador.save();
+      res.status(201).send(nuevoAdministrador);
     } catch (error) {
-      // Si ocurre un error, responde con un código de estado 400 y un mensaje de error
       res.status(400).json({ message: error.message });
     }
   }
@@ -95,6 +102,9 @@ router.patch(
         }
         // Si el nuevo correo es único, actualiza el correo del administrador
         administrador.Correo = req.body.Correo;
+      }
+      if (req.body.Contraseña) {
+        administrador.Contraseña = req.body.Contraseña;
       }
       if (req.body.Region) {
         administrador.Region = req.body.Region;

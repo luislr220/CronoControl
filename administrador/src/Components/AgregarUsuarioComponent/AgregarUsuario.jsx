@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from "react";
-import {
-  Button,
-  FormControl,
-  Table,
-  Form,
-  Modal,
-  Alert,
-} from "react-bootstrap";
+import { FormControl, Form, Modal, Alert } from "react-bootstrap";
 import { format } from "date-fns";
-import "../AgregarEmpleadoComponent/css/agregarEmpleado.css";
+import "../AgregarUsuarioComponent/css/agregarEmpleado.css";
 import Navigation from "../NavigationComponent/Navigation";
+
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Typography from "@mui/material/Typography";
+import { CardActionArea} from "@mui/material";
+import Avatar from "@mui/material/Avatar";
+import Stack from "@mui/material/Stack";
+import Grid from "@mui/material/Grid";
+import Button from "@mui/material/Button";
 
 export default function AgregarUsuario() {
   const [administrador, setAdministrador] = useState([]);
@@ -23,23 +25,28 @@ export default function AgregarUsuario() {
     ApmE: "",
     FechaNac: "",
     Correo: "",
+    Contraseña: "",
     Region: "",
     AreaTrabajo: "",
     Rol: "Administrador",
   });
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
-  const [administradorSeleccionado, setAdministradorSeleccionado] = useState(null);
-  const [valoresAdministradorSeleccionado, setValoresAdministradorSeleccionado] =
-    useState({
-      Nombre: "",
-      AppE: "",
-      ApmE: "",
-      FechaNac: "",
-      Correo: "",
-      Region: "",
-      AreaTrabajo: "",
-      Rol: "Administrador", // Establecer valor por defecto
-    });
+  const [administradorSeleccionado, setAdministradorSeleccionado] =
+    useState(null);
+  const [
+    valoresAdministradorSeleccionado,
+    setValoresAdministradorSeleccionado,
+  ] = useState({
+    Nombre: "",
+    AppE: "",
+    ApmE: "",
+    FechaNac: "",
+    Correo: "",
+    Contraseña: "",
+    Region: "",
+    AreaTrabajo: "",
+    Rol: "Administrador", // Establecer valor por defecto
+  });
 
   const [mostrarModalActualizar, setMostrarModalActualizar] = useState(false);
 
@@ -165,7 +172,10 @@ export default function AgregarUsuario() {
     }
 
     // Añadir el rol al objeto de nuevo empleado
-    const nuevoAdministradorConRol = { ...nuevoAdministrador, Rol: "Administrador" };
+    const nuevoAdministradorConRol = {
+      ...nuevoAdministrador,
+      Rol: "Administrador",
+    };
 
     try {
       const response = await fetch("http://localhost:3002/administrador", {
@@ -190,6 +200,7 @@ export default function AgregarUsuario() {
         ApmE: "",
         FechaNac: "",
         Correo: "",
+        Contraseña: "",
         Region: "",
         AreaTrabajo: "",
         Rol: "", // Limpiar el campo Rol después de agregar un empleado
@@ -205,9 +216,12 @@ export default function AgregarUsuario() {
 
   const eliminarAdministrador = async (id) => {
     try {
-      const response = await fetch(`http://localhost:3002/administrador/${id}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `http://localhost:3002/administrador/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
       if (!response.ok) {
         throw new Error("No se pudo eliminar el administrador");
       }
@@ -225,7 +239,7 @@ export default function AgregarUsuario() {
     const fechaFormateada = new Date(administrador.FechaNac)
       .toISOString()
       .split("T")[0]; //Convierte la fecha ISO8601 en un formato leible
-      setValoresAdministradorSeleccionado({
+    setValoresAdministradorSeleccionado({
       ...administrador, // Usa directamente el objeto 'empleado' en lugar de asignar campo por campo
       FechaNac: fechaFormateada,
     });
@@ -286,14 +300,71 @@ export default function AgregarUsuario() {
     }
   };
 
+  function stringToColor(string) {
+    let hash = 0;
+    let i;
+
+    /* eslint-disable no-bitwise */
+    for (i = 0; i < string.length; i += 1) {
+      hash = string.charCodeAt(i) + ((hash << 5) - hash);
+    }
+
+    let color = "#";
+
+    for (i = 0; i < 3; i += 1) {
+      const value = (hash >> (i * 8)) & 0xff;
+      color += `00${value.toString(16)}`.slice(-2);
+    }
+    /* eslint-enable no-bitwise */
+
+    return color;
+  }
+
+  function stringAvatar(Nombre) {
+    // Verificar si el nombre tiene al menos dos partes separadas por un espacio
+    const nombreParts = Nombre.split(" ");
+    if (nombreParts.length >= 2) {
+      return {
+        sx: {
+          bgcolor: stringToColor(Nombre),
+          width: 150,
+          height: 150,
+          fontSize: 80,
+        },
+        children: `${nombreParts[0][0]}${nombreParts[1][0]}`,
+      };
+    } else if (nombreParts.length === 1) {
+      // Si el nombre tiene solo una parte, usar la primera letra de esa parte
+      return {
+        sx: {
+          bgcolor: stringToColor(Nombre),
+          width: 150,
+          height: 150,
+          fontSize: 80,
+        },
+        children: `${nombreParts[0][0]}`,
+      };
+    } else {
+      // Si el nombre no tiene el formato esperado, manejarlo según sea necesario
+      return {
+        sx: {
+          bgcolor: stringToColor(Nombre),
+          width: 150,
+          height: 150,
+          fontSize: 80,
+        },
+        children: "", // O proporcionar una cadena predeterminada
+      };
+    }
+  }
+
   return (
     <div>
       <Navigation />
-      <h2 className="AGEMTitulo">Dar de alta a Administrador</h2>
       <div className="AGEMcontenedor1">
         <div className="AGEMBotonContainer">
           <Button
-            variant="success"
+            variant="contained" color="success"
             className="AGEMBotonverde"
             onClick={() => setMostrarFormulario(true)}
           >
@@ -353,12 +424,13 @@ export default function AgregarUsuario() {
             )}
           </Form.Control>
         </div>
+        {/*MODAL PARA AGREGAR UN Administrador */}
         <Modal
           show={mostrarFormulario}
           onHide={() => setMostrarFormulario(false)}
         >
           <Modal.Header closeButton>
-            <Modal.Title>Agregar Empleado</Modal.Title>
+            <Modal.Title>Agregar Administrador</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <Form>
@@ -409,6 +481,16 @@ export default function AgregarUsuario() {
                 {errorCorreoDuplicado && (
                   <Alert variant="danger">{errorCorreoDuplicado}</Alert>
                 )}
+              </Form.Group>
+
+              <Form.Group controlId="formContraseña">
+                <Form.Label>Contraseña</Form.Label>
+                <FormControl
+                  type="password"
+                  name="Contraseña"
+                  value={nuevoAdministrador.Contraseña}
+                  onChange={handleInputChange}
+                />
               </Form.Group>
 
               <Form.Group controlId="formRegion">
@@ -469,13 +551,18 @@ export default function AgregarUsuario() {
           </Modal.Body>
           <Modal.Footer>
             <Button
-              variant="secondary"
+              variant="contained"
+              color="success"
+              onClick={agregarAdministrador}
+            >
+              Agregar
+            </Button>
+            <Button
+              variant="outlined"
+              color="error"
               onClick={() => setMostrarFormulario(false)}
             >
               Cancelar
-            </Button>
-            <Button variant="primary" onClick={agregarAdministrador}>
-              Agregar
             </Button>
           </Modal.Footer>
         </Modal>
@@ -558,6 +645,16 @@ export default function AgregarUsuario() {
                 )}
               </Form.Group>
 
+              <Form.Group controlId="formContraseñaActualizar">
+                <Form.Label>Nueva Contraseña</Form.Label>
+                <FormControl
+                  type="password"
+                  name="Contraseña"
+                  value={valoresAdministradorSeleccionado.Contraseña}
+                  onChange={handleInputChange}
+                />
+              </Form.Group>
+
               <Form.Group controlId="formRegionActualizar">
                 <Form.Label>Sede</Form.Label>
                 <Form.Control
@@ -628,82 +725,111 @@ export default function AgregarUsuario() {
             </Form>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={cerrarModalActualizar}>
-              Cancelar
-            </Button>
-            <Button variant="primary" onClick={actualizarAdministrador}>
+            <Button
+              variant="contained"
+              color="success"
+              onClick={actualizarAdministrador}
+            >
               Actualizar
+            </Button>
+            <Button
+              variant="outlined"
+              color="error"
+              onClick={cerrarModalActualizar}
+            >
+              Cancelar
             </Button>
           </Modal.Footer>
         </Modal>
 
-        <Table className="AGEMTable">
-          <thead>
-            <tr>
-              <th>No.</th>
-              <th>Nombre</th>
-              <th>Fecha Nacimiento</th>
-              <th>Correo</th>
-              <th>Sede</th>
-              <th>Área</th>
-              <th>Rol</th>
-              <th>Actualizar</th>
-              <th>Eliminar</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {administrador
-              .filter((administrador) =>
+        <Grid container spacing={1}>
+          {administrador
+            .filter((administrador) =>
               administrador.Nombre.toLowerCase().includes(filtro.toLowerCase())
+            )
+            .filter((administrador) =>
+              // Aplicar filtro por región
+              administrador.Region.toLowerCase().includes(
+                filtroRegion.toLowerCase()
               )
-              .filter((administrador) =>
-                // Aplicar filtro por región
-                administrador.Region.toLowerCase().includes(
-                  filtroRegion.toLowerCase()
-                )
+            )
+            .filter((administrador) =>
+              // Aplicar filtro por área
+              administrador.AreaTrabajo.toLowerCase().includes(
+                filtroArea.toLowerCase()
               )
-              .filter((administrador) =>
-                // Aplicar filtro por área
-                administrador.AreaTrabajo.toLowerCase().includes(
-                  filtroArea.toLowerCase()
-                )
-              )
-              .filter((administrador) =>
-                //Aplicar Filtro por apellido
-                `${administrador.AppE} ${administrador.ApmE}`
-                  ?.toLowerCase()
-                  .startsWith(filtroApellidoModal.toLowerCase())
-              )
-              .map((administrador, index) => (
-                <tr key={index}>
-                  <td>{index + 1}</td>
-                  <td>{`${administrador.Nombre} ${administrador.AppE} ${administrador.ApmE}`}</td>
-                  <td>{format(new Date(administrador.FechaNac), "yyyy-MM-dd")}</td>
-                  <td>{administrador.Correo}</td>
-                  <td>{administrador.Region}</td>
-                  <td>{administrador.AreaTrabajo}</td>
-                  <td>{administrador.Rol}</td>
-                  <td>
-                    <Button
-                      variant="info"
+            )
+            .filter((administrador) =>
+              //Aplicar Filtro por apellido
+              `${administrador.AppE} ${administrador.ApmE}`
+                ?.toLowerCase()
+                .startsWith(filtroApellidoModal.toLowerCase())
+            )
+            .map((administrador, index) => (
+              <Grid
+                key={index}
+                item
+                xl={2}
+                lg={3}
+                md={4}
+                sm={6}
+                xs={12}
+                sx={{ width: "100%", p: 2 }}
+              >
+                <Card sx={{ maxWidth: 300, height: "100%" }}>
+                  <CardActionArea>
+                    <Stack
+                      direction="row"
+                      spacing={2}
+                      sx={{ display: "flex", justifyContent: "center", pt: 2 }}
+                    >
+                      <Avatar {...stringAvatar(administrador.Nombre)} />
+                    </Stack>
+                    <CardContent>
+                      
+                      <Typography gutterBottom variant="h5" component="div">
+                        {`${administrador.Nombre} ${administrador.AppE} ${administrador.ApmE}`}
+                      </Typography>
+                      <Typography variant="body2">
+                        Correo: {administrador.Correo}
+                      </Typography>
+                      <Typography variant="body2">
+                        Contraseña: {administrador.Contraseña}
+                      </Typography>
+                      <Typography variant="body2">
+                        Rol: {administrador.Rol}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        Fecha de nacimiento:
+                        {format(new Date(administrador.FechaNac), "yyyy-MM-dd")}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        Sede: {administrador.Region}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        Área: {administrador.AreaTrabajo}
+                      </Typography>
+                      <br/>
+                      <Button
+                      variant="contained"
+                      color="success"
                       onClick={() => abrirModalActualizar(administrador)}
                     >
                       Actualizar
                     </Button>{" "}
-                  </td>
-                  <td>
                     <Button
-                      variant="danger"
+                      variant="outlined"
+                      color="error"
                       onClick={() => eliminarAdministrador(administrador._id)}
                     >
                       Eliminar
                     </Button>{" "}
-                  </td>
-                </tr>
-              ))}
-          </tbody>
-        </Table>
+                    </CardContent>
+                  </CardActionArea>
+                </Card>
+              </Grid>
+            ))}
+        </Grid>
       </div>
     </div>
   );

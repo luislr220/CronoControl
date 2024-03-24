@@ -34,7 +34,6 @@ const Solicitudes = () => {
       if (!response.ok) {
         throw new Error("No se pudo aceptar la solicitud");
       }
-      const data = await response.json();
       // Aquí puedes manejar la respuesta de acuerdo a tu lógica de aplicación
     } catch (error) {
       console.error(error);
@@ -49,7 +48,6 @@ const Solicitudes = () => {
       if (!response.ok) {
         throw new Error("No se pudo denegar la solicitud");
       }
-      const data = await response.json();
       // Aquí puedes manejar la respuesta de acuerdo a tu lógica de aplicación
     } catch (error) {
       console.error(error);
@@ -60,13 +58,13 @@ const Solicitudes = () => {
     <div>
       <Navigation />
       <Container className="col-12">
-        <div class="container">
-          <div class="row">
-            <div class="col">
+        <div className="container">
+          <div className="row">
+            <div className="col">
               <h1>Validar Solicitudes</h1>
             </div>
             <br></br>
-            <div class="col-5">
+            <div className="col-5">
               <form className="d-flex">
                 <input
                   className="form-control me-2 "
@@ -84,27 +82,27 @@ const Solicitudes = () => {
         <br></br>
         <br></br>
         <br></br>
-        <div class="container">
-          <div class="row">
-            <div class="col">
-              <button type="button" class="btn btn-light">
+        <div className="container">
+          <div className="row">
+            <div className="col">
+              <button type="button" className="btn btn-light">
                 Actualizar
               </button>
             </div>
-            <div class="col-1">
-              <button type="button" class="btn btn-success btn-sm">
+            <div className="col-1">
+              <button type="button" className="btn btn-success btn-sm">
                 Aceptar todo
               </button>
             </div>
-            <div class="col-1">
-              <button type="button" class="btn btn-danger btn-sm">
+            <div className="col-1">
+              <button type="button" className="btn btn-danger btn-sm">
                 Denegar todo
               </button>
             </div>
           </div>
         </div>
         <br></br>
-        <div class="col-12">
+        <div className="col-12">
           <div className="row">
             <table className="table rounded">
               <thead>
