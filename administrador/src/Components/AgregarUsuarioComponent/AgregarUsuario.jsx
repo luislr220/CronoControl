@@ -67,7 +67,7 @@ export default function AgregarUsuario() {
   const [usuarioAEliminar, setUsuarioAEliminar] = useState(null);
 
   const [showAlert, setShowAlert] = useState(false); // Estado para controlar la visibilidad de la alerta
-  const [progress, setProgress] = useState(0);
+  const [progress, setProgress] = useState(0); //Barra de progreso
   const [alertMessage, setAlertMessage] = useState(""); // Mensaje de la alerta
   const [alertVariant, setAlertVariant] = useState("info"); // Estado para controlar el color de la alerta
 
@@ -170,6 +170,7 @@ export default function AgregarUsuario() {
     setMostrarModalConfirmacion(false);
   };
 
+  //CONSTANTE PARA ACTUALIZAR Y LIMPIAR EL FORMULARIO
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     if (name === "filtroApellidoModal") {
@@ -190,6 +191,7 @@ export default function AgregarUsuario() {
     }
   };
 
+  //CONSTANTE PARA LOS FILTRO
   const handleFiltroChange = (event) => {
     setFiltro(event.target.value);
   };
@@ -213,6 +215,7 @@ export default function AgregarUsuario() {
     setFiltroArea(""); // Limpiamos el filtro de área al cambiar la región seleccionada
   };
 
+  //CONSTANTE DE AGREGAR USUARIO
   const agregarAdministrador = async () => {
     // Validar que los campos requeridos estén llenos
     if (!nuevoAdministrador.Region || !nuevoAdministrador.AreaTrabajo) {
@@ -275,6 +278,7 @@ export default function AgregarUsuario() {
     }
   };
 
+  //CONSTANTE PARA ELIMINAR A UN USUARIO
   const eliminarAdministrador = async (id) => {
     try {
       const response = await fetch(
@@ -299,6 +303,7 @@ export default function AgregarUsuario() {
     }
   };
 
+  //CONSTANTES PARA EL MODAL DE ACTUALIZAR
   const abrirModalActualizar = (administrador) => {
     setAdministradorSeleccionado(administrador);
     const fechaFormateada = new Date(administrador.FechaNac)
@@ -322,6 +327,7 @@ export default function AgregarUsuario() {
     setMostrarModalActualizar(false);
   };
 
+  //CONSTANTE PARA ACTUALIZAR AL USUARIO
   const actualizarAdministrador = async () => {
     try {
       // Verificar si el correo electrónico ya está en uso
@@ -369,6 +375,7 @@ export default function AgregarUsuario() {
     }
   };
 
+  //FUNCIONES DEL AVATAR DEL USUARIO
   function stringToColor(string) {
     let hash = 0;
     let i;
@@ -495,6 +502,7 @@ export default function AgregarUsuario() {
             )}
           </Form.Control>
         </div>
+
         {/*MODAL PARA AGREGAR UN Administrador */}
         <Modal
           show={mostrarFormulario}
@@ -637,8 +645,8 @@ export default function AgregarUsuario() {
             </Button>
           </Modal.Footer>
         </Modal>
-        {/* Modal para actualizar */}
 
+        {/* Modal para actualizar */}
         <Modal show={mostrarModalActualizar} onHide={cerrarModalActualizar}>
           <Modal.Header closeButton>
             <Modal.Title>Actualizar Usuario</Modal.Title>
@@ -840,6 +848,7 @@ export default function AgregarUsuario() {
           </Modal.Footer>
         </Modal>
 
+        {/*ALERTA QUE SE MUESTRA CUANDO SE AGREGA, ACTUALIZA Y ELIMINA A UN USUARIO */}
         <Alert
           show={showAlert}
           variant={alertVariant} // Usar alertVariant para establecer el color de la alerta

@@ -40,10 +40,11 @@ exports.actualizarAdministrador = async (req, res) => {
     // Guardar los cambios en la base de datos
     const administradorActualizado = await administrador.save();
     // Responder con el empleado actualizado
-    res.json(eadministradorActualizado);
+    res.json(administradorActualizado); // Aquí estaba el error
   } catch (error) {
     // Si ocurre un error, responder con un código de estado 400 y un mensaje de error
     console.error(error);
     res.status(400).json({ message: error.message });
   }
 };
+
