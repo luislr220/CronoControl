@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FormControl, Form, Modal, Alert } from "react-bootstrap";
+import { FormControl, Form, Modal, Alert, ProgressBar } from "react-bootstrap";
 import { format } from "date-fns";
 import "../AgregarUsuarioComponent/css/agregarEmpleado.css";
 import Navigation from "../NavigationComponent/Navigation";
@@ -7,7 +7,7 @@ import Navigation from "../NavigationComponent/Navigation";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
-import { CardActionArea} from "@mui/material";
+import { CardActionArea } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
 import Grid from "@mui/material/Grid";
@@ -61,6 +61,55 @@ export default function AgregarUsuario() {
   const [areasPorRegionActualizar, setAreasPorRegionActualizar] = useState([]);
   const areasFiltradas = areas.filter((area) => area.sede === filtroRegion);
 
+  //Estados para mostrar advertencia de si desea eliminar
+  const [mostrarModalConfirmacion, setMostrarModalConfirmacion] =
+    useState(false);
+  const [usuarioAEliminar, setUsuarioAEliminar] = useState(null);
+
+  const [showAlert, setShowAlert] = useState(false); // Estado para controlar la visibilidad de la alerta
+  const [progress, setProgress] = useState(0);
+  const [alertMessage, setAlertMessage] = useState(""); // Mensaje de la alerta
+  const [alertVariant, setAlertVariant] = useState("info"); // Estado para controlar el color de la alerta
+
+  // Función para mostrar la alerta de confirmación
+  const mostrarAlerta = (mensaje, tipoAccion) => {
+    let variant;
+    switch (tipoAccion) {
+      case "eliminar":
+        variant = "danger"; // Rojo
+        break;
+      case "agregar":
+        variant = "success"; // Verde
+        break;
+      case "actualizar":
+        variant = "primary"; // Azul
+        break;
+      default:
+        variant = "info"; // Color por defecto si no se especifica un tipo de acción válido
+    }
+
+    setAlertVariant(variant); // Establecer el color de la alerta
+    setAlertMessage(mensaje); // Establecer el mensaje de la alerta
+    setShowAlert(true);
+    setProgress(0); // Reiniciar el progreso de la barra
+    const interval = setInterval(() => {
+      setProgress((prevProgress) => {
+        if (prevProgress >= 100) {
+          clearInterval(interval);
+          setShowAlert(false); // Ocultar la alerta cuando el progreso alcance el 100%
+        } else {
+          return prevProgress + 1;
+        }
+      });
+    }, 30); // Actualizar la barra de progreso cada 30 milisegundos
+  };
+
+  // Función para ocultar la alerta de confirmación
+  const ocultarAlerta = () => {
+    setShowAlert(false);
+    setProgress(0); // Reiniciar el progreso de la barra al ocultar la alerta
+  };
+
   useEffect(() => {
     // Función para obtener la lista de empleados, las áres y sedes desde el backend
     const fetchAdministrador = async () => {
@@ -109,6 +158,17 @@ export default function AgregarUsuario() {
     fetchSedes();
     fetchAreas();
   }, []);
+
+  // Función para mostrar el modal de confirmación
+  const mostrarConfirmacion = (usuario) => {
+    setUsuarioAEliminar(usuario);
+    setMostrarModalConfirmacion(true);
+  };
+
+  // Función para ocultar el modal de confirmación
+  const ocultarConfirmacion = () => {
+    setMostrarModalConfirmacion(false);
+  };
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -209,6 +269,7 @@ export default function AgregarUsuario() {
 
       // Limpiar el estado de errorCorreoDuplicado
       setErrorCorreoDuplicado("");
+      mostrarAlerta("El usuario se ha agregado correctamente.", "agregar");
     } catch (error) {
       console.error(error);
     }
@@ -229,6 +290,10 @@ export default function AgregarUsuario() {
         (administrador) => administrador._id !== id
       );
       setAdministrador(nuevosAdministradores);
+      ocultarConfirmacion(); // Aquí cierras el modal de confirmación después de eliminar al usuario
+
+      // Mostrar la alerta de confirmación
+      mostrarAlerta("El usuario se ha Eliminado correctamente.", "eliminar");
     } catch (error) {
       console.error(error);
     }
@@ -294,6 +359,10 @@ export default function AgregarUsuario() {
       nuevosAdministradores[index] = data;
       setAdministrador(nuevosAdministradores);
       cerrarModalActualizar();
+      mostrarAlerta(
+        "El usuario se ha Actualizado correctamente.",
+        "actualizar"
+      );
     } catch (error) {
       console.error(error);
       setErrorCorreoDuplicadoActualizar("Error al actualizar el empleado");
@@ -362,9 +431,11 @@ export default function AgregarUsuario() {
     <div>
       <Navigation />
       <div className="AGEMcontenedor1">
+        {/*SECCIÓN DE BOTON AGREGAR Y FILTROS*/}
         <div className="AGEMBotonContainer">
           <Button
-            variant="contained" color="success"
+            variant="contained"
+            color="success"
             className="AGEMBotonverde"
             onClick={() => setMostrarFormulario(true)}
           >
@@ -430,7 +501,7 @@ export default function AgregarUsuario() {
           onHide={() => setMostrarFormulario(false)}
         >
           <Modal.Header closeButton>
-            <Modal.Title>Agregar Administrador</Modal.Title>
+            <Modal.Title>Agregar Usuario</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <Form>
@@ -566,11 +637,11 @@ export default function AgregarUsuario() {
             </Button>
           </Modal.Footer>
         </Modal>
-
         {/* Modal para actualizar */}
+
         <Modal show={mostrarModalActualizar} onHide={cerrarModalActualizar}>
           <Modal.Header closeButton>
-            <Modal.Title>Actualizar Empleado</Modal.Title>
+            <Modal.Title>Actualizar Usuario</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <Form>
@@ -742,7 +813,45 @@ export default function AgregarUsuario() {
           </Modal.Footer>
         </Modal>
 
-        <Grid container spacing={1}>
+        {/* MODAL PARA CONFIRMAR SI DESEA ELIMINAR*/}
+        <Modal show={mostrarModalConfirmacion} onHide={ocultarConfirmacion}>
+          <Modal.Header closeButton>
+            <Modal.Title>Confirmar eliminación</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            ¿Estás seguro de que quieres eliminar este usuario?
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              variant="outlined"
+              color="error"
+              onClick={() => eliminarAdministrador(usuarioAEliminar._id)}
+            >
+              Sí, eliminar
+            </Button>
+
+            <Button
+              variant="contained"
+              color="success"
+              onClick={ocultarConfirmacion}
+            >
+              Cancelar
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
+        <Alert
+          show={showAlert}
+          variant={alertVariant} // Usar alertVariant para establecer el color de la alerta
+          onClose={ocultarAlerta}
+          dismissible
+        >
+          {alertMessage}
+          <ProgressBar now={progress} />
+        </Alert>
+
+        {/*CARDS PARA MOSTRAR A LOS USUARIOS*/}
+        <Grid container spacing={2}>
           {administrador
             .filter((administrador) =>
               administrador.Nombre.toLowerCase().includes(filtro.toLowerCase())
@@ -776,7 +885,10 @@ export default function AgregarUsuario() {
                 xs={12}
                 sx={{ width: "100%", p: 2 }}
               >
-                <Card sx={{ maxWidth: 300, height: "100%" }}>
+                <Card
+                  sx={{ maxWidth: 300, height: "100%" }}
+                  className="AGEMCard"
+                >
                   <CardActionArea>
                     <Stack
                       direction="row"
@@ -786,7 +898,6 @@ export default function AgregarUsuario() {
                       <Avatar {...stringAvatar(administrador.Nombre)} />
                     </Stack>
                     <CardContent>
-                      
                       <Typography gutterBottom variant="h5" component="div">
                         {`${administrador.Nombre} ${administrador.AppE} ${administrador.ApmE}`}
                       </Typography>
@@ -809,21 +920,21 @@ export default function AgregarUsuario() {
                       <Typography variant="body2" color="text.secondary">
                         Área: {administrador.AreaTrabajo}
                       </Typography>
-                      <br/>
+                      <br />
                       <Button
-                      variant="contained"
-                      color="success"
-                      onClick={() => abrirModalActualizar(administrador)}
-                    >
-                      Actualizar
-                    </Button>{" "}
-                    <Button
-                      variant="outlined"
-                      color="error"
-                      onClick={() => eliminarAdministrador(administrador._id)}
-                    >
-                      Eliminar
-                    </Button>{" "}
+                        variant="contained"
+                        color="success"
+                        onClick={() => abrirModalActualizar(administrador)}
+                      >
+                        Actualizar
+                      </Button>{" "}
+                      <Button
+                        variant="outlined"
+                        color="error"
+                        onClick={() => mostrarConfirmacion(administrador)}
+                      >
+                        Eliminar
+                      </Button>{" "}
                     </CardContent>
                   </CardActionArea>
                 </Card>

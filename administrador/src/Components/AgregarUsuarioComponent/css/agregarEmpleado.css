@@ -1,5 +1,5 @@
 .AGEMcontenedor1 {
-  padding: 4%;
+  padding: 3%;
 }
 
 .AGEMTable {
@@ -12,7 +12,8 @@
   display: flex;
   justify-content: space-between; /* Espacio entre los elementos */
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
+  width: 98.8%;
 }
 
 .AGEMBuscador {
@@ -24,4 +25,8 @@
 .AGEMTitulo{
     margin: 2%;
     text-align: left;
+}
+
+.AGEMCard {
+  min-height: 350px;
 }
