@@ -1,6 +1,6 @@
 /* TurnoCrud.css */
 .cuerpo {
-    background-color: #E0E0E0 ;
+    background-color: #afcdea ;
     font-family: XD;    
 }
  
@@ -29,16 +29,6 @@
 
 .custom-button:hover {
     background-color: #318CE7; /* Cambiar el tono al pasar el cursor */
-}
-
-.custom-buttoon {
-    background-color: #318CE7;
-    border: none;
-    transition: background-color 0.3s ease; /* Transición suave del color de fondo */
-}
-
-.custom-buttoon:hover {
-    background-color: #1C2B67; /* Cambiar el tono al pasar el cursor */
 }
 
 /* Estilo para centrar el título */

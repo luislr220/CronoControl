@@ -14,3 +14,7 @@
     color: #ffffff; /* Color del texto */
     /* Otros estilos según sea necesario */
 }
+
+* {
+    background-color: #1C2B67;
+}

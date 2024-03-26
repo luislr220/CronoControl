@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button, Table, Modal, Form } from 'react-bootstrap';
 import Navigation from '../NavigationComponent/Navigation';
 import "./TurnoCrud.css";
-import { BsPencilSquare, BsTrash } from 'react-icons/bs'; // Importar los iconos necesarios
+import { BsPencilSquare, BsTrash, BsEye } from 'react-icons/bs'; // Importar los iconos necesarios
 
 
 export default function TurnoCrud() {
@@ -28,6 +28,9 @@ export default function TurnoCrud() {
   });
   const [mostrarModalActualizar, setMostrarModalActualizar] = useState(false);
   const [turnoSeleccionado, setTurnoSeleccionado] = useState(null);
+  const [showViewTurnoModal, setShowViewTurnoModal] = useState(false); // Agregar estado para el modal de visualización
+  const [turnoSeleccionadoVisualizar, setTurnoSeleccionadoVisualizar] = useState(null); // Estado para almacenar el turno seleccionado para visualizar
+
 
   const fetchTurnos = async () => {
     try {
@@ -72,6 +75,11 @@ export default function TurnoCrud() {
       Estado: "Activo"
     });
     setSelectedTurno(null);
+  };
+
+  const visualizarTurno = (turno) => {
+    setTurnoSeleccionadoVisualizar(turno);
+    setShowViewTurnoModal(true);
   };
 
   const handleShow = () => setShowAddTurnoModal(true);
@@ -132,6 +140,11 @@ export default function TurnoCrud() {
   const cerrarModalActualizar = () => {
     setTurnoSeleccionado(null);
     setMostrarModalActualizar(false);
+  };
+
+  const cerrarModalVizualizar = () => {
+    setShowViewTurnoModal(false);
+    setTurnoSeleccionadoVisualizar(null);
   };
 
   const updateTurno = async () => {
@@ -207,8 +220,11 @@ export default function TurnoCrud() {
                     <BsTrash className="icono" size={20} /> {/* Icono de basura */}
                     {" "}
                   </Button>{" "}
+                  <Button variant="info" onClick={() => visualizarTurno(turno)} title="Visualizar">
+                    <BsEye className="icono" size={20} /> {/* Icono de ojo */}
+                    {" "}
+                  </Button>{" "}
                 </td>
-
               </tr>
             ))}
           </tbody>
@@ -223,25 +239,25 @@ export default function TurnoCrud() {
         <Modal.Body>
           <Form>
             <Form.Group controlId="formNombreTurno" className="d-flex align-items-center FormGroupMargin">
-              <Form.Label style={{ color: '#1C2B67' }} className="col-sm-4">Nombre del Turno</Form.Label>
+              <Form.Label style={{ color: '#1C2B67', fontWeight: 'lighter' }} className="col-sm-4">Nombre del Turno</Form.Label>
               <div className="col-sm-8">
                 <Form.Control type="text" placeholder="Ingrese el nombre del turno" value={nuevoTurno.Nombre} onChange={(e) => setNuevoTurno({ ...nuevoTurno, Nombre: e.target.value })} />
               </div>
             </Form.Group>
             <Form.Group controlId="formHoraInicio" className="d-flex align-items-center FormGroupMargin">
-              <Form.Label style={{ color: '#1C2B67' }} className="col-sm-4">Hora de Inicio</Form.Label>
+              <Form.Label style={{ color: '#1C2B67', fontWeight: 'lighter' }} className="col-sm-4">Hora de Inicio</Form.Label>
               <div className="col-sm-8">
                 <Form.Control type="time" placeholder="Ingrese la hora de inicio" value={nuevoTurno.HoraInicio} onChange={(e) => setNuevoTurno({ ...nuevoTurno, HoraInicio: e.target.value })} />
               </div>
             </Form.Group>
             <Form.Group controlId="formHoraFinal" className="d-flex align-items-center FormGroupMargin">
-              <Form.Label style={{ color: '#1C2B67' }} className="col-sm-4">Hora Final</Form.Label>
+              <Form.Label style={{ color: '#1C2B67', fontWeight: 'lighter' }} className="col-sm-4">Hora Final</Form.Label>
               <div className="col-sm-8">
                 <Form.Control type="time" placeholder="Ingrese la hora final" value={nuevoTurno.HoraFinal} onChange={(e) => setNuevoTurno({ ...nuevoTurno, HoraFinal: e.target.value })} />
               </div>
             </Form.Group>
             <Form.Group controlId="formArea" className="d-flex align-items-center FormGroupMargin">
-              <Form.Label style={{ color: '#1C2B67' }} className="col-sm-4">Área de Trabajo</Form.Label>
+              <Form.Label style={{ color: '#1C2B67', fontWeight: 'lighter' }} className="col-sm-4">Área de Trabajo</Form.Label>
               <div className="col-sm-8">
                 <Form.Control as="select" value={nuevoTurno.Area} onChange={(e) => setNuevoTurno({ ...nuevoTurno, Area: e.target.value })}>
                   <option value="">Seleccione...</option>
@@ -252,13 +268,13 @@ export default function TurnoCrud() {
               </div>
             </Form.Group>
             <Form.Group controlId="formCupo" className="d-flex align-items-center FormGroupMargin">
-              <Form.Label style={{ color: '#1C2B67' }} className="col-sm-4">Cupo</Form.Label>
+              <Form.Label style={{ color: '#1C2B67', fontWeight: 'lighter' }} className="col-sm-4">Cupo</Form.Label>
               <div className="col-sm-8">
                 <Form.Control type="number" placeholder="Ingrese el cupo del turno" value={nuevoTurno.Cupo} onChange={(e) => setNuevoTurno({ ...nuevoTurno, Cupo: e.target.value })} />
               </div>
             </Form.Group>
             <Form.Group controlId="formEstado" className="d-flex align-items-center FormGroupMargin">
-              <Form.Label style={{ color: '#1C2B67' }} className="col-sm-4">Estado</Form.Label>
+              <Form.Label style={{ color: '#1C2B67', fontWeight: 'lighter' }} className="col-sm-4">Estado</Form.Label>
               <div className="col-sm-8">
                 <Form.Control as="select" value={nuevoTurno.Estado} onChange={(e) => setNuevoTurno({ ...nuevoTurno, Estado: e.target.value })}>
                   <option value="Activo">Activo</option>
@@ -269,8 +285,8 @@ export default function TurnoCrud() {
             </Form.Group>
           </Form>
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" className="custom-button" onClick={handleClose}style={{ color: '#FFFFFF', letterSpacing: '1px', fontWeight: 'normal' }}>
+        <Modal.Footer style={{ justifyContent: 'center' }}>
+          <Button variant="secondary" className="custom-button" onClick={handleClose} style={{ color: '#FFFFFF', letterSpacing: '1px', fontWeight: 'normal' }}>
             Cancelar
           </Button>
           <Button variant="primary" className="custom-button" onClick={selectedTurno ? updateTurno : addTurno} style={{ color: '#FFFFFF', letterSpacing: '1px', fontWeight: 'normal' }}>
@@ -279,7 +295,7 @@ export default function TurnoCrud() {
         </Modal.Footer>
       </Modal>
 
-      {/*  ACTUALIZAR  */}
+      {/* MODAL ACTUALIZAR TURNO */}
       <Modal show={mostrarModalActualizar} onHide={cerrarModalActualizar} className='todo'>
         <Modal.Header closeButton style={{ backgroundColor: '#1C2B67' }}>
           <Modal.Title style={{ fontFamily: 'Coolvetica', color: '#FFFFFF', fontSize: '22px', textAlign: 'center' }}>Actualizar Turno</Modal.Title>
@@ -287,54 +303,54 @@ export default function TurnoCrud() {
         <Modal.Body>
           <Form>
             <Form.Group controlId='formNombreActualizar' className="row FormGroupMargin">
-              <Form.Label style={{ color: '#1C2B67' }} className="col-sm-4">Nombre del turno</Form.Label>
+              <Form.Label style={{ color: '#1C2B67',  fontWeight: 'lighter' }} className="col-sm-4">Nombre del turno</Form.Label>
               <div className="col-sm-8">
                 <Form.Control type="text" name="Nombre" value={valoresTurnoSeleccionado.Nombre} onChange={(e) => setValoresTurnoSeleccionado({ ...valoresTurnoSeleccionado, Nombre: e.target.value })} />
               </div>
             </Form.Group>
             <Form.Group controlId='formHoraInicioActualizar' className="row FormGroupMargin">
-              <Form.Label style={{ color: '#1C2B67' }} className="col-sm-4">Hora Inicio</Form.Label>
+              <Form.Label style={{ color: '#1C2B67', fontWeight: 'lighter' }} className="col-sm-4">Hora Inicio</Form.Label>
               <div className="col-sm-8">
                 <Form.Control type="time" name="HoraInicio" value={valoresTurnoSeleccionado.HoraInicio} onChange={(e) => setValoresTurnoSeleccionado({ ...valoresTurnoSeleccionado, HoraInicio: e.target.value, })} />
               </div>
             </Form.Group>
             <Form.Group controlId='formHoraFinalActualizar' className="row FormGroupMargin">
-              <Form.Label style={{ color: '#1C2B67' }} className="col-sm-4">Hora Final</Form.Label>
+              <Form.Label style={{ color: '#1C2B67', fontWeight: 'lighter'  }} className="col-sm-4">Hora Final</Form.Label>
               <div className="col-sm-8">
                 <Form.Control type="time" name="HoraFinal" value={valoresTurnoSeleccionado.HoraFinal} onChange={(e) => setValoresTurnoSeleccionado({ ...valoresTurnoSeleccionado, HoraFinal: e.target.value, })} />
               </div>
             </Form.Group>
             <Form.Group controlId="formAreaActualizar" className="row FormGroupMargin">
-              <Form.Label style={{ color: '#1C2B67' }} className="col-sm-4">Área de Trabajo</Form.Label>
+              <Form.Label style={{ color: '#1C2B67', fontWeight: 'lighter'  }} className="col-sm-4">Área de Trabajo</Form.Label>
               <div className="col-sm-8">
-              <Form.Control
-                as="select"
-                name="AreaTrabajo"
-                value={valoresTurnoSeleccionado.AreaTrabajo}
-                onChange={(e) =>
-                  setValoresTurnoSeleccionado({
-                    ...valoresTurnoSeleccionado,
-                    AreaTrabajo: e.target.value,
-                  })
-                }
-              >
-                <option value="">Selecciona una área</option>
-                {areas.map((area) => (
-                  <option key={area._id} value={area.nombre}>
-                    {area.nombre}
-                  </option>
-                ))}
-              </Form.Control>
+                <Form.Control
+                  as="select"
+                  name="AreaTrabajo"
+                  value={valoresTurnoSeleccionado.AreaTrabajo}
+                  onChange={(e) =>
+                    setValoresTurnoSeleccionado({
+                      ...valoresTurnoSeleccionado,
+                      AreaTrabajo: e.target.value,
+                    })
+                  }
+                >
+                  <option value="">Selecciona una área</option>
+                  {areas.map((area) => (
+                    <option key={area._id} value={area.nombre}>
+                      {area.nombre}
+                    </option>
+                  ))}
+                </Form.Control>
               </div>
             </Form.Group>
             <Form.Group controlId='formCupoActualizar' className="row FormGroupMargin">
-              <Form.Label style={{ color: '#1C2B67' }} className="col-sm-4">Cupo</Form.Label>
+              <Form.Label style={{ color: '#1C2B67', fontWeight: 'lighter'  }} className="col-sm-4">Cupo</Form.Label>
               <div className="col-sm-8">
                 <Form.Control type="number" name="Cupo" value={valoresTurnoSeleccionado.Cupo} onChange={(e) => setValoresTurnoSeleccionado({ ...valoresTurnoSeleccionado, Cupo: e.target.value, })} />
               </div>
             </Form.Group>
             <Form.Group controlId="formEstadoActualizar" className="row FormGroupMargin">
-              <Form.Label style={{ color: '#1C2B67' }} className="col-sm-4">Estado</Form.Label>
+              <Form.Label style={{ color: '#1C2B67', fontWeight: 'lighter'  }} className="col-sm-4">Estado</Form.Label>
               <div className="col-sm-8">
                 <Form.Control as="select" value={valoresTurnoSeleccionado.Estado} onChange={(e) => setValoresTurnoSeleccionado({ ...valoresTurnoSeleccionado, Estado: e.target.value })}>
                   <option value="Activo">Activo</option>
@@ -345,7 +361,7 @@ export default function TurnoCrud() {
             </Form.Group>
           </Form>
         </Modal.Body>
-        <Modal.Footer>
+        <Modal.Footer style={{ justifyContent: 'center' }}>
           <Button variant="danger" className="custom-button" onClick={cerrarModalActualizar} style={{ color: '#FFFFFF', letterSpacing: '1px', fontWeight: 'normal' }}>
             Cancelar
           </Button>
@@ -356,6 +372,37 @@ export default function TurnoCrud() {
         </Modal.Footer>
       </Modal>
 
+      {/* MODAL VISUALIZAR TURNO */}
+      <Modal show={showViewTurnoModal} onHide={cerrarModalVizualizar} className='todo'>
+        <Modal.Header closeButton style={{ backgroundColor: '#1C2B67', textAlign: 'center', border: 'none' }}>
+          <Modal.Title style={{ fontFamily: 'Coolvetica', color: '#FFFFFF', fontSize: '22px' }}>Visualizar Turno</Modal.Title>
+        </Modal.Header>
+        <Modal.Body style={{ paddingLeft: '80px', paddingRight:'100px', fontWeight: 'lighter', display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', color: '#1C2B67' }}>
+            <p><strong>Nombre:</strong></p>
+            <p><strong>Hora de Inicio:</strong></p>
+            <p><strong>Hora Final:</strong></p>
+            <p><strong>Área de Trabajo:</strong></p>
+            <p><strong>Cupo:</strong></p>
+            <p><strong>Estado:</strong></p>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginLeft: '10px' }}>
+            <p>{turnoSeleccionadoVisualizar?.Nombre}</p>
+            <p>{turnoSeleccionadoVisualizar?.HoraInicio}</p>
+            <p>{turnoSeleccionadoVisualizar?.HoraFinal}</p>
+            <p>{turnoSeleccionadoVisualizar?.Area}</p>
+            <p>{turnoSeleccionadoVisualizar?.Cupo}</p>
+            <p>{turnoSeleccionadoVisualizar?.Estado}</p>
+          </div>
+        </Modal.Body>
+
+
+        <Modal.Footer style={{ justifyContent: 'center' }}>
+          <Button variant="secondary" className='custom-button' onClick={cerrarModalVizualizar} style={{ color: '#FFFFFF', letterSpacing: '1px', fontWeight: 'normal' }}>
+            Cerrar
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }
