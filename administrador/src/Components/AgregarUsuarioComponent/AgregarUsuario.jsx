@@ -72,6 +72,7 @@ export default function AgregarUsuario() {
   const [progress, setProgress] = useState(0); //Barra de progreso
   const [alertMessage, setAlertMessage] = useState(""); // Mensaje de la alerta
   const [alertVariant, setAlertVariant] = useState("info"); // Estado para controlar el color de la alerta
+  const [mostrarContraseña, setMostrarContraseña] = useState(true); // Estado para controlar la visibilidad del input de contraseña
 
   // Función para mostrar la alerta de confirmación
   const mostrarAlerta = (mensaje, tipoAccion) => {
@@ -179,6 +180,17 @@ export default function AgregarUsuario() {
   // Función para ocultar el modal de confirmación
   const ocultarConfirmacion = () => {
     setMostrarModalConfirmacion(false);
+  };
+
+  // Evento para manejar el cambio en el selector de roles
+  const handleRolChange = (e) => {
+    const rolSeleccionado = e.target.value;
+    // Actualizar el estado para mostrar o ocultar el input de contraseña
+    if (rolSeleccionado === "Empleado") {
+      setMostrarContraseña(false);
+    } else {
+      setMostrarContraseña(true);
+    }
   };
 
   //CONSTANTE PARA ACTUALIZAR Y LIMPIAR EL FORMULARIO
@@ -593,14 +605,35 @@ export default function AgregarUsuario() {
                 )}
               </Form.Group>
 
+              <Form.Group controlId="formRol">
+                <Form.Label>Rol</Form.Label>
+                <Form.Control
+                  as="select"
+                  name="Rol"
+                  value={nuevoAdministrador.Rol}
+                  onChange={(e) => {
+                    handleInputChange(e); // Manejar el cambio de forma común
+                    handleRolChange(e); // Llamar al manejador de cambio de rol
+                  }}
+                >
+                  <option value="">Selecciona un rol</option>
+                  <option value="Administrador">Administrador</option>
+                  <option value="Empleado">Empleado</option>
+                </Form.Control>
+              </Form.Group>
+
               <Form.Group controlId="formContraseña">
-                <Form.Label>Contraseña</Form.Label>
-                <FormControl
-                  type="password"
-                  name="Contraseña"
-                  value={nuevoAdministrador.Contraseña}
-                  onChange={handleInputChange}
-                />
+                {mostrarContraseña && (
+                  <>
+                    <Form.Label>Contraseña</Form.Label>
+                    <FormControl
+                      type="password"
+                      name="Contraseña"
+                      value={nuevoAdministrador.Contraseña}
+                      onChange={handleInputChange}
+                    />
+                  </>
+                )}
               </Form.Group>
 
               <Form.Group controlId="formRegion">
@@ -642,20 +675,6 @@ export default function AgregarUsuario() {
                       </option>
                     ))
                   )}
-                </Form.Control>
-              </Form.Group>
-
-              <Form.Group controlId="formRol">
-                <Form.Label>Rol</Form.Label>
-                <Form.Control
-                  as="select"
-                  name="Rol"
-                  value={nuevoAdministrador.Rol}
-                  onChange={handleInputChange}
-                >
-                  <option value="">Selecciona un rol</option>
-                  <option value="Administrador">Administrador</option>
-                  <option value="Empleado">Empleado</option>
                 </Form.Control>
               </Form.Group>
             </Form>
@@ -756,14 +775,44 @@ export default function AgregarUsuario() {
                 )}
               </Form.Group>
 
+              <Form.Group controlId="formRolActualizar">
+                <Form.Label>Rol</Form.Label>
+                <Form.Control
+                  as="select"
+                  name="Rol"
+                  value={valoresAdministradorSeleccionado.Rol}
+                  onChange={(e) => {
+                    const nuevoRol = e.target.value;
+                    setValoresAdministradorSeleccionado({
+                      ...valoresAdministradorSeleccionado,
+                      Rol: nuevoRol,
+                      Contraseña:
+                        nuevoRol === "Empleado"
+                          ? ""
+                          : valoresAdministradorSeleccionado.Contraseña, // Resetear la contraseña si el nuevo rol es "Empleado"
+                    });
+                    // Otras acciones necesarias
+                  }}
+                >
+                  <option value="">Selecciona un rol</option>
+                  <option value="Administrador">Administrador</option>
+                  <option value="Empleado">Empleado</option>
+                </Form.Control>
+              </Form.Group>
+
               <Form.Group controlId="formContraseñaActualizar">
-                <Form.Label>Nueva Contraseña</Form.Label>
-                <FormControl
-                  type="password"
-                  name="Contraseña"
-                  value={valoresAdministradorSeleccionado.Contraseña}
-                  onChange={handleInputChange}
-                />
+                {valoresAdministradorSeleccionado.Rol === "Administrador" &&
+                  mostrarContraseña && (
+                    <div>
+                      <Form.Label>Nueva Contraseña</Form.Label>
+                      <FormControl
+                        type="password"
+                        name="Contraseña"
+                        value={valoresAdministradorSeleccionado.Contraseña}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                  )}
               </Form.Group>
 
               <Form.Group controlId="formRegionActualizar">
@@ -813,25 +862,6 @@ export default function AgregarUsuario() {
                       {area.nombre}
                     </option>
                   ))}
-                </Form.Control>
-              </Form.Group>
-
-              <Form.Group controlId="formRolActualizar">
-                <Form.Label>Rol</Form.Label>
-                <Form.Control
-                  as="select"
-                  name="Rol"
-                  value={valoresAdministradorSeleccionado.Rol}
-                  onChange={(e) =>
-                    setValoresAdministradorSeleccionado({
-                      ...valoresAdministradorSeleccionado,
-                      Rol: e.target.value,
-                    })
-                  }
-                >
-                  <option value="">Selecciona un rol</option>
-                  <option value="Administrador">Administrador</option>
-                  <option value="Empleado">Empleado</option>
                 </Form.Control>
               </Form.Group>
             </Form>
@@ -913,7 +943,6 @@ export default function AgregarUsuario() {
                 .toLowerCase()
                 .includes(filtroApellidoModal.toLowerCase())
             )
-
             .filter(
               (administrador) =>
                 filtroRol === "" ||
@@ -956,9 +985,11 @@ export default function AgregarUsuario() {
                       <Typography variant="body2">
                         Correo: {administrador.Correo}
                       </Typography>
-                      <Typography variant="body2">
-                        Contraseña: {administrador.Contraseña}
-                      </Typography>
+                      {administrador.Rol === "Administrador" && (
+                        <Typography variant="body2">
+                          Contraseña: {administrador.Contraseña}
+                        </Typography>
+                      )}
                       <Typography variant="body2">
                         Rol: {administrador.Rol}
                       </Typography>
