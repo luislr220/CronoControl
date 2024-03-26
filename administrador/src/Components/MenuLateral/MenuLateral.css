@@ -1,0 +1,16 @@
+.logo {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px; /* Ajusta según sea necesario */
+}
+
+.logo img {
+    max-width: 100px; /* Ajusta el tamaño máximo del logo */
+    height: auto;
+}
+
+.menu-lateral {
+    background-color: #252440; /* Color de fondo */
+    color: #ffffff; /* Color del texto */
+    /* Otros estilos según sea necesario */
+}
