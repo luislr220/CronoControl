@@ -7,7 +7,7 @@ import Navigation from "../NavigationComponent/Navigation";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
-import { CardActionArea } from "@mui/material";
+import { CardActionArea, CardActions } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
 import Grid from "@mui/material/Grid";
@@ -28,7 +28,7 @@ export default function AgregarUsuario() {
     Contraseña: "",
     Region: "",
     AreaTrabajo: "",
-    Rol: "Administrador",
+    Rol: "",
   });
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [administradorSeleccionado, setAdministradorSeleccionado] =
@@ -45,7 +45,7 @@ export default function AgregarUsuario() {
     Contraseña: "",
     Region: "",
     AreaTrabajo: "",
-    Rol: "Administrador", // Establecer valor por defecto
+    Rol: "", // Establecer valor por defecto
   });
 
   const [mostrarModalActualizar, setMostrarModalActualizar] = useState(false);
@@ -53,6 +53,8 @@ export default function AgregarUsuario() {
   const [filtroRegion, setFiltroRegion] = useState(""); // Nuevo estado para el filtro por región
   const [filtroArea, setFiltroArea] = useState(""); // Nuevo estado para el filtro por Área
   const [filtroApellidoModal, setFiltroApellidoModal] = useState(""); // Estado para filtrar por apellido
+  const [roles, setRoles] = useState("");
+  const [filtroRol, setFiltroRol] = useState("");
   const [errorCorreoDuplicado, setErrorCorreoDuplicado] = useState("");
   const [errorCorreoDuplicadoActualizar, setErrorCorreoDuplicadoActualizar] =
     useState("");
@@ -111,7 +113,7 @@ export default function AgregarUsuario() {
   };
 
   useEffect(() => {
-    // Función para obtener la lista de empleados, las áres y sedes desde el backend
+    // Función para obtener la lista de administradores, las áreas y sedes desde el backend
     const fetchAdministrador = async () => {
       try {
         const response = await fetch("http://localhost:3002/administrador");
@@ -120,10 +122,19 @@ export default function AgregarUsuario() {
         }
         const data = await response.json();
         setAdministrador(data);
+
+        // Obtener roles únicos de los datos de administrador
+        const rolesUnicos = [
+          ...new Set(data.map((administrador) => administrador.Rol)),
+        ];
+        setRoles(rolesUnicos);
       } catch (error) {
         console.error(error);
+      } finally {
+        setLoading(false);
       }
     };
+
     const fetchSedes = async () => {
       try {
         const response = await fetch("http://localhost:3002/sedes");
@@ -176,18 +187,21 @@ export default function AgregarUsuario() {
     if (name === "filtroApellidoModal") {
       setFiltroApellidoModal(value);
     } else if (mostrarModalActualizar) {
-      // Asegúrate de que solo se actualice el estado cuando se muestre el formulario de actualización
       setValoresAdministradorSeleccionado((prevState) => ({
         ...prevState,
         [name]: value,
       }));
-      setErrorCorreoDuplicadoActualizar(""); // Limpia el estado de errorCorreoDuplicadoActualizar cuando se realiza un cambio en el formulario de actualización
+      if (name === "Correo") {
+        setErrorCorreoDuplicadoActualizar(""); // Limpiar solo cuando se cambie el correo electrónico
+      }
     } else {
       setNuevoAdministrador((prevState) => ({
         ...prevState,
         [name]: value,
       }));
-      setErrorCorreoDuplicado(""); // Limpia el estado de errorCorreoDuplicado cuando se realiza un cambio en el formulario de agregar
+      if (name === "Correo") {
+        setErrorCorreoDuplicado(""); // Limpiar solo cuando se cambie el correo electrónico
+      }
     }
   };
 
@@ -216,6 +230,7 @@ export default function AgregarUsuario() {
   };
 
   //CONSTANTE DE AGREGAR USUARIO
+
   const agregarAdministrador = async () => {
     // Validar que los campos requeridos estén llenos
     if (!nuevoAdministrador.Region || !nuevoAdministrador.AreaTrabajo) {
@@ -237,7 +252,6 @@ export default function AgregarUsuario() {
     // Añadir el rol al objeto de nuevo empleado
     const nuevoAdministradorConRol = {
       ...nuevoAdministrador,
-      Rol: "Administrador",
     };
 
     try {
@@ -501,6 +515,23 @@ export default function AgregarUsuario() {
               )
             )}
           </Form.Control>
+          <Form.Control
+            as="select"
+            className="AGEMBuscador"
+            value={filtroRol} // Utiliza filtroRol en lugar de roles aquí
+            onChange={(e) => setFiltroRol(e.target.value)}
+          >
+            <option value="">Todos los roles</option>
+            {loading ? (
+              <option disabled>Cargando roles...</option>
+            ) : (
+              roles.map((rol, index) => (
+                <option key={index} value={rol}>
+                  {rol}
+                </option>
+              ))
+            )}
+          </Form.Control>
         </div>
 
         {/*MODAL PARA AGREGAR UN Administrador */}
@@ -621,9 +652,10 @@ export default function AgregarUsuario() {
                   name="Rol"
                   value={nuevoAdministrador.Rol}
                   onChange={handleInputChange}
-                  disabled // Deshabilitar el campo para evitar cambios
                 >
+                  <option value="">Selecciona un rol</option>
                   <option value="Administrador">Administrador</option>
+                  <option value="Empleado">Empleado</option>
                 </Form.Control>
               </Form.Group>
             </Form>
@@ -796,9 +828,10 @@ export default function AgregarUsuario() {
                       Rol: e.target.value,
                     })
                   }
-                  disabled // Deshabilitar el campo para evitar cambios
                 >
+                  <option value="">Selecciona un rol</option>
                   <option value="Administrador">Administrador</option>
+                  <option value="Empleado">Empleado</option>
                 </Form.Control>
               </Form.Group>
             </Form>
@@ -866,22 +899,27 @@ export default function AgregarUsuario() {
               administrador.Nombre.toLowerCase().includes(filtro.toLowerCase())
             )
             .filter((administrador) =>
-              // Aplicar filtro por región
               administrador.Region.toLowerCase().includes(
                 filtroRegion.toLowerCase()
               )
             )
             .filter((administrador) =>
-              // Aplicar filtro por área
               administrador.AreaTrabajo.toLowerCase().includes(
                 filtroArea.toLowerCase()
               )
             )
             .filter((administrador) =>
-              //Aplicar Filtro por apellido
               `${administrador.AppE} ${administrador.ApmE}`
-                ?.toLowerCase()
-                .startsWith(filtroApellidoModal.toLowerCase())
+                .toLowerCase()
+                .includes(filtroApellidoModal.toLowerCase())
+            )
+
+            .filter(
+              (administrador) =>
+                filtroRol === "" ||
+                administrador.Rol.toLowerCase().includes(
+                  filtroRol.toLowerCase()
+                )
             )
             .map((administrador, index) => (
               <Grid
@@ -895,7 +933,12 @@ export default function AgregarUsuario() {
                 sx={{ width: "100%", p: 2 }}
               >
                 <Card
-                  sx={{ maxWidth: 300, height: "100%" }}
+                  sx={{
+                    maxWidth: 300,
+                    height: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                  }}
                   className="AGEMCard"
                 >
                   <CardActionArea>
@@ -920,7 +963,7 @@ export default function AgregarUsuario() {
                         Rol: {administrador.Rol}
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
-                        Fecha de nacimiento:
+                        Fecha de nacimiento:{" "}
                         {format(new Date(administrador.FechaNac), "yyyy-MM-dd")}
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
@@ -929,23 +972,24 @@ export default function AgregarUsuario() {
                       <Typography variant="body2" color="text.secondary">
                         Área: {administrador.AreaTrabajo}
                       </Typography>
-                      <br />
-                      <Button
-                        variant="contained"
-                        color="success"
-                        onClick={() => abrirModalActualizar(administrador)}
-                      >
-                        Actualizar
-                      </Button>{" "}
-                      <Button
-                        variant="outlined"
-                        color="error"
-                        onClick={() => mostrarConfirmacion(administrador)}
-                      >
-                        Eliminar
-                      </Button>{" "}
                     </CardContent>
                   </CardActionArea>
+                  <CardActions className="myCardActions">
+                    <Button
+                      variant="contained"
+                      color="success"
+                      onClick={() => abrirModalActualizar(administrador)}
+                    >
+                      Actualizar
+                    </Button>{" "}
+                    <Button
+                      variant="outlined"
+                      color="error"
+                      onClick={() => mostrarConfirmacion(administrador)}
+                    >
+                      Eliminar
+                    </Button>{" "}
+                  </CardActions>
                 </Card>
               </Grid>
             ))}
