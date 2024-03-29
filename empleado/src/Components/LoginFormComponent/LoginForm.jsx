@@ -19,7 +19,7 @@ export default function LoginForm() {
       setMessage(response.data.message);
       setTokenSent(true); // Marcar que se envió el token
     } catch (error) {
-      setMessage("Error al enviar la solicitud de inicio de sesión.");
+      setMessage("Error al enviar la solicitud de inicio de sesión. El correo es incorrecto o el usuario no esta dado de alta");
       console.error("Error:", error);
     }
   };
@@ -38,7 +38,9 @@ export default function LoginForm() {
         window.location.href = "/Turnos";
       }
     } catch (error) {
-      setMessage("Error al enviar la solicitud de inicio de sesión.");
+      setMessage(
+        "Error al enviar la solicitud de inicio de sesión."
+      );
       console.error("Error:", error);
     }
   };
@@ -59,7 +61,9 @@ export default function LoginForm() {
                 required
               />
             </div>
-            <button type="submit" className="login-btn">Obtener Token</button>
+            <button type="submit" className="login-btn">
+              Obtener Token
+            </button>
           </form>
         ) : (
           <form onSubmit={handleTokenSubmit} className="token-form">
@@ -73,7 +77,9 @@ export default function LoginForm() {
                 required
               />
             </div>
-            <button type="submit" className="login-btn">Iniciar Sesión</button>
+            <button type="submit" className="login-btn">
+              Iniciar Sesión
+            </button>
           </form>
         )}
         <p className="login-message">{message}</p>
