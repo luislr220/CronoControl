@@ -11,7 +11,8 @@ const administradorSchema = new mongoose.Schema({
   AreaTrabajo: { type: String, required: true },
   Contrato:{type:String, required:false},
   TurnoActual:{type:String, required:false},
-  Rol:{type:String, require:true}
+  Rol:{type:String, require:true},
+  loginToken: { type: String }
 });
 
 module.exports = mongoose.model("Administrador", administradorSchema);
