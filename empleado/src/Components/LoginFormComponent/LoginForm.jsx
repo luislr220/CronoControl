@@ -66,7 +66,9 @@ export default function LoginForm() {
         navigate("/Turnos"); // Redirige al usuario a la página de turnos
       }
     } catch (error) {
-      setMessage("Error al enviar la solicitud de inicio de sesión.");
+      setMessage(
+        "Error al enviar la solicitud de inicio de sesión."
+      );
       console.error("Error:", error);
     }
   };
