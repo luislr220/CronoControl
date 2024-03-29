@@ -69,7 +69,7 @@ export default function LoginForm() {
       setMessage("Error al enviar la solicitud de inicio de sesión.");
       console.error("Error:", error);
     }
-  };;
+  };
 
   return (
     <div className="login-container">
