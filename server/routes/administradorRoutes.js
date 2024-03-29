@@ -28,7 +28,7 @@ router.post("/login/token", async (req, res) => {
     empleado.loginToken = token;
     await empleado.save();
 
-    // Enviar el token por correo electrónico utilizando la función enviarCorreo desde mailerController
+    // Enviar el token por correo electrónico utilizando la función enviarCorreo desde authController
     await enviarCorreo(empleado.Correo, token);
 
     res.json({
@@ -56,8 +56,6 @@ router.post("/login", async (req, res) => {
         .status(401)
         .json({ error: "Correo electrónico o token inválido" });
     }
-    // Aquí puedes generar un token de sesión válido para el usuario si lo deseas
-    // Luego, puedes devolver el token de sesión o cualquier otra información que necesites
     res.json({ message: "Inicio de sesión exitoso" });
   } catch (error) {
     console.error("Error al iniciar sesión:", error);
@@ -68,9 +66,6 @@ router.post("/login", async (req, res) => {
 // Ruta para cerrar sesión
 router.post("/logout", async (req, res) => {
   try {
-    // Realiza cualquier acción necesaria para cerrar la sesión del usuario
-    // Por ejemplo, puedes eliminar el token de sesión o cualquier otra información de sesión en el backend
-
     // Devuelve una respuesta indicando que la sesión se ha cerrado exitosamente
     res.json({ message: "Sesión cerrada exitosamente" });
   } catch (error) {
