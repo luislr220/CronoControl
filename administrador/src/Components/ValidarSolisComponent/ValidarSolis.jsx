@@ -1,30 +1,25 @@
-import React, { useState, useEffect } from "react";
-import { Container } from "react-bootstrap";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "./css/vali.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faSearch,
-  faCircleUser,
-  faCheck,
-  faTimes,
-  faSyncAlt
-} from "@fortawesome/free-solid-svg-icons";
-import Navigation from "../NavigationComponent/Navigation";
+import React, { useState, useEffect } from 'react';
+import { Container } from 'react-bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './css/vali.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSearch, faCircleUser, faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
+import Navigation from '../NavigationComponent/Navigation';
 
 const ValidarSolis = () => {
   const [turnos, setTurnos] = useState([]);
-  const [searchInputEmpleado, setSearchInputEmpleado] = useState("");
-  const [searchInputEstado, setSearchInputEstado] = useState("");
-  const [searchInputCupo, setSearchInputCupo] = useState("");
+  const [solicitudesPermisos, setSolicitudesPermisos] = useState([]);
+  const [searchInputEmpleado, setSearchInputEmpleado] = useState('');
+  const [searchInputTurno, setSearchInputTurno] = useState('');
   const [filteredTurnos, setFilteredTurnos] = useState([]);
+  const [filteredSolicitudes, setFilteredSolicitudes] = useState([]);
 
   useEffect(() => {
     const fetchTurnos = async () => {
       try {
-        const response = await fetch("http://localhost:3002/turnos");
+        const response = await fetch('http://localhost:3002/turnos');
         if (!response.ok) {
-          throw new Error("No se pudo obtener la lista de turnos");
+          throw new Error('No se pudo obtener la lista de turnos');
         }
         const data = await response.json();
         setTurnos(data);
@@ -34,75 +29,74 @@ const ValidarSolis = () => {
       }
     };
 
+    const fetchSolicitudesPermisos = async () => {
+      try {
+        const response = await fetch('http://localhost:3002/solicitudes-permisos');
+        if (!response.ok) {
+          throw new Error('No se pudo obtener la lista de solicitudes de permisos');
+        }
+        const data = await response.json();
+        setSolicitudesPermisos(data);
+        setFilteredSolicitudes(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
     fetchTurnos();
+    fetchSolicitudesPermisos();
   }, []);
 
   useEffect(() => {
     const filterTurnos = () => {
       let filtered = turnos.filter((turno) => {
         return (
-          turno.Nombre.toLowerCase().includes(
-            searchInputEmpleado.toLowerCase()
-          ) &&
-          turno.Estado.toLowerCase().includes(
-            searchInputEstado.toLowerCase()
-          ) &&
-          turno.Cupo.toString().includes(searchInputCupo)
+          turno.Nombre.toLowerCase().includes(searchInputEmpleado.toLowerCase()) &&
+          turno.HoraInicio.toLowerCase().includes(searchInputTurno.toLowerCase())
         );
       });
       setFilteredTurnos(filtered);
     };
 
     filterTurnos();
-  }, [turnos, searchInputEmpleado, searchInputEstado, searchInputCupo]);
+  }, [turnos, searchInputEmpleado, searchInputTurno]);
 
-  const handleValidar = (turnoId) => {
+  useEffect(() => {
+    const filterSolicitudes = () => {
+      let filtered = solicitudesPermisos.filter((solicitud) => {
+        return (
+          solicitud.nombre.toLowerCase().includes(searchInputEmpleado.toLowerCase()) &&
+          solicitud.fechaInicio.toLowerCase().includes(searchInputTurno.toLowerCase())
+        );
+      });
+      setFilteredSolicitudes(filtered);
+    };
+
+    filterSolicitudes();
+  }, [solicitudesPermisos, searchInputEmpleado, searchInputTurno]);
+
+  const handleValidarTurno = (turnoId) => {
     console.log(`Validando turno con ID ${turnoId}`);
-    const updatedTurnos = filteredTurnos.map((turno) => {
-      if (turno._id === turnoId) {
-        return { ...turno, Estatus: "Aceptada" };
-      }
-      return turno;
-    });
-    setFilteredTurnos(updatedTurnos);
-    alert("Turno validado correctamente");
+    // Aquí podrías escribir la lógica para validar el turno
   };
 
-  const handleRechazar = (turnoId) => {
+  const handleRechazarTurno = (turnoId) => {
     console.log(`Rechazando turno con ID ${turnoId}`);
-    const updatedTurnos = filteredTurnos.filter(
-      (turno) => turno._id !== turnoId
-    );
+    const updatedTurnos = filteredTurnos.filter(turno => turno.id !== turnoId);
     setFilteredTurnos(updatedTurnos);
-    alert("Turno rechazado correctamente");
+    // Aquí podrías escribir la lógica para rechazar el turno
   };
 
-  const handleAceptarTodos = () => {
-    const updatedTurnos = filteredTurnos.map((turno) => {
-      return { ...turno, Estatus: "Aceptada" };
-    });
-    setFilteredTurnos(updatedTurnos);
-    alert("Todos los turnos fueron aceptados correctamente");
+  const handleValidarSolicitud = (solicitudId) => {
+    console.log(`Validando solicitud con ID ${solicitudId}`);
+    // Aquí podrías escribir la lógica para validar la solicitud de permisos
   };
 
-  const handleDenegarTodos = () => {
-    setFilteredTurnos([]);
-    alert("Todos los turnos fueron denegados correctamente");
-  };
-
-  const handleActualizar = async () => {
-    try {
-      const response = await fetch("http://localhost:3002/turnos");
-      if (!response.ok) {
-        throw new Error("No se pudo obtener la lista de turnos");
-      }
-      const data = await response.json();
-      setTurnos(data);
-      setFilteredTurnos(data);
-      alert("Lista de turnos actualizada correctamente");
-    } catch (error) {
-      console.error(error);
-    }
+  const handleRechazarSolicitud = (solicitudId) => {
+    console.log(`Rechazando solicitud con ID ${solicitudId}`);
+    const updatedSolicitudes = filteredSolicitudes.filter(solicitud => solicitud.id !== solicitudId);
+    setFilteredSolicitudes(updatedSolicitudes);
+    // Aquí podrías escribir la lógica para rechazar la solicitud de permisos
   };
 
   return (
@@ -119,7 +113,7 @@ const ValidarSolis = () => {
             <div className="col-5">
               <form className="d-flex">
                 <input
-                  className="form-control me-2"
+                  className="form-control me-2 "
                   type="search"
                   placeholder="Buscar por empleado..."
                   aria-label="Search"
@@ -127,20 +121,12 @@ const ValidarSolis = () => {
                   onChange={(e) => setSearchInputEmpleado(e.target.value)}
                 />
                 <input
-                  className="form-control me-2"
+                  className="form-control me-2 "
                   type="search"
-                  placeholder="Buscar por estado..."
+                  placeholder="Buscar por turno..."
                   aria-label="Search"
-                  value={searchInputEstado}
-                  onChange={(e) => setSearchInputEstado(e.target.value)}
-                />
-                <input
-                  className="form-control me-2"
-                  type="search"
-                  placeholder="Buscar por cupo..."
-                  aria-label="Search"
-                  value={searchInputCupo}
-                  onChange={(e) => setSearchInputCupo(e.target.value)}
+                  value={searchInputTurno}
+                  onChange={(e) => setSearchInputTurno(e.target.value)}
                 />
                 <button className="btn btn-outline-link" type="submit">
                   <FontAwesomeIcon icon={faSearch} />
@@ -154,44 +140,26 @@ const ValidarSolis = () => {
         <br></br>
         <div className="container">
           <div className="row">
-            <div className="col-12">
-              <div className="row">
-                <div className="col">
-                  <button
-                    className="btn btn-primary mb-3"
-                    onClick={handleActualizar}
-                  >
-                    <FontAwesomeIcon icon={faSyncAlt} className="mr-2" />
-                    Actualizar
-                  </button>
-                </div>
-                <div className="col">
-                  <button
-                    className="btn btn-success mb-3 ml-3"
-                    onClick={handleAceptarTodos}
-                  >
-                    Aceptar Todos
-                  </button>
-                  <button
-                    className="btn btn-danger mb-3 ml-3"
-                    onClick={handleDenegarTodos}
-                  >
-                    Denegar Todos
-                  </button>
-                </div>
-              </div>
+            <div className="col">
+              <button type="button" className="btn btn-light">
+                Actualizar
+              </button>
+            </div>
+          </div>
+        </div>
+        <br></br>
+        <div className="col-12">
+          <div className="row">
+            <div className="col">
+              <h2>Turnos</h2>
               <table className="table rounded">
                 <thead>
                   <tr>
                     <th></th>
-                    <th>Nombre Turno</th>
-                    <th>Hora Inicial</th>
+                    <th>Nombre</th>
+                    <th>Hora Inicio</th>
                     <th>Hora Final</th>
-                    <th>Estado</th>
-                    <th>Cupo</th>
-                    <th>Area</th>
-                    <th>Estatus</th>
-                    <th>Validar</th>
+                    <th>Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -200,32 +168,67 @@ const ValidarSolis = () => {
                       <td>
                         <FontAwesomeIcon
                           icon={faCircleUser}
-                          style={{ color: "#000000", fontSize: "1.5rem" }}
+                          style={{ color: '#000000', fontSize: '1.5rem' }}
                         />
                       </td>
                       <td>{turno.Nombre}</td>
                       <td>{turno.HoraInicio}</td>
                       <td>{turno.HoraFinal}</td>
-                      <td>{turno.Estado}</td>
-                      <td>{turno.Cupo}</td>
-                      <td>{turno.Area}</td>
-                      <td className="col">
-                        {turno.Estatus === "Aceptada"
-                          ? "Aceptada"
-                          : turno.Estatus === "Rechazada"
-                          ? "Rechazada"
-                          : "Pendiente"}
-                      </td>
-                      <td style={{ textAlign: "center" }}>
+                      <td style={{ textAlign: 'center' }}>
                         <button
-                          className=" btn btn-success mr-2"
-                          onClick={() => handleValidar(turno._id)}
+                          className="btn btn-success mr-2"
+                          onClick={() => handleValidarTurno(turno.id)}
                         >
                           <FontAwesomeIcon icon={faCheck} />
                         </button>
                         <button
                           className="btn btn-danger"
-                          onClick={() => handleRechazar(turno._id)}
+                          onClick={() => handleRechazarTurno(turno.id)}
+                        >
+                          <FontAwesomeIcon icon={faTimes} />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="">
+              <h2>Solicitudes de Vacaciones</h2>
+              <table className="table rounded">
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>Nombre</th>
+                    <th>Fecha Inicio</th>
+                    <th>Fecha Final</th>
+                    <th>Justificación</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredSolicitudes.map((solicitud, index) => (
+                    <tr key={index}>
+                      <td>
+                        <FontAwesomeIcon
+                          icon={faCircleUser}
+                          style={{ color: '#000000', fontSize: '1.5rem' }}
+                        />
+                      </td>
+                      <td>{solicitud.nombre}</td>
+                      <td>{solicitud.fechaInicio}</td>
+                      <td>{solicitud.fechaFinal}</td>
+                      <td>{solicitud.justificacion}</td>
+                      <td style={{ textAlign: 'center' }}>
+                        <button
+                          className="btn btn-success mr-2"
+                          onClick={() => handleValidarSolicitud(solicitud.id)}
+                        >
+                          <FontAwesomeIcon icon={faCheck} />
+                        </button>
+                        <button
+                          className="btn btn-danger"
+                          onClick={() => handleRechazarSolicitud(solicitud.id)}
                         >
                           <FontAwesomeIcon icon={faTimes} />
                         </button>
@@ -243,3 +246,5 @@ const ValidarSolis = () => {
 };
 
 export default ValidarSolis;
+
+
