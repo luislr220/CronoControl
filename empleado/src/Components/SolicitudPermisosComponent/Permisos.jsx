@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./css/permisos.css"; // Agregamos un archivo CSS separado para los estilos específicos de este componente
 import Navigation from "../NavigationConponent/Navigation";
-import { Form, Button} from "react-bootstrap";
+import { Form, Button, FormControl } from "react-bootstrap";
 
 export default function Permisos() {
   const [nombre, setNombre] = useState("");
