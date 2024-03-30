@@ -8,9 +8,11 @@ import Navigation from '../NavigationComponent/Navigation';
 
 const ValidarSolis = () => {
   const [turnos, setTurnos] = useState([]);
+  const [solicitudesPermisos, setSolicitudesPermisos] = useState([]);
   const [searchInputEmpleado, setSearchInputEmpleado] = useState('');
   const [searchInputTurno, setSearchInputTurno] = useState('');
   const [filteredTurnos, setFilteredTurnos] = useState([]);
+  const [filteredSolicitudes, setFilteredSolicitudes] = useState([]);
 
   useEffect(() => {
     const fetchTurnos = async () => {
@@ -27,7 +29,22 @@ const ValidarSolis = () => {
       }
     };
 
+    const fetchSolicitudesPermisos = async () => {
+      try {
+        const response = await fetch('http://localhost:3002/solicitudes-permisos');
+        if (!response.ok) {
+          throw new Error('No se pudo obtener la lista de solicitudes de permisos');
+        }
+        const data = await response.json();
+        setSolicitudesPermisos(data);
+        setFilteredSolicitudes(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
     fetchTurnos();
+    fetchSolicitudesPermisos();
   }, []);
 
   useEffect(() => {
@@ -44,20 +61,42 @@ const ValidarSolis = () => {
     filterTurnos();
   }, [turnos, searchInputEmpleado, searchInputTurno]);
 
-  const handleValidar = (turnoId) => {
-    // Aquí puedes escribir la lógica para validar el turno con el ID 'turnoId'
+  useEffect(() => {
+    const filterSolicitudes = () => {
+      let filtered = solicitudesPermisos.filter((solicitud) => {
+        return (
+          solicitud.nombre.toLowerCase().includes(searchInputEmpleado.toLowerCase()) &&
+          solicitud.fechaInicio.toLowerCase().includes(searchInputTurno.toLowerCase())
+        );
+      });
+      setFilteredSolicitudes(filtered);
+    };
+
+    filterSolicitudes();
+  }, [solicitudesPermisos, searchInputEmpleado, searchInputTurno]);
+
+  const handleValidarTurno = (turnoId) => {
     console.log(`Validando turno con ID ${turnoId}`);
-    alert('Turno validado correctamente');
-    // Por ejemplo, podrías realizar una solicitud al servidor para validar el turno
+    // Aquí podrías escribir la lógica para validar el turno
   };
 
-  const handleRechazar = (turnoId) => {
-    // Aquí puedes escribir la lógica para rechazar el turno con el ID 'turnoId'
+  const handleRechazarTurno = (turnoId) => {
     console.log(`Rechazando turno con ID ${turnoId}`);
-    const updatedTurnos = filteredTurnos.filter(turno => turno._id !== turnoId); // Cambio aquí
+    const updatedTurnos = filteredTurnos.filter(turno => turno.id !== turnoId);
     setFilteredTurnos(updatedTurnos);
-    alert('Turno rechazado correctamente');
-    // Por ejemplo, podrías realizar una solicitud al servidor para rechazar el turno
+    // Aquí podrías escribir la lógica para rechazar el turno
+  };
+
+  const handleValidarSolicitud = (solicitudId) => {
+    console.log(`Validando solicitud con ID ${solicitudId}`);
+    // Aquí podrías escribir la lógica para validar la solicitud de permisos
+  };
+
+  const handleRechazarSolicitud = (solicitudId) => {
+    console.log(`Rechazando solicitud con ID ${solicitudId}`);
+    const updatedSolicitudes = filteredSolicitudes.filter(solicitud => solicitud.id !== solicitudId);
+    setFilteredSolicitudes(updatedSolicitudes);
+    // Aquí podrías escribir la lógica para rechazar la solicitud de permisos
   };
 
   return (
@@ -106,66 +145,98 @@ const ValidarSolis = () => {
                 Actualizar
               </button>
             </div>
-            <div className="col-1">
-              <button type="button" className="btn btn-success btn-sm">
-                Aceptar todo
-              </button>
-            </div>
-            <div className="col-1">
-              <button type="button" className="btn btn-danger btn-sm">
-                Denegar todo
-              </button>
-            </div>
           </div>
         </div>
         <br></br>
         <div className="col-12">
           <div className="row">
-            <div className="col-12">
-              <div className="row">
-                <table className="table rounded">
-                  <thead>
-                    <tr>
-                      <th></th>
-                      <th>Nombre Turno</th>
-                      <th>Hora Inicial</th>
-                      <th>Hora Final</th>
-                      <th>Notas</th>
-                      <th className="col-1">Acciones</th> {/* Nueva columna para acciones */}
+            <div className="col">
+              <h2>Turnos</h2>
+              <table className="table rounded">
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>Nombre</th>
+                    <th>Hora Inicio</th>
+                    <th>Hora Final</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredTurnos.map((turno, index) => (
+                    <tr key={index}>
+                      <td>
+                        <FontAwesomeIcon
+                          icon={faCircleUser}
+                          style={{ color: '#000000', fontSize: '1.5rem' }}
+                        />
+                      </td>
+                      <td>{turno.Nombre}</td>
+                      <td>{turno.HoraInicio}</td>
+                      <td>{turno.HoraFinal}</td>
+                      <td style={{ textAlign: 'center' }}>
+                        <button
+                          className="btn btn-success mr-2"
+                          onClick={() => handleValidarTurno(turno.id)}
+                        >
+                          <FontAwesomeIcon icon={faCheck} />
+                        </button>
+                        <button
+                          className="btn btn-danger"
+                          onClick={() => handleRechazarTurno(turno.id)}
+                        >
+                          <FontAwesomeIcon icon={faTimes} />
+                        </button>
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {filteredTurnos.map((turno, index) => (
-                      <tr key={index}>
-                        <td>
-                          <FontAwesomeIcon
-                            icon={faCircleUser}
-                            style={{ color: '#000000', fontSize: '1.5rem' }}
-                          />
-                        </td>
-                        <td>{turno.Nombre}</td>
-                        <td>{turno.HoraInicio}</td>
-                        <td>{turno.HoraFinal}</td>
-                        <td>{turno.role}</td>
-                        <td style={{ textAlign: 'center' }}>
-                          <button
-                            className="btn btn-success mr-2"
-                            onClick={() => handleValidar(turno._id)} // Cambio aquí
-                          >
-                            <FontAwesomeIcon icon={faCheck} />
-                          </button>
-                          <button
-                            className="btn btn-danger"
-                            onClick={() => handleRechazar(turno._id)} // Cambio aquí
-                          >
-                            <FontAwesomeIcon icon={faTimes} />
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="">
+              <h2>Solicitudes de Vacaciones</h2>
+              <table className="table rounded">
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>Nombre</th>
+                    <th>Fecha Inicio</th>
+                    <th>Fecha Final</th>
+                    <th>Justificación</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredSolicitudes.map((solicitud, index) => (
+                    <tr key={index}>
+                      <td>
+                        <FontAwesomeIcon
+                          icon={faCircleUser}
+                          style={{ color: '#000000', fontSize: '1.5rem' }}
+                        />
+                      </td>
+                      <td>{solicitud.nombre}</td>
+                      <td>{solicitud.fechaInicio}</td>
+                      <td>{solicitud.fechaFinal}</td>
+                      <td>{solicitud.justificacion}</td>
+                      <td style={{ textAlign: 'center' }}>
+                        <button
+                          className="btn btn-success mr-2"
+                          onClick={() => handleValidarSolicitud(solicitud.id)}
+                        >
+                          <FontAwesomeIcon icon={faCheck} />
+                        </button>
+                        <button
+                          className="btn btn-danger"
+                          onClick={() => handleRechazarSolicitud(solicitud.id)}
+                        >
+                          <FontAwesomeIcon icon={faTimes} />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
