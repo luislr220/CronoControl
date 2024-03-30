@@ -31,6 +31,10 @@ export default function TurnoCrud() {
   const [turnoSeleccionadoVisualizar, setTurnoSeleccionadoVisualizar] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5); // Número de elementos por página
+  const [filtroArea, setFiltroArea] = useState(""); // Estado para almacenar el área seleccionada para filtrar
+  const [filtroEstado, setFiltroEstado] = useState(""); // Estado para almacenar el filtro de estado
+  const [filtroCupo, setFiltroCupo] = useState(""); // Estado para almacenar el filtro de cupo
+  const [filtroHorario, setFiltroHorario] = useState(""); // Estado para almacenar el filtro de horario
 
   const fetchTurnos = async () => {
     try {
@@ -75,6 +79,7 @@ export default function TurnoCrud() {
       Estado: "Activo"
     });
     setSelectedTurno(null);
+    setFiltroArea(""); 
   };
 
   const handleCloseUpdateTurnoModal = () => {
@@ -191,11 +196,35 @@ export default function TurnoCrud() {
   // Obtener índices de los elementos a mostrar en la página actual
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = turnos.slice(indexOfFirstItem, indexOfLastItem);
+
+  const filteredTurnos = turnos.filter(turno => {
+    if (filtroArea && filtroEstado && filtroCupo && filtroHorario) {
+      return turno.Area === filtroArea && turno.Estado === filtroEstado && parseInt(turno.Cupo) >= parseInt(filtroCupo) && turno.HoraInicio <= filtroHorario && turno.HoraFinal >= filtroHorario;
+    } else if (filtroArea && filtroCupo && filtroHorario) {
+      return turno.Area === filtroArea && parseInt(turno.Cupo) >= parseInt(filtroCupo) && turno.HoraInicio <= filtroHorario && turno.HoraFinal >= filtroHorario;
+    } else if (filtroEstado && filtroCupo && filtroHorario) {
+      return turno.Estado === filtroEstado && parseInt(turno.Cupo) >= parseInt(filtroCupo) && turno.HoraInicio <= filtroHorario && turno.HoraFinal >= filtroHorario;
+    } else if (filtroArea && filtroEstado && filtroHorario) {
+      return turno.Area === filtroArea && turno.Estado === filtroEstado && turno.HoraInicio <= filtroHorario && turno.HoraFinal >= filtroHorario;
+    } else if (filtroArea && filtroHorario) {
+      return turno.Area === filtroArea && turno.HoraInicio <= filtroHorario && turno.HoraFinal >= filtroHorario;
+    } else if (filtroEstado && filtroHorario) {
+      return turno.Estado === filtroEstado && turno.HoraInicio <= filtroHorario && turno.HoraFinal >= filtroHorario;
+    } else if (filtroCupo && filtroHorario) {
+      return parseInt(turno.Cupo) >= parseInt(filtroCupo) && turno.HoraInicio <= filtroHorario && turno.HoraFinal >= filtroHorario;
+    } else if (filtroHorario) {
+      return turno.HoraInicio <= filtroHorario && turno.HoraFinal >= filtroHorario;
+    } else {
+      return true;
+    }
+  });
+
+  // Obtener los turnos a mostrar en la página actual
+  const currentItems = filteredTurnos.slice(indexOfFirstItem, indexOfLastItem);
 
   // Obtener números de página
   const pageNumbers = [];
-  for (let i = 1; i <= Math.ceil(turnos.length / itemsPerPage); i++) {
+  for (let i = 1; i <= Math.ceil(filteredTurnos.length / itemsPerPage); i++) {
     pageNumbers.push(i);
   }
 
@@ -211,6 +240,31 @@ export default function TurnoCrud() {
           <Button variant="primary" className="custom-button" onClick={handleShowAddTurnoModal}>
             <span style={{ marginRight: '5px' }}>+</span> Nuevo Turno
           </Button>
+          {/* Filtrar por área */}
+          <Form.Group controlId="formAreaFiltro">
+            <Form.Control as="select" value={filtroArea} onChange={(e) => setFiltroArea(e.target.value)}>
+              <option value="">Todas las áreas</option>
+              {areas.map((area, index) => (
+                <option key={index} value={area}>{area}</option>
+              ))}
+            </Form.Control>
+          </Form.Group>
+          {/* Filtrar por estado */}
+          <Form.Group controlId="formEstadoFiltro">
+            <Form.Control as="select" value={filtroEstado} onChange={(e) => setFiltroEstado(e.target.value)}>
+              <option value="">Todos los estados</option>
+              <option value="Activo">Activo</option>
+              <option value="Inactivo">Inactivo</option>
+            </Form.Control>
+          </Form.Group>
+          {/* Filtrar por cupo */}
+          <Form.Group controlId="formCupoFiltro">
+            <Form.Control type="number" placeholder="Filtrar por cupo" value={filtroCupo} onChange={(e) => setFiltroCupo(e.target.value)} />
+          </Form.Group>
+          {/* Filtrar por horario */}
+          <Form.Group controlId="formHorarioFiltro">
+            <Form.Control type="time" placeholder="Filtrar por horario" value={filtroHorario} onChange={(e) => setFiltroHorario(e.target.value)} />
+          </Form.Group>
         </div>
         <Table className="AGEMTable">
           <thead style={{ backgroundColor: '#1C2B67', color: 'white' }}>
