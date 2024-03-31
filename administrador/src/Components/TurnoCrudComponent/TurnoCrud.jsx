@@ -34,7 +34,7 @@ export default function TurnoCrud() {
   const [filtroArea, setFiltroArea] = useState(""); // Estado para almacenar el área seleccionada para filtrar
   const [filtroEstado, setFiltroEstado] = useState(""); // Estado para almacenar el filtro de estado
   const [filtroCupo, setFiltroCupo] = useState(""); // Estado para almacenar el filtro de cupo
-  
+
 
   const fetchTurnos = async () => {
     try {
@@ -57,12 +57,12 @@ export default function TurnoCrud() {
           throw new Error("No se pudo obtener la lista de areas");
         }
         const data = await response.json();
-        const nombresAreas = data.map(area => area.nombre);
-        setAreas(nombresAreas);
+        const nombresAreas = data.map(area => area.nombre); // Obtener solo los nombres
+        setAreas(nombresAreas); // Almacenar solo los nombres en el estado 'areas'
       } catch (error) {
         console.error(error);
       }
-    };
+    };    
 
     fetchAreas();
     fetchTurnos();
@@ -79,7 +79,7 @@ export default function TurnoCrud() {
       Estado: "Activo"
     });
     setSelectedTurno(null);
-    setFiltroArea(""); 
+    setFiltroArea("");
   };
 
   const handleCloseUpdateTurnoModal = () => {
@@ -216,7 +216,7 @@ export default function TurnoCrud() {
       return true;
     }
   });
- 
+
 
   // Obtener los turnos a mostrar en la página actual
   const currentItems = filteredTurnos.slice(indexOfFirstItem, indexOfLastItem);
@@ -400,7 +400,7 @@ export default function TurnoCrud() {
               </div>
             </Form.Group>
             <Form.Group controlId="formAreaActualizar" className="row FormGroupMargin">
-              <Form.Label style={{ color: '#1C2B67', fontWeight: 'lighter' }} className="col-sm-4">Área de Trabajo</Form.Label>
+              <Form.Label style={{ color: '#1C2B67', fontWeight: 'lighter'  }} className="col-sm-4">Área de Trabajo</Form.Label>
               <div className="col-sm-8">
                 <Form.Control
                   as="select"
@@ -415,8 +415,8 @@ export default function TurnoCrud() {
                 >
                   <option value="">Selecciona una área</option>
                   {areas.map((area) => (
-                    <option key={area._id} value={area.nombre}>
-                      {area.nombre}
+                    <option key={area} value={area}>
+                      {area}
                     </option>
                   ))}
                 </Form.Control>
