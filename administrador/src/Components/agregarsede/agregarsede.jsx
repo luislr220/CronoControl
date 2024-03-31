@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, FormControl, Table, Form, Modal } from "react-bootstrap";
+import { Button, FormControl, Card, Modal, Row, Col, Form } from "react-bootstrap";
 import Navigation from "../NavigationComponent/Navigation";
 import "../agregarsede/css/sede.css";
 
@@ -13,6 +13,11 @@ export default function GestionarSedes() {
   });
   const [sedeEditando, setSedeEditando] = useState(null);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
+  const [mostrarFormularioArea, setMostrarFormularioArea] = useState(false);
+  const [nuevaArea, setNuevaArea] = useState({
+    nombre: "",
+    sede: ""
+  });
 
   useEffect(() => {
     const fetchSedes = async () => {
@@ -22,6 +27,7 @@ export default function GestionarSedes() {
           throw new Error("No se pudo obtener la lista de sedes");
         }
         const data = await response.json();
+        console.log("Sedes:", data); // Verificar datos recibidos desde la API
         setSedes(data);
       } catch (error) {
         console.error(error);
@@ -77,13 +83,13 @@ export default function GestionarSedes() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(nuevaSede), // Cambiar a nuevaSede
+        body: JSON.stringify(nuevaSede),
       });
-  
+
       if (!response.ok) {
         throw new Error("No se pudo editar la sede");
       }
-  
+
       const data = await response.json();
       const index = sedes.findIndex(sede => sede._id === sedeEditando._id);
       const nuevasSedes = [...sedes];
@@ -95,7 +101,6 @@ export default function GestionarSedes() {
       console.error(error);
     }
   };
-  
 
   const eliminarSede = async (id) => {
     try {
@@ -123,6 +128,46 @@ export default function GestionarSedes() {
     setMostrarFormulario(true);
   };
 
+  const handleInputChangeArea = (event) => {
+    const { name, value } = event.target;
+    setNuevaArea((prevState) => ({
+      ...prevState,
+      [name]: value
+    }));
+  };
+
+
+  const agregarArea = async () => {
+    try {
+      const response = await fetch("http://localhost:3002/areas", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(nuevaArea),
+      });
+
+      if (!response.ok) {
+        throw new Error("No se pudo agregar el área");
+      }
+
+      const data = await response.json();
+      const index = sedes.findIndex(sede => sede._id === nuevaArea.sede);
+      if (index !== -1) {
+        const nuevasSedes = [...sedes];
+        if (!nuevasSedes[index].areas) {
+          nuevasSedes[index].areas = [];
+        }
+        nuevasSedes[index].areas.push(data);
+        setSedes(nuevasSedes);
+      }
+      setNuevaArea({ nombre: "", sede: "" });
+      setMostrarFormularioArea(false);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div>
       <Navigation />
@@ -138,6 +183,13 @@ export default function GestionarSedes() {
             }}
           >
             Agregar Sede
+          </Button>{" "}
+          <Button
+            variant="primary"
+            className="AGEMBotonAgregar"
+            onClick={() => setMostrarFormularioArea(true)}
+          >
+            Agregar Área
           </Button>{" "}
           <FormControl
             type="text"
@@ -163,12 +215,12 @@ export default function GestionarSedes() {
           }}
         >
           <Modal.Header closeButton>
-            <Modal.Title>{sedeEditando ? 'Acualizar Sede' : 'Agregar Sede'}</Modal.Title>
+            <Modal.Title>{sedeEditando ? 'Actualizar Sede' : 'Agregar Sede'}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <Form>
               <Form.Group controlId="formNombre">
-                <Form.Label>Nombre de la Sede</Form.Label>
+                <Form.Label>Nombre</Form.Label>
                 <FormControl
                   type="text"
                   name="nombre"
@@ -188,65 +240,112 @@ export default function GestionarSedes() {
             </Form>
           </Modal.Body>
           <Modal.Footer>
-            <Button
-              variant="secondary"
-              onClick={() => {
-                setSedeEditando(null);
-                setMostrarFormulario(false);
-                setNuevaSede({ nombre: "", ubicacion: "" });
-              }}
-            >
+            <Button variant="secondary" onClick={() => setMostrarFormulario(false)}>
               Cancelar
             </Button>
-            <Button variant="info" onClick={sedeEditando ? editarSede : agregarSede}>
+            <Button variant="primary" onClick={sedeEditando ? editarSede : agregarSede}>
               {sedeEditando ? 'Actualizar' : 'Agregar'}
             </Button>
           </Modal.Footer>
         </Modal>
 
-        <Table className="AGEMTable">
-          <thead>
-            <tr>
-              <th>No.</th>
-              <th>Nombre</th>
-              <th>Ubicación</th>
-              <th>Editar</th>
-              <th>Eliminar</th>
-            </tr>
-          </thead>
-          <tbody>
-            {sedes
-              .filter((sede) =>
-                sede.nombre.toLowerCase().includes(filtroNombre.toLowerCase()) &&
-                sede.ubicacion.toLowerCase().includes(filtroUbicacion.toLowerCase())
-              )
-              .map((sede, index) => (
-                <tr key={index}>
-                  <td>{index + 1}</td>
-                  <td>{sede.nombre}</td>
-                  <td>{sede.ubicacion}</td>
-                  <td>
+        <Modal
+          show={mostrarFormularioArea}
+          onHide={() => {
+            setMostrarFormularioArea(false);
+            setNuevaArea({ nombre: "", sede: "" });
+          }}
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Agregar Área</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form>
+              <Form.Group controlId="formNombreArea">
+                <Form.Label>Nombre del Área</Form.Label>
+                <FormControl
+                  type="text"
+                  name="nombre"
+                  value={nuevaArea.nombre}
+                  onChange={handleInputChangeArea}
+                />
+              </Form.Group>
+              <Form.Group controlId="formSedeArea">
+                <Form.Label>Seleccione la Sede</Form.Label>
+                <Form.Control
+                  as="select"
+                  name="sede"
+                  value={nuevaArea.sede}
+                  onChange={handleInputChangeArea}
+                >
+                  <option value="">Selecciona una sede</option>
+                  {sedes.map((sede) => (
+                    <option key={sede._id} value={sede._id}>
+                      {sede.nombre}
+                    </option>
+                  ))}
+                </Form.Control>
+              </Form.Group>
+            </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setMostrarFormularioArea(false)}>
+              Cancelar
+            </Button>
+            <Button variant="primary" onClick={agregarArea}>
+              Agregar
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
+        {sedes
+          .filter((sede) =>
+            sede.nombre.toLowerCase().includes(filtroNombre.toLowerCase()) &&
+            sede.ubicacion.toLowerCase().includes(filtroUbicacion.toLowerCase())
+          )
+          .reduce((rows, sede, index) => {
+            if (index % 3 === 0) {
+              rows.push([]);
+            }
+            rows[rows.length - 1].push(
+              <Col key={index} lg={4} md={6} sm={12} className="AGEMCardContainer">
+                <Card className="AGEMCard">
+                  <Card.Body>
+                    <Card.Title>{sede.nombre}</Card.Title>
+                    <Card.Subtitle className="mb-2 text-muted">{sede.ubicacion}</Card.Subtitle>
                     <Button
-                      variant="info"
+                      variant="primary"
                       onClick={() => mostrarEditarSede(sede)}
-                      className="AGEMBotonEditar"
                     >
-                      Actualizar
+                      Editar
                     </Button>{" "}
-                  </td>
-                  <td>
                     <Button
                       variant="danger"
                       onClick={() => eliminarSede(sede._id)}
-                      className="AGEMBotonEliminar"
                     >
                       Eliminar
                     </Button>{" "}
-                  </td>
-                </tr>
-              ))}
-          </tbody>
-        </Table>
+                    {sede.areas && sede.areas.length > 0 && (
+                      <div>
+                        <h5>Áreas de trabajo:</h5>
+                        <ul>
+                          {sede.areas.map((area) => (
+                            <li key={area._id}>{area.nombre}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </Card.Body>
+                </Card>
+              </Col>
+            );
+            return rows;
+          }, [])
+          .map((row, index) => (
+            <Row key={index} className="justify-content-center">
+              {row}
+            </Row>
+          ))}
       </div>
     </div>
   );

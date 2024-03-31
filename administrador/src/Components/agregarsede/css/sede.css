@@ -1,42 +1,55 @@
-/* Estilos para el contenedor principal */
-.contenedor {
-  padding: 4%;
+/* TurnoCrud.css */
+
+/* Estilo para el cuerpo */
+.cuerpo {
+  background-color: #afcdea;
+  font-family: XD;
 }
 
-/* Estilos para la tabla */
-.table {
-  text-align: justify;
-  border-radius: 10px;
-  overflow: hidden;
-  border-collapse: collapse;
-  width: 100%;
+/* Estilo para la cabecera de la tabla */
+.AGEMTable thead th {
+  background-color: #1C2B67;
+  color: white;
+  text-align: center; /* Centrar el texto */
+  padding: 10px; /* Agregar separación */
+  letter-spacing: 1px; /* Agregar espacio entre las letras */
+  font-size: 16px; /* Cambiar el tamaño de la letra */
+  font-weight: normal; /* Quitar la negrita */
 }
 
-.table th,
-.table td {
-  padding: 8px;
-  border: 1px solid #dddddd;
+/* Estilo para el cuerpo de la tabla */
+.AGEMTable tbody td {
+  text-align: center; /* Centrar el contenido */
 }
 
-.table th {
-  background-color: #f2f2f2; /* Color de fondo para las cabeceras */
+/* Agregar estilo al botón */
+.custom-button {
+  background-color: #1C2B67;
+  border: none;
+  transition: background-color 0.3s ease; /* Transición suave del color de fondo */
 }
 
-/* Estilos para el contenedor de botones y buscador */
-.boton-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
+.custom-button:hover {
+  background-color: #318CE7; /* Cambiar el tono al pasar el cursor */
 }
 
-.filtro {
-  margin-left: 10px;
+/* Estilo para centrar el título */
+.AGEMTitulo {
+  text-align: center;
+  font-size: 26px;
 }
 
-/* Estilos para el título */
-.titulo {
-  margin: 2%;
-  text-align: left;
-  color: #333333; /* Color del texto */
+/* Estilo de los iconos */
+.icono {
+  font-weight: bolder;
+}
+
+/* Margen entre los Form.Group */
+.FormGroupMargin {
+  margin-bottom: 15px; /* Puedes ajustar el valor según sea necesario */
+}
+
+.todo {
+  font-family: 'XD';
+  font-size: 17px;
 }
