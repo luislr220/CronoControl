@@ -1,9 +1,10 @@
+// routes/areas.js
 const express = require("express");
 const router = express.Router();
-const cors = require("cors"); // Importa cors
-const Area = require("../models/areaschema"); // Importa el modelo de área de trabajo
+const cors = require("cors");
+const Area = require("../models/areaschema");
 
-router.use(cors()); // Configura cors
+router.use(cors());
 
 // Ruta para obtener todas las áreas de trabajo
 router.get("/", async (req, res) => {
@@ -62,6 +63,23 @@ router.delete("/:id", async (req, res) => {
     res.json({ message: "Área eliminada" });
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+});
+
+// Ruta para agregar una nueva sede
+router.post("/sedes", async (req, res) => {
+  const { nombre } = req.body;
+
+  try {
+    const nuevaSede = new Area({
+      nombre,
+      sede: "", // Puedes dejar el campo de sede vacío para las sedes
+    });
+
+    const sedeGuardada = await nuevaSede.save();
+    res.status(201).json(sedeGuardada);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
   }
 });
 
