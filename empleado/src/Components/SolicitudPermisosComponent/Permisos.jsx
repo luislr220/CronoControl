@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import "./css/permisos.css"; // Agregamos un archivo CSS separado para los estilos específicos de este componente
+import "./css/permisos.css";
 import Navigation from "../NavigationConponent/Navigation";
-import { Form, Button, FormControl } from "react-bootstrap";
+import { Form, Button, Row, Col } from "react-bootstrap";
 
 export default function Permisos() {
   const [nombre, setNombre] = useState("");
@@ -10,10 +10,9 @@ export default function Permisos() {
   const [fechaFinal, setFechaFinal] = useState("");
   const [justificacion, setJustificacion] = useState("");
   const [areasTrabajo, setAreasTrabajo] = useState([]);
-  const [solicitudesPermisos, setSolicitudesPermisos] = useState([]); // Estado para las solicitudes de permisos
+  const [sedes, setSedes] = useState([]);
 
   useEffect(() => {
-    // Función para obtener las áreas de trabajo disponibles
     const fetchAreasTrabajo = async () => {
       try {
         const response = await fetch("http://localhost:3002/areas");
@@ -27,8 +26,21 @@ export default function Permisos() {
       }
     };
 
-    // Llamamos a la función para obtener las áreas de trabajo al cargar el componente
+    const fetchSedes = async () => {
+      try {
+        const response = await fetch("http://localhost:3002/sedes");
+        if (!response.ok) {
+          throw new Error("No se pudo obtener la lista de sedes");
+        }
+        const data = await response.json();
+        setSedes(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
     fetchAreasTrabajo();
+    fetchSedes();
   }, []);
 
   const handleNombreChange = (e) => {
@@ -53,8 +65,6 @@ export default function Permisos() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Construir el objeto de solicitud
     const solicitud = {
       nombre: nombre,
       areaTrabajo: areaTrabajo,
@@ -64,7 +74,6 @@ export default function Permisos() {
     };
 
     try {
-      // Enviar la solicitud al servidor (aquí deberías tener tu URL y método correctos)
       const response = await fetch("http://localhost:3002/permisos", {
         method: "POST",
         headers: {
@@ -77,89 +86,106 @@ export default function Permisos() {
         throw new Error("Error al enviar la solicitud");
       }
 
-      // Actualizar la lista de solicitudes de permisos después de enviar la solicitud
-      actualizarSolicitudesPermisos();
-
-      // Aquí podrías mostrar un mensaje de éxito o redireccionar al usuario a otra página
       console.log("Solicitud enviada exitosamente");
     } catch (error) {
       console.error("Error:", error);
-      // Aquí podrías manejar el error de alguna manera (mostrar un mensaje al usuario, etc.)
-    }
-  };
-
-  // Función para actualizar la lista de solicitudes de permisos después de enviar una nueva solicitud
-  const actualizarSolicitudesPermisos = async () => {
-    try {
-      const response = await fetch("http://localhost:3002/solicitudes-permisos");
-      if (!response.ok) {
-        throw new Error("No se pudo obtener la lista de solicitudes de permisos");
-      }
-      const data = await response.json();
-      // Actualizar el estado de las solicitudes de permisos con los datos obtenidos
-      setSolicitudesPermisos(data);
-    } catch (error) {
-      console.error(error);
     }
   };
 
   return (
-    <div className="permisos-container"> {/* Aplicamos una clase CSS para el contenedor principal */}
+    <div className="">
       <Navigation />
-      <div className="permisos-form-container"> {/* Aplicamos una clase CSS para el contenedor del formulario */}
+      <div className="permisos-form-container">
+        <h2>Solicitud de Vacaciones</h2>
         <Form onSubmit={handleSubmit}>
-          <Form.Group controlId="nombre">
-            <Form.Label>Nombre completo</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Ingresa tu nombre"
-              value={nombre}
-              onChange={handleNombreChange}
-            />
+          <Form.Group as={Row} controlId="nombre">
+            <Form.Label column sm={3}>Nombre completo:</Form.Label>
+            <Col sm={9}>
+              <Form.Control
+                type="text"
+                placeholder="Ingresa tu nombre"
+                value={nombre}
+                onChange={handleNombreChange}
+              />
+            </Col>
           </Form.Group>
-          <Form.Group controlId="areaTrabajo">
-            <Form.Label>Área de trabajo</Form.Label>
-            <Form.Control
-              as="select"
-              value={areaTrabajo}
-              onChange={handleAreaTrabajoChange}
-            >
-              <option>Selecciona tu área</option>
-              {areasTrabajo.map((area) => (
-                <option key={area._id} value={area.nombre}>
-                  {area.nombre}
-                </option>
-              ))}
-            </Form.Control>
+
+          <Form.Group as={Row} controlId="areaTrabajo">
+            <Form.Label column sm={3}>Área de trabajo:</Form.Label>
+            <Col sm={9}>
+              <Form.Control
+                as="select"
+                value={areaTrabajo}
+                onChange={handleAreaTrabajoChange}
+                
+              >
+                <option>Selecciona tu área</option>
+                {areasTrabajo.map((area) => (
+                  <option key={area._id} value={area.nombre}>
+                    {area.nombre}
+                  </option>
+                ))}
+              </Form.Control>
+            </Col>
           </Form.Group>
-          <Form.Group controlId="fechaInicio">
-            <Form.Label>Fecha de inicio de vacaciones</Form.Label>
-            <Form.Control
-              type="date"
-              value={fechaInicio}
-              onChange={handleFechaInicioChange}
-            />
+
+          <Form.Group as={Row} controlId="sede">
+            <Form.Label column sm={3}>Sede:</Form.Label>
+            <Col sm={9}>
+              <Form.Control
+                as="select"
+                value={areaTrabajo}
+                onChange={handleAreaTrabajoChange}
+              >
+                <option>Selecciona la sede</option>
+                {sedes.map((sede) => (
+                  <option key={sede._id} value={sede.nombre}>
+                    {sede.nombre}
+                  </option>
+                ))}
+              </Form.Control>
+            </Col>
           </Form.Group>
-          <Form.Group controlId="fechaFinal">
-            <Form.Label>Fecha de finalización de vacaciones</Form.Label>
-            <Form.Control
-              type="date"
-              value={fechaFinal}
-              onChange={handleFechaFinalChange}
-            />
+
+          <Form.Group as={Row} controlId="fechaInicio">
+            <Form.Label column sm={3}>Fecha de inicio:</Form.Label>
+            <Col sm={9}>
+              <Form.Control
+                type="date"
+                value={fechaInicio}
+                onChange={handleFechaInicioChange}
+              />
+            </Col>
           </Form.Group>
-          <Form.Group controlId="justificacion">
-            <Form.Label>Justificación</Form.Label>
-            <Form.Control
-              as="textarea"
-              rows={3}
-              value={justificacion}
-              onChange={handleJustificacionChange}
-            />
+
+          <Form.Group as={Row} controlId="fechaFinal">
+            <Form.Label column sm={3}>Fecha de finalización:</Form.Label>
+            <Col sm={9}>
+              <Form.Control
+                type="date"
+                value={fechaFinal}
+                onChange={handleFechaFinalChange}
+              />
+            </Col>
           </Form.Group>
-          <Button variant="success" type="submit">
-            Enviar
-          </Button>
+
+          <Form.Group as={Row} controlId="justificacion">
+            <Form.Label column sm={3}>Justificación:</Form.Label>
+            <Col sm={9}>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                value={justificacion}
+                onChange={handleJustificacionChange}
+              />
+            </Col>
+          </Form.Group>
+
+          <div className="text-center">
+            <Button variant="primary" type="submit">
+              Enviar Solicitud
+            </Button>
+          </div>
         </Form>
       </div>
     </div>

@@ -3,7 +3,6 @@ import { FormControl, Form, Modal, Alert, ProgressBar } from "react-bootstrap";
 import { format } from "date-fns";
 import "../AgregarUsuarioComponent/css/agregarEmpleado.css";
 import Navigation from "../NavigationComponent/Navigation";
-
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";

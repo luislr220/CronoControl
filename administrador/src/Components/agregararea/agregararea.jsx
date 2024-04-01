@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Button, FormControl, Table, Form, Modal } from "react-bootstrap";
 import Navigation from "../NavigationComponent/Navigation";
 
+
 export default function AreasTrabajo() {
   const [areas, setAreas] = useState([]);
   const [sedes, setSedes] = useState([]);
