@@ -2,54 +2,54 @@
 
 /* Estilo para el cuerpo */
 .cuerpo {
-  background-color: #afcdea;
-  font-family: XD;
+    background-color: #afcdea;
+    font-family: XD;
 }
 
 /* Estilo para la cabecera de la tabla */
 .AGEMTable thead th {
-  background-color: #1C2B67;
-  color: white;
-  text-align: center; /* Centrar el texto */
-  padding: 10px; /* Agregar separación */
-  letter-spacing: 1px; /* Agregar espacio entre las letras */
-  font-size: 16px; /* Cambiar el tamaño de la letra */
-  font-weight: normal; /* Quitar la negrita */
+    background-color: #1C2B67;
+    color: white;
+    text-align: center; /* Centrar el texto */
+    padding: 10px; /* Agregar separación */
+    letter-spacing: 1px; /* Agregar espacio entre las letras */
+    font-size: 16px; /* Cambiar el tamaño de la letra */
+    font-weight: normal; /* Quitar la negrita */
 }
 
 /* Estilo para el cuerpo de la tabla */
 .AGEMTable tbody td {
-  text-align: center; /* Centrar el contenido */
+    text-align: center; /* Centrar el contenido */
 }
 
 /* Agregar estilo al botón */
 .custom-button {
-  background-color: #1C2B67;
-  border: none;
-  transition: background-color 0.3s ease; /* Transición suave del color de fondo */
+    background-color: #1C2B67;
+    border: none;
+    transition: background-color 0.3s ease; /* Transición suave del color de fondo */
 }
 
 .custom-button:hover {
-  background-color: #318CE7; /* Cambiar el tono al pasar el cursor */
+    background-color: #318CE7; /* Cambiar el tono al pasar el cursor */
 }
 
 /* Estilo para centrar el título */
 .AGEMTitulo {
-  text-align: center;
-  font-size: 26px;
+    text-align: center;
+    font-size: 26px;
 }
 
 /* Estilo de los iconos */
 .icono {
-  font-weight: bolder;
+    font-weight: bolder;
 }
 
 /* Margen entre los Form.Group */
 .FormGroupMargin {
-  margin-bottom: 15px; /* Puedes ajustar el valor según sea necesario */
+    margin-bottom: 15px; /* Puedes ajustar el valor según sea necesario */
 }
 
 .todo {
-  font-family: 'XD';
-  font-size: 17px;
+    font-family: 'XD';
+    font-size: 17px;
 }
