@@ -27,6 +27,8 @@ export default function Navigation() {
     { text: "Agregar Sede", href: "/agregarSede", icon: <BsBuilding /> },
     { text: "Agregar Área", href: "/agregarArea", icon: <BsCalendar /> },
     { text: "Agregar Contrato", href: "/agregarContrato", icon: <BsFilePost /> },
+    { text: "Agregar Horario", href: "/agregarHorario", icon: <BsFilePost /> },
+
   ];
 
   const DrawerList = (
