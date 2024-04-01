@@ -1,101 +1,48 @@
 const express = require('express');
-const router = express.Router();
-const Permiso = require('../models/permisoSchema'); 
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 
-// Middleware para obtener un permiso por su ID
-async function getPermiso(req, res, next) {
-  let permiso;
-  try {
-    permiso = await Permiso.findById(req.params.id);
-    if (permiso == null) {
-      return res.status(404).json({ message: 'Permiso no encontrado' });
-    }
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
-  res.permiso = permiso;
-  next();
-}
+const app = express();
+const PORT = 3003;
 
-// Ruta para obtener todos los permisos
-router.get('/', async (req, res) => {
-  try {
-    const permisos = await Permiso.find();
-    res.json(permisos);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+// Middleware
+app.use(bodyParser.json());
+
+// MongoDB setup
+mongoose.connect('http://localhost:3002/permisos', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
 });
-
-// Ruta para crear un nuevo permiso
-router.post('/', async (req, res) => {
-  const permiso = new Permiso({
-    nombre: req.body.nombre,
-    areaTrabajo: req.body.areaTrabajo,
-    fechaInicio: req.body.fechaInicio,
-    fechaFinal: req.body.fechaFinal,
-    justificacion: req.body.justificacion,
-    estado: req.body.estado
-  });
-
-  try {
-    const nuevoPermiso = await permiso.save();
-    res.status(201).json(nuevoPermiso);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
+const turnoSchema = new mongoose.Schema({
+  Nombre: String,
+  HoraInicio: String,
+  HoraFinal: String,
+  Area: String,
+  Cupo: Number,
+  Estado: String,
 });
+const Turno = mongoose.model('Turno', turnoSchema);
 
-// Ruta para obtener un permiso por su ID
-router.get('/:id', getPermiso, (req, res) => {
-  res.json(res.permiso);
-});
-
-// Ruta para actualizar un permiso
-router.patch('/:id', getPermiso, async (req, res) => {
-  if (req.body.nombre != null) {
-    res.permiso.nombre = req.body.nombre;
-  }
-  // Repite el proceso para los demás campos del permiso
-
+// Routes
+app.get('/turnos', async (req, res) => {
   try {
-    const permisoActualizado = await res.permiso.save();
-    res.json(permisoActualizado);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-});
-
-// Ruta para validar un permiso por su ID
-router.patch('/:id/validar', getPermiso, async (req, res) => {
-  try {
-    res.permiso.estado = 'Validado';
-    const permisoValidado = await res.permiso.save();
-    res.json(permisoValidado);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-});
-
-// Ruta para rechazar un permiso por su ID
-router.patch('/:id/rechazar', getPermiso, async (req, res) => {
-  try {
-    res.permiso.estado = 'Rechazado';
-    const permisoRechazado = await res.permiso.save();
-    res.json(permisoRechazado);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-});
-
-// Ruta para eliminar un permiso
-router.delete('/:id', getPermiso, async (req, res) => {
-  try {
-    await res.permiso.remove();
-    res.json({ message: 'Permiso eliminado' });
+    const turnos = await Turno.find();
+    res.json(turnos);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
 
-module.exports = router;
+app.post('/turnos', async (req, res) => {
+  const nuevoTurno = new Turno(req.body);
+  try {
+    const turnoGuardado = await nuevoTurno.save();
+    res.status(201).json(turnoGuardado);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+app.listen(PORT, () => {
+  console.log(`Servidor corriendo en el puerto ${PORT}`);
+});
