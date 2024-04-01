@@ -298,33 +298,20 @@ export default function GestionarSedes() {
           </Modal.Footer>
         </Modal>
 
-        {sedes
-          .filter((sede) =>
-            sede.nombre.toLowerCase().includes(filtroNombre.toLowerCase()) &&
-            sede.ubicacion.toLowerCase().includes(filtroUbicacion.toLowerCase())
-          )
-          .reduce((rows, sede, index) => {
-            if (index % 3 === 0) {
-              rows.push([]);
-            }
-            rows[rows.length - 1].push(
-              <Col key={index} lg={4} md={6} sm={12} className="AGEMCardContainer">
+        <Row xs={1} md={1} lg={5} className="g-2">
+          {sedes
+            .filter((sede) =>
+              sede.nombre.toLowerCase().includes(filtroNombre.toLowerCase()) &&
+              sede.ubicacion.toLowerCase().includes(filtroUbicacion.toLowerCase())
+            )
+            .map((sede, index) => (
+              <Col key={index}>
                 <Card className="AGEMCard">
                   <Card.Body>
                     <Card.Title>{sede.nombre}</Card.Title>
                     <Card.Subtitle className="mb-2 text-muted">{sede.ubicacion}</Card.Subtitle>
-                    <Button
-                      variant="primary"
-                      onClick={() => mostrarEditarSede(sede)}
-                    >
-                      Editar
-                    </Button>{" "}
-                    <Button
-                      variant="danger"
-                      onClick={() => eliminarSede(sede._id)}
-                    >
-                      Eliminar
-                    </Button>{" "}
+                    <Button variant="primary" onClick={() => mostrarEditarSede(sede)}>Editar</Button>{" "}
+                    <Button variant="danger" onClick={() => eliminarSede(sede._id)}>Eliminar</Button>{" "}
                     {sede.areas && sede.areas.length > 0 && (
                       <div>
                         <h5>Áreas de trabajo:</h5>
@@ -338,14 +325,8 @@ export default function GestionarSedes() {
                   </Card.Body>
                 </Card>
               </Col>
-            );
-            return rows;
-          }, [])
-          .map((row, index) => (
-            <Row key={index} className="justify-content-center">
-              {row}
-            </Row>
-          ))}
+            ))}
+        </Row>
       </div>
     </div>
   );
