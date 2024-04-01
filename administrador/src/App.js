@@ -6,6 +6,8 @@ import TurnoCrud from './Components/TurnoCrudComponent/TurnoCrud';
 import AgregarSede from './Components/agregarsede/agregarsede';
 import AgregarArea from './Components/agregararea/agregararea';
 import AgregarContrato from './Components/contratos/agregarContrato';
+import AgregarHorario from './Components/agregarHorario/agregarHorario'; // Importa AgregarHorario aquí
+
 
 
 function App() {
@@ -20,6 +22,7 @@ function App() {
           <Route path='/agregarArea' element={<AgregarArea />} />
           <Route path='/ValidarSolis' element={<ValidarSolis />} />
           <Route path='/agregarContrato' element={<AgregarContrato />} />
+          <Route path='/agregarHorario' element={<AgregarHorario />} /> {/* Utiliza AgregarHorario aquí */}
         </Routes>
       </Router>
     </div>
