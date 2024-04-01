@@ -14,8 +14,8 @@ export default function Navigation() {
       <Nav className="me-auto">
         <Nav.Link href="/Turnos">Turnos</Nav.Link>
         <Nav.Link href="/Permisos">Solicitar vacaciones</Nav.Link>
-        <LogoutButton/>
       </Nav>
+      <LogoutButton/>
     </Navbar.Collapse>
   </Container>
 </Navbar>
