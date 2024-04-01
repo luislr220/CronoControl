@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./css/permisos.css";
 import Navigation from "../NavigationConponent/Navigation";
-import { Form, Button, Row, Col } from "react-bootstrap";
+import { Form, Button, Row, Col, Alert } from "react-bootstrap";
 
 export default function Permisos() {
   const [nombre, setNombre] = useState("");
@@ -10,7 +10,8 @@ export default function Permisos() {
   const [fechaFinal, setFechaFinal] = useState("");
   const [justificacion, setJustificacion] = useState("");
   const [areasTrabajo, setAreasTrabajo] = useState([]);
-  const [sedes, setSedes] = useState([]);
+  const [mensajeExito, setMensajeExito] = useState("");
+  const [mensajeError, setMensajeError] = useState("");
 
   useEffect(() => {
     const fetchAreasTrabajo = async () => {
@@ -26,21 +27,7 @@ export default function Permisos() {
       }
     };
 
-    const fetchSedes = async () => {
-      try {
-        const response = await fetch("http://localhost:3002/sedes");
-        if (!response.ok) {
-          throw new Error("No se pudo obtener la lista de sedes");
-        }
-        const data = await response.json();
-        setSedes(data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
     fetchAreasTrabajo();
-    fetchSedes();
   }, []);
 
   const handleNombreChange = (e) => {
@@ -86,9 +73,11 @@ export default function Permisos() {
         throw new Error("Error al enviar la solicitud");
       }
 
-      console.log("Solicitud enviada exitosamente");
+      setMensajeExito("Solicitud enviada exitosamente");
+      setMensajeError("");
     } catch (error) {
-      console.error("Error:", error);
+      setMensajeError("Error al enviar la solicitud");
+      setMensajeExito("");
     }
   };
 
@@ -97,6 +86,8 @@ export default function Permisos() {
       <Navigation />
       <div className="permisos-form-container">
         <h2>Solicitud de Vacaciones</h2>
+        {mensajeExito && <Alert variant="success">{mensajeExito}</Alert>}
+        {mensajeError && <Alert variant="danger">{mensajeError}</Alert>}
         <Form onSubmit={handleSubmit}>
           <Form.Group as={Row} controlId="nombre">
             <Form.Label column sm={3}>Nombre completo:</Form.Label>
@@ -128,25 +119,6 @@ export default function Permisos() {
               </Form.Control>
             </Col>
           </Form.Group>
-
-          <Form.Group as={Row} controlId="sede">
-            <Form.Label column sm={3}>Sede:</Form.Label>
-            <Col sm={9}>
-              <Form.Control
-                as="select"
-                value={areaTrabajo}
-                onChange={handleAreaTrabajoChange}
-              >
-                <option>Selecciona la sede</option>
-                {sedes.map((sede) => (
-                  <option key={sede._id} value={sede.nombre}>
-                    {sede.nombre}
-                  </option>
-                ))}
-              </Form.Control>
-            </Col>
-          </Form.Group>
-
           <Form.Group as={Row} controlId="fechaInicio">
             <Form.Label column sm={3}>Fecha de inicio:</Form.Label>
             <Col sm={9}>

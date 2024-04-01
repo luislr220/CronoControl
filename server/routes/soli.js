@@ -11,7 +11,7 @@ const PORT = 3003;
 app.use(bodyParser.json());
 
 // MongoDB setup
-mongoose.connect('mongodb://localhost:27017/solicitudesturno', {
+mongoose.connect('mongodb://localhost:27017/permisos', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
