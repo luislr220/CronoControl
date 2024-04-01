@@ -20,10 +20,10 @@ export default function Contratos() {
     diasDescanso: "",
   });
   const [mostrarModalActualizar, setMostrarModalActualizar] = useState(false);
-  const [filtroFechaInicio, setFiltroFechaInicio] = useState("");
-  const [filtroFechaFin, setFiltroFechaFin] = useState("");
   const [filtroDiasLaborales, setFiltroDiasLaborales] = useState("");
   const [filtroDiasDescanso, setFiltroDiasDescanso] = useState("");
+  const [filtroFechaInicio, setFiltroFechaInicio] = useState("");
+  const [filtroFechaFin, setFiltroFechaFin] = useState("");
 
   // Función para formatear la fecha en un formato deseado (solo fecha, sin hora)
   const formatFecha = (fecha) => {
@@ -147,20 +147,6 @@ export default function Contratos() {
             Agregar
           </Button>{" "}
           <FormControl
-            type="text"
-            placeholder="Filtrar por fecha de inicio..."
-            className="filtro"
-            value={filtroFechaInicio}
-            onChange={(e) => setFiltroFechaInicio(e.target.value)}
-          />
-          <FormControl
-            type="text"
-            placeholder="Filtrar por fecha de fin..."
-            className="filtro"
-            value={filtroFechaFin}
-            onChange={(e) => setFiltroFechaFin(e.target.value)}
-          />
-          <FormControl
             type="number"
             placeholder="Filtrar por días laborales..."
             className="filtro"
@@ -173,6 +159,20 @@ export default function Contratos() {
             className="filtro"
             value={filtroDiasDescanso}
             onChange={(e) => setFiltroDiasDescanso(e.target.value)}
+          />
+          <FormControl
+            type="date"
+            placeholder="Filtrar por fecha de inicio..."
+            className="filtro"
+            value={filtroFechaInicio}
+            onChange={(e) => setFiltroFechaInicio(e.target.value)}
+          />
+          <FormControl
+            type="date"
+            placeholder="Filtrar por fecha de fin..."
+            className="filtro"
+            value={filtroFechaFin}
+            onChange={(e) => setFiltroFechaFin(e.target.value)}
           />
         </div>
         <Modal
@@ -326,10 +326,10 @@ export default function Contratos() {
           <tbody>
             {contratos
               .filter((contrato) =>
-                contrato.fechaInicio.toLowerCase().includes(filtroFechaInicio.toLowerCase())
+                contrato.fechaInicio.includes(filtroFechaInicio)
               )
               .filter((contrato) =>
-                contrato.fechaFin.toLowerCase().includes(filtroFechaFin.toLowerCase())
+                contrato.fechaFin.includes(filtroFechaFin)
               )
               .filter((contrato) =>
                 contrato.diasLaborales.toString().includes(filtroDiasLaborales)
