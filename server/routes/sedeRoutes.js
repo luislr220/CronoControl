@@ -2,10 +2,10 @@ const express = require("express");
 const router = express.Router();
 const Sede = require("../models/sedeSchema");
 
-// Ruta para obtener todas las sedes
+// Ruta para obtener todas las sedes con sus áreas
 router.get("/", async (req, res) => {
   try {
-    const sedes = await Sede.find();
+    const sedes = await Sede.find().populate('areas', 'nombre');
     res.json(sedes);
   } catch (error) {
     res.status(500).json({ message: error.message });
