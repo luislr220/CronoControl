@@ -2,6 +2,14 @@
   padding: 3%;
 }
 
+.GridCardUsuario {
+  transition: transform 0.5s cubic-bezier(0.25, 0.1, 0.25, 1); /* Cubic Bezier para una transición suave */
+}
+
+.GridCardUsuario:hover {
+  transform: scale(1.05); /* Escalar la tarjeta en un 5% cuando se hace hover */
+}
+
 .AGEMTable {
   text-align: justify;
   border-radius: 10px;
@@ -29,12 +37,6 @@
   transition: transform 0.5s cubic-bezier(0.25, 0.1, 0.25, 1); /* Cubic Bezier para una transición suave */
 }
 
-.AGEMCard:hover {
-  transform: scale(1.05); /* Escalar la tarjeta en un 5% cuando se hace hover */
-}
-
 .myCardActions {
   margin-top: auto;
 }
-
-

@@ -11,7 +11,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import { BsCheckCircle, BsClockHistory, BsPeople, BsBuilding, BsCalendar, BsFilePost } from "react-icons/bs"; // Íconos de react-icons/bs
-import logoEmpresa from "../../assets/logo/logo.jpeg"; // Ruta de la imagen del logo de la empresa
+import logoEmpresa from "../../assets/logo/LogoPNG.png";
 
 export default function Navigation() {
   const [open, setOpen] = useState(false);
@@ -51,7 +51,6 @@ export default function Navigation() {
     <div style={{ backgroundColor: '#1C2B67' }}>
       <Navbar className="navbar-custom">
         <Container>
-          {/* <img src={logoEmpresa} alt="Logo Empresa" style={{ marginRight: '20px', height: '50px', width: 'auto' }} /> Ajusta los estilos de acuerdo a tus necesidades */}
           <IconButton onClick={toggleDrawer(true)} aria-label="menu">
             <MenuIcon style={{ color: '#ffffff' }} /> {/* Color blanco */}
           </IconButton>
