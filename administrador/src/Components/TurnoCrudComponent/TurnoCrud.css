@@ -1,47 +1,52 @@
+/* TurnoCrud.css */
+.cuerpo {
+    background-color: #afcdea ;
+    font-family: XD;    
+}
+ 
 /* Estilo para la cabecera de la tabla */
-.table thead th {
-    background-color: #1c2b67;
+.AGEMTable thead th {
+    background-color: #1C2B67;
     color: white;
-    text-align: center;
-    padding: 10px;
-    letter-spacing: 1px;
-    font-size: 16px;
-    font-weight: normal;
+    text-align: center; /* Centrar el texto */
+    padding: 10px; /* Agregar separación */
+    letter-spacing: 1px; /* Agregar espacio entre las letras */
+    font-size: 16px; /* Cambiar el tamaño de la letra */
+    font-weight: normal; /* Quitar la negrita */
 }
 
 /* Estilo para el cuerpo de la tabla */
-.table tbody td {
-    text-align: center;
+.AGEMTable tbody td {
+    text-align: center; /* Centrar el contenido */
 }
 
-/* Estilo para los botones */
-.boton-verde {
-    background-color: #1c2b67;
+/* Agregar estilo al botón */
+.custom-button {
+    background-color: #1C2B67;
     border: none;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease; /* Transición suave del color de fondo */
 }
 
-.boton-verde:hover {
-    background-color: #318ce7;
+.custom-button:hover {
+    background-color: #318CE7; /* Cambiar el tono al pasar el cursor */
 }
 
 /* Estilo para centrar el título */
-.titulo {
+.AGEMTitulo {
     text-align: center;
     font-size: 26px;
 }
 
 /* Estilo de los iconos */
 .icono {
-    font-weight: bolder;
+    font-weight:bolder;
 }
 
 /* Margen entre los Form.Group */
 .FormGroupMargin {
-    margin-bottom: 15px;
+    margin-bottom: 15px; /* Puedes ajustar el valor según sea necesario */
 }
 
-/* Estilo para el texto */
 .todo {
     font-family: 'XD';
     font-size: 17px;
