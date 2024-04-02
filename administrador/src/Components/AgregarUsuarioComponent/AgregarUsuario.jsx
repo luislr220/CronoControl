@@ -474,9 +474,9 @@ export default function AgregarUsuario() {
   return (
     <div>
       <Navigation />
-      <div className="AGEMcontenedor1">
+      <div className="AGEMcontenedorUsuario">
         {/*SECCIÓN DE BOTON AGREGAR Y FILTROS*/}
-        <div className="AGEMBotonContainer">
+        <div className="AGEMBotonContainerUsuario">
           <Button
             variant="primary"
             className="AGEMBotonverde"
