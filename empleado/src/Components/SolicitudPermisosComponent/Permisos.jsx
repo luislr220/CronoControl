@@ -76,23 +76,6 @@ export default function Permisos() {
       setMensajeExito("Solicitud enviada exitosamente");
       setMensajeError("");
     } catch (error) {
-      console.error("Error:", error);
-      // Aquí podrías manejar el error de alguna manera (mostrar un mensaje al usuario, etc.)
-    }
-  };
-
-  // Función para actualizar la lista de solicitudes de permisos después de enviar una nueva solicitud
-  const actualizarSolicitudesPermisos = async () => {
-    try {
-      const response = await fetch("http://localhost:3002/solicitudes-permisos");
-      if (!response.ok) {
-        throw new Error("No se pudo obtener la lista de solicitudes de permisos");
-      }
-      //const data = await response.json();
-      // Actualizar el estado de las solicitudes de permisos con los datos obtenidos
-      //setSolicitudesPermisos(data);
-    } catch (error) {
-      console.error(error);
       setMensajeError("Error al enviar la solicitud");
       setMensajeExito("");
     }
