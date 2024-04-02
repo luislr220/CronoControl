@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Table, Modal, Form } from 'react-bootstrap';
+import { Button, Table, Modal, Form, Pagination } from 'react-bootstrap';
 import Navigation from '../NavigationComponent/Navigation';
-import "./TurnoCrud.css";
 import { BsPencilSquare, BsTrash, BsEye } from 'react-icons/bs'; // Importar los iconos necesarios
-
+import "./TurnoCrud.css";
 
 export default function TurnoCrud() {
   const [turnos, setTurnos] = useState([]);
   const [areas, setAreas] = useState([]);
   const [showAddTurnoModal, setShowAddTurnoModal] = useState(false);
+  const [showUpdateTurnoModal, setShowUpdateTurnoModal] = useState(false);
+  const [showViewTurnoModal, setShowViewTurnoModal] = useState(false);
   const [nuevoTurno, setNuevoTurno] = useState({
     Nombre: "",
     HoraInicio: "",
@@ -26,10 +27,13 @@ export default function TurnoCrud() {
     Cupo: "",
     Estado: "Activo"
   });
-  const [mostrarModalActualizar, setMostrarModalActualizar] = useState(false);
   const [turnoSeleccionado, setTurnoSeleccionado] = useState(null);
-  const [showViewTurnoModal, setShowViewTurnoModal] = useState(false); // Agregar estado para el modal de visualización
-  const [turnoSeleccionadoVisualizar, setTurnoSeleccionadoVisualizar] = useState(null); // Estado para almacenar el turno seleccionado para visualizar
+  const [turnoSeleccionadoVisualizar, setTurnoSeleccionadoVisualizar] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(5); // Número de elementos por página
+  const [filtroArea, setFiltroArea] = useState(""); // Estado para almacenar el área seleccionada para filtrar
+  const [filtroEstado, setFiltroEstado] = useState(""); // Estado para almacenar el filtro de estado
+  const [filtroCupo, setFiltroCupo] = useState(""); // Estado para almacenar el filtro de cupo
 
 
   const fetchTurnos = async () => {
@@ -53,18 +57,18 @@ export default function TurnoCrud() {
           throw new Error("No se pudo obtener la lista de areas");
         }
         const data = await response.json();
-        const nombresAreas = data.map(area => area.nombre);
-        setAreas(nombresAreas);
+        const nombresAreas = data.map(area => area.nombre); // Obtener solo los nombres
+        setAreas(nombresAreas); // Almacenar solo los nombres en el estado 'areas'
       } catch (error) {
         console.error(error);
       }
-    };
+    };    
 
     fetchAreas();
     fetchTurnos();
   }, []);
 
-  const handleClose = () => {
+  const handleCloseAddTurnoModal = () => {
     setShowAddTurnoModal(false);
     setNuevoTurno({
       Nombre: "",
@@ -75,14 +79,24 @@ export default function TurnoCrud() {
       Estado: "Activo"
     });
     setSelectedTurno(null);
+    setFiltroArea("");
   };
 
-  const visualizarTurno = (turno) => {
-    setTurnoSeleccionadoVisualizar(turno);
-    setShowViewTurnoModal(true);
+  const handleCloseUpdateTurnoModal = () => {
+    setShowUpdateTurnoModal(false);
+    setTurnoSeleccionado(null);
   };
 
-  const handleShow = () => setShowAddTurnoModal(true);
+  const handleCloseViewTurnoModal = () => {
+    setShowViewTurnoModal(false);
+    setTurnoSeleccionadoVisualizar(null);
+  };
+
+  const handleShowAddTurnoModal = () => setShowAddTurnoModal(true);
+
+  const handleShowUpdateTurnoModal = () => setShowUpdateTurnoModal(true);
+
+  const handleShowViewTurnoModal = () => setShowViewTurnoModal(true);
 
   const addTurno = async () => {
     try {
@@ -101,7 +115,7 @@ export default function TurnoCrud() {
         throw new Error("No se pudo agregar el turno");
       }
       await fetchTurnos();
-      handleClose();
+      handleCloseAddTurnoModal();
     } catch (error) {
       console.error(error);
     }
@@ -134,17 +148,15 @@ export default function TurnoCrud() {
       Cupo: turno.Cupo,
       Estado: turno.Estado
     });
-    setMostrarModalActualizar(true);
+    handleShowUpdateTurnoModal();
   };
 
   const cerrarModalActualizar = () => {
-    setTurnoSeleccionado(null);
-    setMostrarModalActualizar(false);
+    handleCloseUpdateTurnoModal();
   };
 
   const cerrarModalVizualizar = () => {
-    setShowViewTurnoModal(false);
-    setTurnoSeleccionadoVisualizar(null);
+    handleCloseViewTurnoModal();
   };
 
   const updateTurno = async () => {
@@ -176,15 +188,78 @@ export default function TurnoCrud() {
     }
   };
 
+  const visualizarTurno = (turno) => {
+    setTurnoSeleccionadoVisualizar(turno);
+    handleShowViewTurnoModal();
+  };
+
+  // Obtener índices de los elementos a mostrar en la página actual
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+
+  const filteredTurnos = turnos.filter(turno => {
+    if (filtroArea && filtroEstado && filtroCupo) {
+      return turno.Area === filtroArea && turno.Estado === filtroEstado && parseInt(turno.Cupo) >= parseInt(filtroCupo);
+    } else if (filtroArea && filtroCupo) {
+      return turno.Area === filtroArea && parseInt(turno.Cupo) >= parseInt(filtroCupo);
+    } else if (filtroEstado && filtroCupo) {
+      return turno.Estado === filtroEstado && parseInt(turno.Cupo) >= parseInt(filtroCupo);
+    } else if (filtroArea && filtroEstado) {
+      return turno.Area === filtroArea && turno.Estado === filtroEstado;
+    } else if (filtroArea) {
+      return turno.Area === filtroArea;
+    } else if (filtroEstado) {
+      return turno.Estado === filtroEstado;
+    } else if (filtroCupo) {
+      return parseInt(turno.Cupo) >= parseInt(filtroCupo);
+    } else {
+      return true;
+    }
+  });
+
+
+  // Obtener los turnos a mostrar en la página actual
+  const currentItems = filteredTurnos.slice(indexOfFirstItem, indexOfLastItem);
+
+  // Obtener números de página
+  const pageNumbers = [];
+  for (let i = 1; i <= Math.ceil(filteredTurnos.length / itemsPerPage); i++) {
+    pageNumbers.push(i);
+  }
+
+  // Función para cambiar de página
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   return (
     <div className='cuerpo'>
       <Navigation />
       <h2 className="AGEMTitulo">Lista de Turnos</h2>
       <div className="AGEMcontenedor1">
         <div className="AGEMBotonContainer">
-          <Button variant="primary" className="custom-button" onClick={handleShow}>
+          <Button variant="primary" className="custom-button" onClick={handleShowAddTurnoModal}>
             <span style={{ marginRight: '5px' }}>+</span> Nuevo Turno
           </Button>
+          {/* Filtrar por área */}
+          <Form.Group controlId="formAreaFiltro">
+            <Form.Control as="select" value={filtroArea} onChange={(e) => setFiltroArea(e.target.value)}>
+              <option value="">Todas las áreas</option>
+              {areas.map((area, index) => (
+                <option key={index} value={area}>{area}</option>
+              ))}
+            </Form.Control>
+          </Form.Group>
+          {/* Filtrar por estado */}
+          <Form.Group controlId="formEstadoFiltro">
+            <Form.Control as="select" value={filtroEstado} onChange={(e) => setFiltroEstado(e.target.value)}>
+              <option value="">Todos los estados</option>
+              <option value="Activo">Activo</option>
+              <option value="Inactivo">Inactivo</option>
+            </Form.Control>
+          </Form.Group>
+          {/* Filtrar por cupo */}
+          <Form.Group controlId="formCupoFiltro">
+            <Form.Control type="number" placeholder="Filtrar por cupo" value={filtroCupo} onChange={(e) => setFiltroCupo(e.target.value)} />
+          </Form.Group>
         </div>
         <Table className="AGEMTable">
           <thead style={{ backgroundColor: '#1C2B67', color: 'white' }}>
@@ -201,7 +276,7 @@ export default function TurnoCrud() {
           </thead>
 
           <tbody>
-            {turnos.map((turno, index) => (
+            {currentItems.map((turno, index) => (
               <tr key={index}>
                 <td>{index + 1}</td>
                 <td>{turno.Nombre}</td>
@@ -213,26 +288,30 @@ export default function TurnoCrud() {
                 <td>
                   <Button variant="warning" onClick={() => abrirModalActualizar(turno)} title="Actualizar">
                     <BsPencilSquare className="icono" size={20} /> {/* Icono de lápiz */}
-                    {" "}
                   </Button>{" "}
-
                   <Button variant="danger" onClick={() => deleteTurno(turno._id)} title="Eliminar">
                     <BsTrash className="icono" size={20} /> {/* Icono de basura */}
-                    {" "}
                   </Button>{" "}
                   <Button variant="info" onClick={() => visualizarTurno(turno)} title="Visualizar">
                     <BsEye className="icono" size={20} /> {/* Icono de ojo */}
-                    {" "}
                   </Button>{" "}
                 </td>
               </tr>
             ))}
           </tbody>
         </Table>
+        {/* Paginación */}
+        <Pagination>
+          {pageNumbers.map((number) => (
+            <Pagination.Item key={number} onClick={() => paginate(number)}>
+              {number}
+            </Pagination.Item>
+          ))}
+        </Pagination>
       </div>
 
       {/** AGREGAR TURNO */}
-      <Modal show={showAddTurnoModal} onHide={handleClose} className='todo'>
+      <Modal show={showAddTurnoModal} onHide={handleCloseAddTurnoModal} className='todo'>
         <Modal.Header closeButton style={{ backgroundColor: '#1C2B67' }}>
           <Modal.Title style={{ fontFamily: 'Coolvetica', color: '#FFFFFF', fontSize: '22px', textAlign: 'center' }}>{selectedTurno ? "Actualizar Turno" : "Agregar Turno"}</Modal.Title>
         </Modal.Header>
@@ -286,7 +365,7 @@ export default function TurnoCrud() {
           </Form>
         </Modal.Body>
         <Modal.Footer style={{ justifyContent: 'center' }}>
-          <Button variant="secondary" className="custom-button" onClick={handleClose} style={{ color: '#FFFFFF', letterSpacing: '1px', fontWeight: 'normal' }}>
+          <Button variant="secondary" className="custom-button" onClick={handleCloseAddTurnoModal} style={{ color: '#FFFFFF', letterSpacing: '1px', fontWeight: 'normal' }}>
             Cancelar
           </Button>
           <Button variant="primary" className="custom-button" onClick={selectedTurno ? updateTurno : addTurno} style={{ color: '#FFFFFF', letterSpacing: '1px', fontWeight: 'normal' }}>
@@ -296,14 +375,14 @@ export default function TurnoCrud() {
       </Modal>
 
       {/* MODAL ACTUALIZAR TURNO */}
-      <Modal show={mostrarModalActualizar} onHide={cerrarModalActualizar} className='todo'>
+      <Modal show={showUpdateTurnoModal} onHide={handleCloseUpdateTurnoModal} className='todo'>
         <Modal.Header closeButton style={{ backgroundColor: '#1C2B67' }}>
           <Modal.Title style={{ fontFamily: 'Coolvetica', color: '#FFFFFF', fontSize: '22px', textAlign: 'center' }}>Actualizar Turno</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
             <Form.Group controlId='formNombreActualizar' className="row FormGroupMargin">
-              <Form.Label style={{ color: '#1C2B67',  fontWeight: 'lighter' }} className="col-sm-4">Nombre del turno</Form.Label>
+              <Form.Label style={{ color: '#1C2B67', fontWeight: 'lighter' }} className="col-sm-4">Nombre del turno</Form.Label>
               <div className="col-sm-8">
                 <Form.Control type="text" name="Nombre" value={valoresTurnoSeleccionado.Nombre} onChange={(e) => setValoresTurnoSeleccionado({ ...valoresTurnoSeleccionado, Nombre: e.target.value })} />
               </div>
@@ -315,7 +394,7 @@ export default function TurnoCrud() {
               </div>
             </Form.Group>
             <Form.Group controlId='formHoraFinalActualizar' className="row FormGroupMargin">
-              <Form.Label style={{ color: '#1C2B67', fontWeight: 'lighter'  }} className="col-sm-4">Hora Final</Form.Label>
+              <Form.Label style={{ color: '#1C2B67', fontWeight: 'lighter' }} className="col-sm-4">Hora Final</Form.Label>
               <div className="col-sm-8">
                 <Form.Control type="time" name="HoraFinal" value={valoresTurnoSeleccionado.HoraFinal} onChange={(e) => setValoresTurnoSeleccionado({ ...valoresTurnoSeleccionado, HoraFinal: e.target.value, })} />
               </div>
@@ -336,21 +415,21 @@ export default function TurnoCrud() {
                 >
                   <option value="">Selecciona una área</option>
                   {areas.map((area) => (
-                    <option key={area._id} value={area.nombre}>
-                      {area.nombre}
+                    <option key={area} value={area}>
+                      {area}
                     </option>
                   ))}
                 </Form.Control>
               </div>
             </Form.Group>
             <Form.Group controlId='formCupoActualizar' className="row FormGroupMargin">
-              <Form.Label style={{ color: '#1C2B67', fontWeight: 'lighter'  }} className="col-sm-4">Cupo</Form.Label>
+              <Form.Label style={{ color: '#1C2B67', fontWeight: 'lighter' }} className="col-sm-4">Cupo</Form.Label>
               <div className="col-sm-8">
                 <Form.Control type="number" name="Cupo" value={valoresTurnoSeleccionado.Cupo} onChange={(e) => setValoresTurnoSeleccionado({ ...valoresTurnoSeleccionado, Cupo: e.target.value, })} />
               </div>
             </Form.Group>
             <Form.Group controlId="formEstadoActualizar" className="row FormGroupMargin">
-              <Form.Label style={{ color: '#1C2B67', fontWeight: 'lighter'  }} className="col-sm-4">Estado</Form.Label>
+              <Form.Label style={{ color: '#1C2B67', fontWeight: 'lighter' }} className="col-sm-4">Estado</Form.Label>
               <div className="col-sm-8">
                 <Form.Control as="select" value={valoresTurnoSeleccionado.Estado} onChange={(e) => setValoresTurnoSeleccionado({ ...valoresTurnoSeleccionado, Estado: e.target.value })}>
                   <option value="Activo">Activo</option>
@@ -373,11 +452,11 @@ export default function TurnoCrud() {
       </Modal>
 
       {/* MODAL VISUALIZAR TURNO */}
-      <Modal show={showViewTurnoModal} onHide={cerrarModalVizualizar} className='todo'>
+      <Modal show={showViewTurnoModal} onHide={handleCloseViewTurnoModal} className='todo'>
         <Modal.Header closeButton style={{ backgroundColor: '#1C2B67', textAlign: 'center', border: 'none' }}>
           <Modal.Title style={{ fontFamily: 'Coolvetica', color: '#FFFFFF', fontSize: '22px' }}>Visualizar Turno</Modal.Title>
         </Modal.Header>
-        <Modal.Body style={{ paddingLeft: '80px', paddingRight:'100px', fontWeight: 'lighter', display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+        <Modal.Body style={{ paddingLeft: '80px', paddingRight: '100px', fontWeight: 'lighter', display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', color: '#1C2B67' }}>
             <p><strong>Nombre:</strong></p>
             <p><strong>Hora de Inicio:</strong></p>
