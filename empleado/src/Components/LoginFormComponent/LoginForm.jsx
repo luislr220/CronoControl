@@ -22,9 +22,9 @@ export default function LoginForm() {
   }, [isAuthenticated, navigate, location.state?.from]);
 
   // Efecto para registrar en consola cuando el estado de autenticación cambia
-  useEffect(() => {
+  /*useEffect(() => {
     console.log("Usuario autenticado:", isAuthenticated);
-  }, [isAuthenticated]);
+  }, [isAuthenticated]); */
 
   const handleEmailSubmit = async (e) => {
     e.preventDefault();
@@ -59,17 +59,17 @@ export default function LoginForm() {
       // Si el inicio de sesión es exitoso, realiza el login
       if (response.data.message === "Inicio de sesión exitoso") {
         login();
-        console.log(
+        /*console.log(
           "Usuario autenticado después del inicio de sesión:",
           isAuthenticated
-        );
+        ); */
         navigate("/Permisos"); // Redirige al usuario a la página de turnos
       }
     } catch (error) {
       setMessage("Error al enviar la solicitud de inicio de sesión.");
       console.error("Error:", error);
     }
-  };;
+  };
 
   return (
     <div className="login-container">

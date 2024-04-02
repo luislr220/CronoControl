@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FormControl, Form, Modal, Alert, ProgressBar } from "react-bootstrap";
+import { FormControl, Form, Modal, Alert, ProgressBar, Button } from "react-bootstrap";
 import { format } from "date-fns";
 import "../AgregarUsuarioComponent/css/agregarEmpleado.css";
 import Navigation from "../NavigationComponent/Navigation";
@@ -10,7 +10,6 @@ import { CardActionArea, CardActions } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
 import Grid from "@mui/material/Grid";
-import Button from "@mui/material/Button";
 
 export default function AgregarUsuario() {
   const [administrador, setAdministrador] = useState([]);
@@ -170,6 +169,18 @@ export default function AgregarUsuario() {
     fetchAreas();
   }, []);
 
+  //useEffect para mostrar o no el campo contraseña dependiendo del rol
+  useEffect(() => {
+    if (valoresAdministradorSeleccionado.Rol === "Administrador") {
+      // Mostrar el campo de contraseña
+      setMostrarContraseña(true);
+    } else {
+      // Ocultar el campo de contraseña
+      setMostrarContraseña(false);
+    }
+  }, [valoresAdministradorSeleccionado.Rol]);
+  
+
   // Función para mostrar el modal de confirmación
   const mostrarConfirmacion = (usuario) => {
     setUsuarioAEliminar(usuario);
@@ -191,6 +202,7 @@ export default function AgregarUsuario() {
       setMostrarContraseña(true);
     }
   };
+  
 
   //CONSTANTE PARA ACTUALIZAR Y LIMPIAR EL FORMULARIO
   const handleInputChange = (event) => {
@@ -466,8 +478,7 @@ export default function AgregarUsuario() {
         {/*SECCIÓN DE BOTON AGREGAR Y FILTROS*/}
         <div className="AGEMBotonContainer">
           <Button
-            variant="contained"
-            color="success"
+            variant="primary"
             className="AGEMBotonverde"
             onClick={() => setMostrarFormulario(true)}
           >
@@ -550,13 +561,13 @@ export default function AgregarUsuario() {
           show={mostrarFormulario}
           onHide={() => setMostrarFormulario(false)}
         >
-          <Modal.Header closeButton>
-            <Modal.Title>Agregar Usuario</Modal.Title>
+          <Modal.Header closeButton style={{ backgroundColor: '#1C2B67' }}>
+            <Modal.Title style={{color: '#FFFFFF'}}>Agregar Usuario</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <Form>
               <Form.Group controlId="formNombre">
-                <Form.Label>Nombre</Form.Label>
+                <Form.Label style={{ color: '#1C2B67', fontWeight: 'bold'}}>Nombre</Form.Label>
                 <FormControl
                   type="text"
                   name="Nombre"
@@ -565,7 +576,7 @@ export default function AgregarUsuario() {
                 />
               </Form.Group>
               <Form.Group controlId="formAppE">
-                <Form.Label>Apellido Paterno</Form.Label>
+                <Form.Label style={{ color: '#1C2B67', fontWeight: 'bold'}}>Apellido Paterno</Form.Label>
                 <FormControl
                   type="text"
                   name="AppE"
@@ -574,7 +585,7 @@ export default function AgregarUsuario() {
                 />
               </Form.Group>
               <Form.Group controlId="formApmE">
-                <Form.Label>Apellido Materno</Form.Label>
+                <Form.Label style={{ color: '#1C2B67', fontWeight: 'bold'}}>Apellido Materno</Form.Label>
                 <FormControl
                   type="text"
                   name="ApmE"
@@ -583,7 +594,7 @@ export default function AgregarUsuario() {
                 />
               </Form.Group>
               <Form.Group controlId="formFechaNac">
-                <Form.Label>Fecha de Nacimiento</Form.Label>
+                <Form.Label style={{ color: '#1C2B67', fontWeight: 'bold'}}>Fecha de Nacimiento</Form.Label>
                 <FormControl
                   type="date"
                   name="FechaNac"
@@ -592,7 +603,7 @@ export default function AgregarUsuario() {
                 />
               </Form.Group>
               <Form.Group controlId="formCorreo">
-                <Form.Label>Correo</Form.Label>
+                <Form.Label style={{ color: '#1C2B67', fontWeight: 'bold'}}>Correo</Form.Label>
                 <FormControl
                   type="email"
                   name="Correo"
@@ -605,7 +616,7 @@ export default function AgregarUsuario() {
               </Form.Group>
 
               <Form.Group controlId="formRol">
-                <Form.Label>Rol</Form.Label>
+                <Form.Label style={{ color: '#1C2B67', fontWeight: 'bold'}}>Rol</Form.Label>
                 <Form.Control
                   as="select"
                   name="Rol"
@@ -624,7 +635,7 @@ export default function AgregarUsuario() {
               <Form.Group controlId="formContraseña">
                 {mostrarContraseña && (
                   <>
-                    <Form.Label>Contraseña</Form.Label>
+                    <Form.Label style={{ color: '#1C2B67', fontWeight: 'bold'}}>Contraseña</Form.Label>
                     <FormControl
                       type="password"
                       name="Contraseña"
@@ -636,7 +647,7 @@ export default function AgregarUsuario() {
               </Form.Group>
 
               <Form.Group controlId="formRegion">
-                <Form.Label>Sede</Form.Label>
+                <Form.Label style={{ color: '#1C2B67', fontWeight: 'bold'}}>Sede</Form.Label>
                 <Form.Control
                   as="select"
                   name="Region"
@@ -657,7 +668,7 @@ export default function AgregarUsuario() {
               </Form.Group>
 
               <Form.Group controlId="formArea">
-                <Form.Label>Área de Trabajo</Form.Label>
+                <Form.Label style={{ color: '#1C2B67', fontWeight: 'bold'}}>Área de Trabajo</Form.Label>
                 <Form.Control
                   as="select"
                   name="AreaTrabajo"
@@ -680,15 +691,15 @@ export default function AgregarUsuario() {
           </Modal.Body>
           <Modal.Footer>
             <Button
-              variant="contained"
-              color="success"
+              variant="primary"
+              className="AGEMBotonverde"
               onClick={agregarAdministrador}
             >
               Agregar
             </Button>
             <Button
-              variant="outlined"
-              color="error"
+              variant="primary"
+              className="AGEMBotonverde"
               onClick={() => setMostrarFormulario(false)}
             >
               Cancelar
@@ -698,13 +709,13 @@ export default function AgregarUsuario() {
 
         {/* Modal para actualizar */}
         <Modal show={mostrarModalActualizar} onHide={cerrarModalActualizar}>
-          <Modal.Header closeButton>
-            <Modal.Title>Actualizar Usuario</Modal.Title>
+          <Modal.Header closeButton style={{ backgroundColor: '#1C2B67' }}>
+            <Modal.Title style={{color: '#FFFFFF'}}>Actualizar Usuario</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <Form>
               <Form.Group controlId="formNombreActualizar">
-                <Form.Label>Nombre</Form.Label>
+                <Form.Label style={{ color: '#1C2B67', fontWeight: 'bold'}}>Nombre</Form.Label>
                 <FormControl
                   type="text"
                   name="Nombre"
@@ -718,7 +729,7 @@ export default function AgregarUsuario() {
                 />
               </Form.Group>
               <Form.Group controlId="formAppEActualizar">
-                <Form.Label>Apellido Paterno</Form.Label>
+                <Form.Label style={{ color: '#1C2B67', fontWeight: 'bold'}}>Apellido Paterno</Form.Label>
                 <FormControl
                   type="text"
                   name="AppE"
@@ -732,7 +743,7 @@ export default function AgregarUsuario() {
                 />
               </Form.Group>
               <Form.Group controlId="formApmEActualizar">
-                <Form.Label>Apellido Materno</Form.Label>
+                <Form.Label style={{ color: '#1C2B67', fontWeight: 'bold'}}>Apellido Materno</Form.Label>
                 <FormControl
                   type="text"
                   name="ApmE"
@@ -746,7 +757,7 @@ export default function AgregarUsuario() {
                 />
               </Form.Group>
               <Form.Group controlId="formFechaNacActualizar">
-                <Form.Label>Fecha de Nacimiento</Form.Label>
+                <Form.Label style={{ color: '#1C2B67', fontWeight: 'bold'}}>Fecha de Nacimiento</Form.Label>
                 <FormControl
                   type="date"
                   name="FechaNac"
@@ -760,7 +771,7 @@ export default function AgregarUsuario() {
                 />
               </Form.Group>
               <Form.Group controlId="formCorreoActualizar">
-                <Form.Label>Correo</Form.Label>
+                <Form.Label style={{ color: '#1C2B67', fontWeight: 'bold'}}>Correo</Form.Label>
                 <FormControl
                   type="email"
                   name="Correo"
@@ -775,7 +786,7 @@ export default function AgregarUsuario() {
               </Form.Group>
 
               <Form.Group controlId="formRolActualizar">
-                <Form.Label>Rol</Form.Label>
+                <Form.Label style={{ color: '#1C2B67', fontWeight: 'bold'}}>Rol</Form.Label>
                 <Form.Control
                   as="select"
                   name="Rol"
@@ -790,7 +801,6 @@ export default function AgregarUsuario() {
                           ? ""
                           : valoresAdministradorSeleccionado.Contraseña, // Resetear la contraseña si el nuevo rol es "Empleado"
                     });
-                    // Otras acciones necesarias
                   }}
                 >
                   <option value="">Selecciona un rol</option>
@@ -803,7 +813,7 @@ export default function AgregarUsuario() {
                 {valoresAdministradorSeleccionado.Rol === "Administrador" &&
                   mostrarContraseña && (
                     <div>
-                      <Form.Label>Nueva Contraseña</Form.Label>
+                      <Form.Label style={{ color: '#1C2B67', fontWeight: 'bold'}}>Nueva Contraseña</Form.Label>
                       <FormControl
                         type="password"
                         name="Contraseña"
@@ -815,7 +825,7 @@ export default function AgregarUsuario() {
               </Form.Group>
 
               <Form.Group controlId="formRegionActualizar">
-                <Form.Label>Sede</Form.Label>
+                <Form.Label style={{ color: '#1C2B67', fontWeight: 'bold'}}>Sede</Form.Label>
                 <Form.Control
                   as="select"
                   name="Region"
@@ -843,7 +853,7 @@ export default function AgregarUsuario() {
               </Form.Group>
 
               <Form.Group controlId="formAreaActualizar">
-                <Form.Label>Área de Trabajo</Form.Label>
+                <Form.Label style={{ color: '#1C2B67', fontWeight: 'bold'}}>Área de Trabajo</Form.Label>
                 <Form.Control
                   as="select"
                   name="AreaTrabajo"
@@ -867,15 +877,15 @@ export default function AgregarUsuario() {
           </Modal.Body>
           <Modal.Footer>
             <Button
-              variant="contained"
-              color="success"
+              variant="primary"
+              className="AGEMBotonverde"
               onClick={actualizarAdministrador}
             >
               Actualizar
             </Button>
             <Button
-              variant="outlined"
-              color="error"
+              variant="primary"
+              className="AGEMBotonverde"
               onClick={cerrarModalActualizar}
             >
               Cancelar
@@ -893,16 +903,16 @@ export default function AgregarUsuario() {
           </Modal.Body>
           <Modal.Footer>
             <Button
-              variant="outlined"
-              color="error"
+              variant="primary"
+              className="AGEMBotonverde"
               onClick={() => eliminarAdministrador(usuarioAEliminar._id)}
             >
               Sí, eliminar
             </Button>
 
             <Button
-              variant="contained"
-              color="success"
+              variant="primary"
+              className="AGEMBotonverde"
               onClick={ocultarConfirmacion}
             >
               Cancelar
@@ -1008,15 +1018,15 @@ export default function AgregarUsuario() {
                   </CardActionArea>
                   <CardActions className="myCardActions">
                     <Button
-                      variant="contained"
-                      color="success"
+                      variant="primary"
+                      className="AGEMBotonverde"
                       onClick={() => abrirModalActualizar(administrador)}
                     >
                       Actualizar
                     </Button>{" "}
                     <Button
-                      variant="outlined"
-                      color="error"
+                      variant="primary"
+                      className="AGEMBotonverde"
                       onClick={() => mostrarConfirmacion(administrador)}
                     >
                       Eliminar

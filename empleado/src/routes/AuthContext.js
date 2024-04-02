@@ -26,9 +26,9 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   // Efecto para registrar en consola cuando el estado de autenticación cambia
-  useEffect(() => {
+  /*useEffect(() => {
     console.log("Usuario autenticado:", isAuthenticated);
-  }, [isAuthenticated]);
+  }, [isAuthenticated]); */
 
   // Función para realizar el inicio de sesión
   const login = () => {

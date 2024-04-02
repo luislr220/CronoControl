@@ -49,7 +49,7 @@ export default function Navigation() {
 
   return (
     <div style={{ backgroundColor: '#1C2B67' }}>
-      <Navbar className="navbar-custom">
+      <Navbar className="navbar-custom" style={{backgroundColor: '#1C2B67'}}>
         <Container>
           <IconButton onClick={toggleDrawer(true)} aria-label="menu">
             <MenuIcon style={{ color: '#ffffff' }} /> {/* Color blanco */}
