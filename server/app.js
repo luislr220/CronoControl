@@ -13,6 +13,7 @@ var areaRoutes = require('./routes/areaRoutes'); // Importa las rutas de áreas
 var administradorRoutes = require('./routes/administradorRoutes'); // Importa las rutas de administrador
 var contratoRoutes = require('./routes/contratoRoutes');
 var horarioRoutes = require('./routes/horarioRoutes');
+var actividadRoutes = require('./routes/actividadRoutes'); // Importa las rutas de actividades
 var app = express();
 
 let dotenv = require('dotenv');
@@ -30,6 +31,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Middleware para deshabilitar el almacenamiento en caché
 app.use((req, res, next) => {
   res.set('Cache-Control', 'no-store');
   next();
@@ -43,12 +46,14 @@ app.use('/areas', areaRoutes);
 app.use('/administrador', administradorRoutes);
 app.use('/contratos', contratoRoutes);
 app.use('/horario', horarioRoutes);
-// catch 404 and forward to error handler
+app.use('/actividades', actividadRoutes); // Usa las rutas de actividades
+
+// Captura el error 404 y reenvía al gestor de errores
 app.use(function(req, res, next) {
   next(createError(404));
 });
 
-// error handler
+// Gestor de errores
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;

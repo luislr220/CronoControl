@@ -6,26 +6,23 @@ import TurnoCrud from './Components/TurnoCrudComponent/TurnoCrud';
 import AgregarSede from './Components/agregarsede/agregarsede';
 import AgregarArea from './Components/agregararea/agregararea';
 import AgregarContrato from './Components/contratos/agregarContrato';
-import AgregarHorario from './Components/agregarHorario/agregarHorario'; // Importa AgregarHorario aquí
-import Login from './Components/login/login';
-
-
-
+import AgregarHorario from './Components/agregarHorario/agregarHorario';
+import AsignarActividades from './Components/asiganacionActividades/actividades'; // Corregí la importación
 
 function App() {
   return (
     <div className="App">
       <Router>
         <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path='/validarDolis' element={<ValidarSolis />} />
-          <Route path='/agregarUsuario' element={<AgregarUsuario />} />
-          <Route path='/turnoCrud' element={<TurnoCrud />} />
-          <Route path='/agregarSede' element={<AgregarSede />} />
-          <Route path='/agregarArea' element={<AgregarArea />} />
-          <Route path='/ValidarSolis' element={<ValidarSolis />} />
-          <Route path='/agregarContrato' element={<AgregarContrato />} />
-          <Route path='/agregarHorario' element={<AgregarHorario />} /> {/* Utiliza AgregarHorario aquí */}
+          <Route key="validar-solis" path='/' element={<ValidarSolis />} />
+          <Route key="agregar-usuario" path='/agregarUsuario' element={<AgregarUsuario />} />
+          <Route key="turno-crud" path='/turnoCrud' element={<TurnoCrud />} />
+          <Route key="agregar-sede" path='/agregarSede' element={<AgregarSede />} />
+          <Route key="agregar-area" path='/agregarArea' element={<AgregarArea />} />
+          <Route key="validar-solis" path='/ValidarSolis' element={<ValidarSolis />} />
+          <Route key="agregar-contrato" path='/agregarContrato' element={<AgregarContrato />} />
+          <Route key="agregar-horario" path='/agregarHorario' element={<AgregarHorario />} />
+          <Route key="asignar-actividades" path='/AsignarActividades' element={<AsignarActividades />} /> {/* Corregí el nombre del componente y añadí una clave única */}
         </Routes>
       </Router>
     </div>
