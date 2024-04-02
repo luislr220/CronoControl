@@ -1,5 +1,5 @@
 .permisos-container {
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 .permisos-form-container {
@@ -8,7 +8,7 @@
 }
 
 .permisos-form-container form {
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 .permisos-form-container form label {
@@ -16,5 +16,9 @@
 }
 
 .permisos-form-container form .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
+}
+
+h2{
+  font-weight: 500;
 }

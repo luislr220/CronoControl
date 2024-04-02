@@ -5,10 +5,12 @@ import { Form, Button, Row, Col, Alert } from "react-bootstrap";
 
 export default function Permisos() {
   const [nombre, setNombre] = useState("");
+  const [sede, setSede] = useState(""); // Nuevo estado para la sede seleccionada
   const [areaTrabajo, setAreaTrabajo] = useState("");
   const [fechaInicio, setFechaInicio] = useState("");
   const [fechaFinal, setFechaFinal] = useState("");
   const [justificacion, setJustificacion] = useState("");
+  const [sedes, setSedes] = useState([]); // Nuevo estado para almacenar las sedes
   const [areasTrabajo, setAreasTrabajo] = useState([]);
   const [mensajeExito, setMensajeExito] = useState("");
   const [mensajeError, setMensajeError] = useState("");
@@ -27,11 +29,31 @@ export default function Permisos() {
       }
     };
 
+    const fetchSedes = async () => { // Nueva función para obtener las sedes
+      try {
+        const response = await fetch("http://localhost:3002/sedes");
+        if (!response.ok) {
+          throw new Error("No se pudo obtener la lista de sedes");
+        }
+        const data = await response.json();
+        setSedes(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
     fetchAreasTrabajo();
+    fetchSedes(); // Llamada a la función para obtener las sedes al cargar el componente
   }, []);
 
   const handleNombreChange = (e) => {
     setNombre(e.target.value);
+  };
+
+  const handleSedeChange = (e) => { // Manejador para el cambio de sede
+    setSede(e.target.value);
+    // Reiniciar el valor del área seleccionada al cambiar la sede
+    setAreaTrabajo("");
   };
 
   const handleAreaTrabajoChange = (e) => {
@@ -81,11 +103,18 @@ export default function Permisos() {
     }
   };
 
+  // Filtrar las áreas de trabajo basadas en la sede seleccionada
+  const filteredAreas = areasTrabajo.filter(area => area.sede === sede);
+
   return (
     <div className="">
       <Navigation />
-      <div className="permisos-form-container">
+      <br />
+      <br />
+      <div className="permisos-form-container" style={{ border: '1px solid #ccc', borderRadius: '10px', padding: '20px' }}>
         <h2>Solicitud de Vacaciones</h2>
+        <br />
+        <br />
         {mensajeExito && <Alert variant="success">{mensajeExito}</Alert>}
         {mensajeError && <Alert variant="danger">{mensajeError}</Alert>}
         <Form onSubmit={handleSubmit}>
@@ -98,20 +127,40 @@ export default function Permisos() {
                 value={nombre}
                 onChange={handleNombreChange}
               />
+              <br />
+            </Col>
+          </Form.Group>
+  
+          <Form.Group as={Row} controlId="sede" style={{ padding: '1%' }}>
+            <Form.Label column sm={3}>Sede:</Form.Label>
+            <Col sm={9}>
+              <Form.Control
+                as="select"
+                value={sede}
+                onChange={handleSedeChange}
+              >
+                <br />
+                <option>Selecciona la sede</option>
+                {sedes.map((sede) => (
+                  <option key={sede._id} value={sede.nombre}>
+                    {sede.nombre}
+                  </option>
+                ))}
+              </Form.Control>
             </Col>
           </Form.Group>
 
-          <Form.Group as={Row} controlId="areaTrabajo">
+          <Form.Group as={Row} controlId="areaTrabajo" style={{ padding: '1%' }}>
             <Form.Label column sm={3}>Área de trabajo:</Form.Label>
             <Col sm={9}>
               <Form.Control
                 as="select"
                 value={areaTrabajo}
                 onChange={handleAreaTrabajoChange}
-                
               >
+                <br />
                 <option>Selecciona tu área</option>
-                {areasTrabajo.map((area) => (
+                {filteredAreas.map((area) => (
                   <option key={area._id} value={area.nombre}>
                     {area.nombre}
                   </option>
@@ -119,7 +168,8 @@ export default function Permisos() {
               </Form.Control>
             </Col>
           </Form.Group>
-          <Form.Group as={Row} controlId="fechaInicio">
+          
+          <Form.Group as={Row} controlId="fechaInicio" style={{ padding: '1%' }}>
             <Form.Label column sm={3}>Fecha de inicio:</Form.Label>
             <Col sm={9}>
               <Form.Control
@@ -129,8 +179,8 @@ export default function Permisos() {
               />
             </Col>
           </Form.Group>
-
-          <Form.Group as={Row} controlId="fechaFinal">
+  
+          <Form.Group as={Row} controlId="fechaFinal" style={{ padding: '1%' }}>
             <Form.Label column sm={3}>Fecha de finalización:</Form.Label>
             <Col sm={9}>
               <Form.Control
@@ -140,8 +190,8 @@ export default function Permisos() {
               />
             </Col>
           </Form.Group>
-
-          <Form.Group as={Row} controlId="justificacion">
+  
+          <Form.Group as={Row} controlId="justificacion" style={{ padding: '1%' }}>
             <Form.Label column sm={3}>Justificación:</Form.Label>
             <Col sm={9}>
               <Form.Control
@@ -153,6 +203,9 @@ export default function Permisos() {
             </Col>
           </Form.Group>
 
+          <br />
+
+  
           <div className="text-center">
             <Button variant="primary" type="submit">
               Enviar Solicitud
