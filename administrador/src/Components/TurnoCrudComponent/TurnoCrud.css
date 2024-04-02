@@ -1,0 +1,54 @@
+/* Estilo para el cuerpo */
+.contenedor {
+    background-color: #afcdea;
+    font-family: XD;
+}
+
+/* Estilo para la cabecera de la tabla */
+.table thead th {
+    background-color: #1c2b67;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    letter-spacing: 1px;
+    font-size: 16px;
+    font-weight: normal;
+}
+
+/* Estilo para el cuerpo de la tabla */
+.table tbody td {
+    text-align: center;
+}
+
+/* Estilo para los botones */
+.boton-verde {
+    background-color: #1c2b67;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+.boton-verde:hover {
+    background-color: #318ce7;
+}
+
+/* Estilo para centrar el título */
+.titulo {
+    text-align: center;
+    font-size: 26px;
+}
+
+/* Estilo de los iconos */
+.icono {
+    font-weight: bolder;
+}
+
+/* Margen entre los Form.Group */
+.FormGroupMargin {
+    margin-bottom: 15px;
+}
+
+/* Estilo para el texto */
+.todo {
+    font-family: 'XD';
+    font-size: 17px;
+}

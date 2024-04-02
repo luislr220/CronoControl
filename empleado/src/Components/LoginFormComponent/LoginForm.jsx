@@ -1,0 +1,125 @@
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import axios from "axios";
+import "./css/LoginForm.css";
+import { useAuth } from "../../routes/AuthContext";
+import { Spinner } from "react-bootstrap";
+import AgregarHorario from '../agregarHorario/agregarHorario'; // Ajusta la ruta según tu estructura de archivos
+
+export default function LoginForm() {
+  const [token, setToken] = useState(""); // Estado para el token
+  const [message, setMessage] = useState(""); // Estado para mostrar el mensaje
+  const [tokenSent, setTokenSent] = useState(false); // Estado para controlar si se envió el token
+  const navigate = useNavigate(); // Hook de navegación
+  const location = useLocation(); // Hook de ubicación
+  const [loading, setLoading] = useState()
+  const { login, isAuthenticated } = useAuth(); // Hook para acceder a la función de login y al estado de autenticación del contexto de autenticación
+
+  // Obtener el correo electrónico del usuario autenticado del contexto de autenticación
+  const { user } = useAuth();
+  const email = user?.email || 'fili.navarro0311@gmail.com'; // Correo por defecto si el usuario no está autenticado
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate(location.state?.from || "/Turnos"); // Navega a la ruta anterior o a '/Turnos' por defecto
+    }
+  }, [isAuthenticated, navigate, location.state?.from]);
+
+  // Efecto para registrar en consola cuando el estado de autenticación cambia
+  useEffect(() => {
+    console.log("Usuario autenticado:", isAuthenticated);
+  }, [isAuthenticated]);
+
+  const handleEmailSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true); // Mostrar el spinner de carga
+    try {
+      // Enviar solicitud al servidor para enviar el token al correo electrónico ingresado
+      const response = await axios.post(
+        "http://localhost:3002/administrador/login/token",
+        { Correo: email }
+      );
+      setMessage(response.data.message);
+      setTokenSent(true); // Marcar que se envió el token
+    } catch (error) {
+      setMessage(
+        "Error al enviar la solicitud de inicio de sesión. El correo es incorrecto o el usuario no está dado de alta"
+      );
+      console.error("Error:", error);
+    } finally {
+      setLoading(false); // Ocultar el spinner de carga
+    }
+  };
+
+  const handleTokenSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      // Enviar solicitud al servidor para validar el inicio de sesión con el correo electrónico y el token ingresados
+      const response = await axios.post(
+        "http://localhost:3002/administrador/login",
+        { correo: email, token: token }
+      );
+      setMessage(response.data.message);
+      // Si el inicio de sesión es exitoso, realiza el login
+      if (response.data.message === "Inicio de sesión exitoso") {
+        login();
+        console.log(
+          "Usuario autenticado después del inicio de sesión:",
+          isAuthenticated
+        );
+        navigate("/Turnos"); // Redirige al usuario a la página de turnos
+      }
+    } catch (error) {
+      setMessage("Error al enviar la solicitud de inicio de sesión.");
+      console.error("Error:", error);
+    }
+  };
+
+  return (
+    <div className="login-container">
+      <div className="login-card">
+        <h1 className="login-title">Bienvenido</h1>
+        {!tokenSent ? (
+          <form onSubmit={handleEmailSubmit} className="email-form">
+            <div className="input-container">
+              <input
+                type="email"
+                placeholder="Correo Electrónico"
+                value={email}
+                readOnly // Hacer el campo de solo lectura para evitar que se modifique
+                className="login-input"
+                required
+              />
+            </div>
+            <button type="submit" className="login-btn">
+              {loading ? (
+                <Spinner animation="border" variant="light" size="sm" />
+              ) : (
+                "Obtener Token"
+              )}
+            </button>
+          </form>
+        ) : (
+          <form onSubmit={handleTokenSubmit} className="token-form">
+            <div className="input-container">
+              <input
+                type="text"
+                placeholder="Token"
+                value={token}
+                onChange={(e) => setToken(e.target.value)}
+                className="login-input"
+                required
+              />
+            </div>
+            <button type="submit" className="login-btn">
+              Iniciar Sesión
+            </button>
+          </form>
+        )}
+        <p className="login-message">{message}</p>
+        <AgregarHorario correo={email} /> {/* Aquí estás utilizando AgregarHorario dentro del componente LoginForm */}
+      </div>
+    </div>
+  );
+}
+
