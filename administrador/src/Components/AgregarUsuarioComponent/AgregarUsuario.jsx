@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { FormControl, Form, Modal, Alert, ProgressBar, Button } from "react-bootstrap";
+import {
+  FormControl,
+  Form,
+  Modal,
+  Alert,
+  ProgressBar,
+  Button,InputGroup
+} from "react-bootstrap";
 import { format } from "date-fns";
 import "../AgregarUsuarioComponent/css/agregarEmpleado.css";
 import Navigation from "../NavigationComponent/Navigation";
@@ -179,7 +186,6 @@ export default function AgregarUsuario() {
       setMostrarContraseña(false);
     }
   }, [valoresAdministradorSeleccionado.Rol]);
-  
 
   // Función para mostrar el modal de confirmación
   const mostrarConfirmacion = (usuario) => {
@@ -202,7 +208,6 @@ export default function AgregarUsuario() {
       setMostrarContraseña(true);
     }
   };
-  
 
   //CONSTANTE PARA ACTUALIZAR Y LIMPIAR EL FORMULARIO
   const handleInputChange = (event) => {
@@ -561,13 +566,17 @@ export default function AgregarUsuario() {
           show={mostrarFormulario}
           onHide={() => setMostrarFormulario(false)}
         >
-          <Modal.Header closeButton style={{ backgroundColor: '#1C2B67' }}>
-            <Modal.Title style={{color: '#FFFFFF'}}>Agregar Usuario</Modal.Title>
+          <Modal.Header closeButton style={{ backgroundColor: "#1C2B67" }}>
+            <Modal.Title style={{ color: "#FFFFFF" }}>
+              Agregar Usuario
+            </Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <Form>
               <Form.Group controlId="formNombre">
-                <Form.Label style={{ color: '#1C2B67', fontWeight: 'bold'}}>Nombre</Form.Label>
+                <Form.Label style={{ color: "#1C2B67", fontWeight: "bold" }}>
+                  Nombre
+                </Form.Label>
                 <FormControl
                   type="text"
                   name="Nombre"
@@ -576,7 +585,9 @@ export default function AgregarUsuario() {
                 />
               </Form.Group>
               <Form.Group controlId="formAppE">
-                <Form.Label style={{ color: '#1C2B67', fontWeight: 'bold'}}>Apellido Paterno</Form.Label>
+                <Form.Label style={{ color: "#1C2B67", fontWeight: "bold" }}>
+                  Apellido Paterno
+                </Form.Label>
                 <FormControl
                   type="text"
                   name="AppE"
@@ -585,7 +596,9 @@ export default function AgregarUsuario() {
                 />
               </Form.Group>
               <Form.Group controlId="formApmE">
-                <Form.Label style={{ color: '#1C2B67', fontWeight: 'bold'}}>Apellido Materno</Form.Label>
+                <Form.Label style={{ color: "#1C2B67", fontWeight: "bold" }}>
+                  Apellido Materno
+                </Form.Label>
                 <FormControl
                   type="text"
                   name="ApmE"
@@ -594,7 +607,9 @@ export default function AgregarUsuario() {
                 />
               </Form.Group>
               <Form.Group controlId="formFechaNac">
-                <Form.Label style={{ color: '#1C2B67', fontWeight: 'bold'}}>Fecha de Nacimiento</Form.Label>
+                <Form.Label style={{ color: "#1C2B67", fontWeight: "bold" }}>
+                  Fecha de Nacimiento
+                </Form.Label>
                 <FormControl
                   type="date"
                   name="FechaNac"
@@ -603,7 +618,9 @@ export default function AgregarUsuario() {
                 />
               </Form.Group>
               <Form.Group controlId="formCorreo">
-                <Form.Label style={{ color: '#1C2B67', fontWeight: 'bold'}}>Correo</Form.Label>
+                <Form.Label style={{ color: "#1C2B67", fontWeight: "bold" }}>
+                  Correo
+                </Form.Label>
                 <FormControl
                   type="email"
                   name="Correo"
@@ -616,7 +633,9 @@ export default function AgregarUsuario() {
               </Form.Group>
 
               <Form.Group controlId="formRol">
-                <Form.Label style={{ color: '#1C2B67', fontWeight: 'bold'}}>Rol</Form.Label>
+                <Form.Label style={{ color: "#1C2B67", fontWeight: "bold" }}>
+                  Rol
+                </Form.Label>
                 <Form.Control
                   as="select"
                   name="Rol"
@@ -635,7 +654,11 @@ export default function AgregarUsuario() {
               <Form.Group controlId="formContraseña">
                 {mostrarContraseña && (
                   <>
-                    <Form.Label style={{ color: '#1C2B67', fontWeight: 'bold'}}>Contraseña</Form.Label>
+                    <Form.Label
+                      style={{ color: "#1C2B67", fontWeight: "bold" }}
+                    >
+                      Contraseña
+                    </Form.Label>
                     <FormControl
                       type="password"
                       name="Contraseña"
@@ -647,7 +670,9 @@ export default function AgregarUsuario() {
               </Form.Group>
 
               <Form.Group controlId="formRegion">
-                <Form.Label style={{ color: '#1C2B67', fontWeight: 'bold'}}>Sede</Form.Label>
+                <Form.Label style={{ color: "#1C2B67", fontWeight: "bold" }}>
+                  Sede
+                </Form.Label>
                 <Form.Control
                   as="select"
                   name="Region"
@@ -668,7 +693,9 @@ export default function AgregarUsuario() {
               </Form.Group>
 
               <Form.Group controlId="formArea">
-                <Form.Label style={{ color: '#1C2B67', fontWeight: 'bold'}}>Área de Trabajo</Form.Label>
+                <Form.Label style={{ color: "#1C2B67", fontWeight: "bold" }}>
+                  Área de Trabajo
+                </Form.Label>
                 <Form.Control
                   as="select"
                   name="AreaTrabajo"
@@ -709,13 +736,17 @@ export default function AgregarUsuario() {
 
         {/* Modal para actualizar */}
         <Modal show={mostrarModalActualizar} onHide={cerrarModalActualizar}>
-          <Modal.Header closeButton style={{ backgroundColor: '#1C2B67' }}>
-            <Modal.Title style={{color: '#FFFFFF'}}>Actualizar Usuario</Modal.Title>
+          <Modal.Header closeButton style={{ backgroundColor: "#1C2B67" }}>
+            <Modal.Title style={{ color: "#FFFFFF" }}>
+              Actualizar Usuario
+            </Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <Form>
               <Form.Group controlId="formNombreActualizar">
-                <Form.Label style={{ color: '#1C2B67', fontWeight: 'bold'}}>Nombre</Form.Label>
+                <Form.Label style={{ color: "#1C2B67", fontWeight: "bold" }}>
+                  Nombre
+                </Form.Label>
                 <FormControl
                   type="text"
                   name="Nombre"
@@ -729,7 +760,9 @@ export default function AgregarUsuario() {
                 />
               </Form.Group>
               <Form.Group controlId="formAppEActualizar">
-                <Form.Label style={{ color: '#1C2B67', fontWeight: 'bold'}}>Apellido Paterno</Form.Label>
+                <Form.Label style={{ color: "#1C2B67", fontWeight: "bold" }}>
+                  Apellido Paterno
+                </Form.Label>
                 <FormControl
                   type="text"
                   name="AppE"
@@ -743,7 +776,9 @@ export default function AgregarUsuario() {
                 />
               </Form.Group>
               <Form.Group controlId="formApmEActualizar">
-                <Form.Label style={{ color: '#1C2B67', fontWeight: 'bold'}}>Apellido Materno</Form.Label>
+                <Form.Label style={{ color: "#1C2B67", fontWeight: "bold" }}>
+                  Apellido Materno
+                </Form.Label>
                 <FormControl
                   type="text"
                   name="ApmE"
@@ -757,7 +792,9 @@ export default function AgregarUsuario() {
                 />
               </Form.Group>
               <Form.Group controlId="formFechaNacActualizar">
-                <Form.Label style={{ color: '#1C2B67', fontWeight: 'bold'}}>Fecha de Nacimiento</Form.Label>
+                <Form.Label style={{ color: "#1C2B67", fontWeight: "bold" }}>
+                  Fecha de Nacimiento
+                </Form.Label>
                 <FormControl
                   type="date"
                   name="FechaNac"
@@ -771,7 +808,9 @@ export default function AgregarUsuario() {
                 />
               </Form.Group>
               <Form.Group controlId="formCorreoActualizar">
-                <Form.Label style={{ color: '#1C2B67', fontWeight: 'bold'}}>Correo</Form.Label>
+                <Form.Label style={{ color: "#1C2B67", fontWeight: "bold" }}>
+                  Correo
+                </Form.Label>
                 <FormControl
                   type="email"
                   name="Correo"
@@ -786,7 +825,9 @@ export default function AgregarUsuario() {
               </Form.Group>
 
               <Form.Group controlId="formRolActualizar">
-                <Form.Label style={{ color: '#1C2B67', fontWeight: 'bold'}}>Rol</Form.Label>
+                <Form.Label style={{ color: "#1C2B67", fontWeight: "bold" }}>
+                  Rol
+                </Form.Label>
                 <Form.Control
                   as="select"
                   name="Rol"
@@ -810,22 +851,35 @@ export default function AgregarUsuario() {
               </Form.Group>
 
               <Form.Group controlId="formContraseñaActualizar">
-                {valoresAdministradorSeleccionado.Rol === "Administrador" &&
-                  mostrarContraseña && (
-                    <div>
-                      <Form.Label style={{ color: '#1C2B67', fontWeight: 'bold'}}>Nueva Contraseña</Form.Label>
+                {valoresAdministradorSeleccionado.Rol === "Administrador" && (
+                  <div>
+                    <Form.Label
+                      style={{ color: "#1C2B67", fontWeight: "bold" }}
+                    >
+                      Nueva Contraseña
+                    </Form.Label>
+                    <InputGroup>
                       <FormControl
-                        type="password"
+                        type={mostrarContraseña ? "password" : "text"}
                         name="Contraseña"
                         value={valoresAdministradorSeleccionado.Contraseña}
                         onChange={handleInputChange}
                       />
-                    </div>
-                  )}
+                      <Button
+                        variant="outline-secondary"
+                        onClick={() => setMostrarContraseña(!mostrarContraseña)}
+                      >
+                        {mostrarContraseña ? "Mostrar" : "Ocultar"}
+                      </Button>
+                    </InputGroup>
+                  </div>
+                )}
               </Form.Group>
 
               <Form.Group controlId="formRegionActualizar">
-                <Form.Label style={{ color: '#1C2B67', fontWeight: 'bold'}}>Sede</Form.Label>
+                <Form.Label style={{ color: "#1C2B67", fontWeight: "bold" }}>
+                  Sede
+                </Form.Label>
                 <Form.Control
                   as="select"
                   name="Region"
@@ -853,7 +907,9 @@ export default function AgregarUsuario() {
               </Form.Group>
 
               <Form.Group controlId="formAreaActualizar">
-                <Form.Label style={{ color: '#1C2B67', fontWeight: 'bold'}}>Área de Trabajo</Form.Label>
+                <Form.Label style={{ color: "#1C2B67", fontWeight: "bold" }}>
+                  Área de Trabajo
+                </Form.Label>
                 <Form.Control
                   as="select"
                   name="AreaTrabajo"
@@ -969,7 +1025,6 @@ export default function AgregarUsuario() {
                 sm={6}
                 xs={12}
                 sx={{ width: "100%", p: 2 }}
-
                 className="GridCardUsuario"
               >
                 <Card
@@ -998,7 +1053,9 @@ export default function AgregarUsuario() {
                       </Typography>
                       {administrador.Rol === "Administrador" && (
                         <Typography variant="body2">
-                          Contraseña: {administrador.Contraseña}
+                          Contraseña:{" "}
+                          {administrador.Contraseña.replace(/./g, "*")}{" "}
+                          {/* Reemplaza cada carácter de la contraseña con un asterisco */}
                         </Typography>
                       )}
                       <Typography variant="body2">
