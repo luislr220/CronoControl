@@ -6,6 +6,7 @@ import "../contratos/css/contrato.css";
 export default function Contratos() {
   const [contratos, setContratos] = useState([]);
   const [nuevoContrato, setNuevoContrato] = useState({
+    nombreContrato: "",
     fechaInicio: "",
     fechaFin: "",
     diasLaborales: "",
@@ -14,12 +15,14 @@ export default function Contratos() {
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [contratoSeleccionado, setContratoSeleccionado] = useState(null);
   const [valoresContratoSeleccionado, setValoresContratoSeleccionado] = useState({
+    nombreContrato: "",
     fechaInicio: "",
     fechaFin: "",
     diasLaborales: "",
     diasDescanso: "",
   });
   const [mostrarModalActualizar, setMostrarModalActualizar] = useState(false);
+
   const [filtroDiasLaborales, setFiltroDiasLaborales] = useState("");
   const [filtroDiasDescanso, setFiltroDiasDescanso] = useState("");
   const [filtroFechaInicio, setFiltroFechaInicio] = useState("");
@@ -74,7 +77,7 @@ export default function Contratos() {
 
       const data = await response.json();
       setContratos([...contratos, data]);
-      setNuevoContrato({ fechaInicio: "", fechaFin: "", diasLaborales: "", diasDescanso: "" });
+      setNuevoContrato({ nombreContrato: "", fechaInicio: "", fechaFin: "", diasLaborales: "", diasDescanso: "" });
       setMostrarFormulario(false);
     } catch (error) {
       console.error(error);
@@ -184,6 +187,15 @@ export default function Contratos() {
           </Modal.Header>
           <Modal.Body>
             <Form>
+              <Form.Group controlId="formNombreContrato">
+                <Form.Label>Nombre Contrato</Form.Label>
+                <FormControl
+                  type="text"
+                  name="nombreContrato"
+                  value={nuevoContrato.nombreContrato}
+                  onChange={handleInputChange}
+                />
+              </Form.Group>
               <Form.Group controlId="formFechaInicio">
                 <Form.Label>Fecha de Inicio</Form.Label>
                 <FormControl
@@ -242,6 +254,20 @@ export default function Contratos() {
           </Modal.Header>
           <Modal.Body>
             <Form>
+              <Form.Group controlId="formNombreContratoActualizar">
+                <Form.Label>Nombre Contrato</Form.Label>
+                <FormControl
+                  type="text"
+                  name="nombreContrato"
+                  value={valoresContratoSeleccionado.nombreContrato}
+                  onChange={(e) =>
+                    setValoresContratoSeleccionado({
+                      ...valoresContratoSeleccionado,
+                      nombreContrato: e.target.value,
+                    })
+                  }
+                />
+              </Form.Group>
               <Form.Group controlId="formFechaInicioActualizar">
                 <Form.Label>Fecha de Inicio</Form.Label>
                 <FormControl
@@ -314,6 +340,7 @@ export default function Contratos() {
           <thead>
             <tr>
               <th>No.</th>
+              <th>Nombre Contrato</th>
               <th>Fecha de Inicio</th>
               <th>Fecha de Fin</th>
               <th>Días Laborales</th>
@@ -340,6 +367,7 @@ export default function Contratos() {
               .map((contrato, index) => (
                 <tr key={index}>
                   <td>{index + 1}</td>
+                  <td>{contrato.nombreContrato}</td>
                   <td>{formatFecha(contrato.fechaInicio)}</td>
                   <td>{formatFecha(contrato.fechaFin)}</td>
                   <td>{contrato.diasLaborales}</td>

@@ -1,4 +1,23 @@
 const Contrato = require('../models/contratoSchema');
+// Controlador para crear un nuevo contrato
+exports.agregarContrato = async (req, res) => {
+  try {
+    const nuevoContrato = new Contrato({
+      nombreContrato: req.body.nombreContrato,
+      fechaInicio: req.body.fechaInicio,
+      fechaFin: req.body.fechaFin,
+      diasLaborales: req.body.diasLaborales,
+      diasDescanso: req.body.diasDescanso,
+    });
+
+    const contratoGuardado = await nuevoContrato.save();
+    res.status(201).json(contratoGuardado);
+  } catch (error) {
+    console.error(error);
+    res.status(400).json({ message: error.message });
+  }
+};
+
 
 // Middleware para validar correo electrónico único
 exports.validarContratoExistente = async (req, res, next) => {
@@ -27,7 +46,8 @@ exports.actualizarContrato = async (req, res) => {
     }
 
     // Actualizar los campos del contrato con los datos recibidos en el cuerpo de la solicitud
-    // No es necesario verificar la existencia de los campos ya que el middleware ya validó el contrato único
+    // Incluyendo el nuevo campo nombreContrato
+    contrato.nombreContrato = req.body.nombreContrato;
     contrato.fechaInicio = req.body.fechaInicio;
     contrato.fechaFin = req.body.fechaFin;
     contrato.diasLaborales = req.body.diasLaborales;
@@ -41,5 +61,18 @@ exports.actualizarContrato = async (req, res) => {
     // Si ocurre un error, responder con un código de estado 400 y un mensaje de error
     console.error(error);
     res.status(400).json({ message: error.message });
+  }
+};
+
+// Controlador para eliminar un contrato por su ID
+exports.eliminarContrato = async (req, res) => {
+  try {
+    const contratoEliminado = await Contrato.findByIdAndDelete(req.params.id);
+    if (!contratoEliminado) {
+      return res.status(404).json({ message: "Contrato no encontrado" });
+    }
+    res.json({ message: "Contrato eliminado" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };

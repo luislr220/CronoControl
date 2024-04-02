@@ -19,6 +19,7 @@ router.get("/", async (req, res) => {
 // Ruta para crear un nuevo contrato
 router.post("/", async (req, res) => {
   const nuevoContrato = new Contrato({
+    nombreContrato: req.body.nombreContrato,
     fechaInicio: req.body.fechaInicio,
     fechaFin: req.body.fechaFin,
     diasLaborales: req.body.diasLaborales,
