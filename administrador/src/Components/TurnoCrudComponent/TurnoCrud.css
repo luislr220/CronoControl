@@ -1,34 +1,36 @@
 /* TurnoCrud.css */
+
+/* Estilo para el contenedor principal */
 .cuerpo {
-    background-color: #afcdea ;
-    font-family: XD;    
+    background-color: #afcdea;
+    font-family: XD;
 }
- 
+
 /* Estilo para la cabecera de la tabla */
 .AGEMTable thead th {
     background-color: #1C2B67;
     color: white;
-    text-align: center; /* Centrar el texto */
-    padding: 10px; /* Agregar separación */
-    letter-spacing: 1px; /* Agregar espacio entre las letras */
-    font-size: 16px; /* Cambiar el tamaño de la letra */
-    font-weight: normal; /* Quitar la negrita */
+    text-align: center;
+    padding: 10px;
+    letter-spacing: 1px;
+    font-size: 16px;
+    font-weight: normal;
 }
 
 /* Estilo para el cuerpo de la tabla */
 .AGEMTable tbody td {
-    text-align: center; /* Centrar el contenido */
+    text-align: center;
 }
 
-/* Agregar estilo al botón */
+/* Estilo para el botón */
 .custom-button {
     background-color: #1C2B67;
     border: none;
-    transition: background-color 0.3s ease; /* Transición suave del color de fondo */
+    transition: background-color 0.3s ease;
 }
 
 .custom-button:hover {
-    background-color: #318CE7; /* Cambiar el tono al pasar el cursor */
+    background-color: #318CE7;
 }
 
 /* Estilo para centrar el título */
@@ -39,15 +41,29 @@
 
 /* Estilo de los iconos */
 .icono {
-    font-weight:bolder;
+    font-weight: bolder;
 }
 
 /* Margen entre los Form.Group */
 .FormGroupMargin {
-    margin-bottom: 15px; /* Puedes ajustar el valor según sea necesario */
+    margin-bottom: 15px;
 }
 
-.todo {
-    font-family: 'XD';
-    font-size: 17px;
+/* Estilo para el contenedor de los filtros */
+.AGEMBotonContainer {
+    display: flex;
+    flex-wrap: wrap; /* Envolver los elementos en filas adicionales si es necesario */
+    justify-content: flex-end; /* Alinear los elementos a la derecha */
+}
+
+/* Estilo para los Form.Group de los filtros */
+.custom-filter-group {
+    flex: 1; /* Ocupar el espacio disponible */
+    margin-right: 10px; /* Margen derecho para separar los filtros */
+    max-width: 200px; /* Ancho máximo */
+}
+
+/* Estilo para el botón de 'Agregar Turno' en el contenedor de filtros */
+.custom-button-container {
+    margin-bottom: 100px; /* Espacio inferior */
 }

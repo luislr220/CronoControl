@@ -34,7 +34,8 @@ router.post('/', async (req, res) => {
     areaTrabajo: req.body.areaTrabajo,
     fechaInicio: req.body.fechaInicio,
     fechaFinal: req.body.fechaFinal,
-    justificacion: req.body.justificacion
+    justificacion: req.body.justificacion,
+    estado: req.body.estado
   });
 
   try {
@@ -74,5 +75,40 @@ router.delete('/:id', getPermiso, async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+
+// Ruta para aprobar solicitudes
+router.post('/aprobar', async (req, res) => {
+  const { permisos } = req.body; // Array de IDs de permisos a aprobar
+
+  try {
+    // Actualizar el estado de los permisos en la base de datos
+    await Permiso.updateMany(
+      { _id: { $in: permisos } }, // Actualizar múltiples documentos con los IDs proporcionados
+      { estado: 'Aprobado' } // Cambiar el estado a 'Aprobado'
+    );
+
+    res.json({ message: 'Solicitudes aprobadas correctamente' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Ruta para denegar solicitudes
+router.post('/denegar', async (req, res) => {
+  const { permisos } = req.body; // Array de IDs de permisos a denegar
+
+  try {
+    // Actualizar el estado de los permisos en la base de datos
+    await Permiso.updateMany(
+      { _id: { $in: permisos } }, // Actualizar múltiples documentos con los IDs proporcionados
+      { estado: 'Denegado' } // Cambiar el estado a 'Denegado'
+    );
+
+    res.json({ message: 'Solicitudes denegadas correctamente' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 
 module.exports = router;
