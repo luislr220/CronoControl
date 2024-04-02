@@ -7,7 +7,7 @@ import AgregarSede from './Components/agregarsede/agregarsede';
 import AgregarArea from './Components/agregararea/agregararea';
 import AgregarContrato from './Components/contratos/agregarContrato';
 import AgregarHorario from './Components/agregarHorario/agregarHorario'; // Importa AgregarHorario aquí
-import Login from './Components/login/login';
+
 
 
 
@@ -17,8 +17,7 @@ function App() {
     <div className="App">
       <Router>
         <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path='/validarDolis' element={<ValidarSolis />} />
+          <Route path='/' element={<ValidarSolis />} />
           <Route path='/agregarUsuario' element={<AgregarUsuario />} />
           <Route path='/turnoCrud' element={<TurnoCrud />} />
           <Route path='/agregarSede' element={<AgregarSede />} />
