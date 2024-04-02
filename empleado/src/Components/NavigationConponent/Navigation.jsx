@@ -24,6 +24,7 @@ export default function Navigation() {
 
   const drawerItems = [
     { text: "Solicitar vacaciones", href: "/Permisos", icon: <BsClockHistory /> },
+    { text: "Agregar Horarios", href: "/agregarHorario", icon: <BsClockHistory /> },
 
   ];
 

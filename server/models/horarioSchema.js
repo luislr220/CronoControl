@@ -5,19 +5,11 @@ const horarioSchema = new mongoose.Schema({
         type: String,
         required: true
     }, 
-    nombreAdmin: {
-        type: String,
-        required: true
-    },
     contrato: {
         type: String,
         required: true
     },
     turno: {
-        type: String,
-        required: true
-    },
-    estadoSolicitud: {
         type: String,
         required: true
     },
