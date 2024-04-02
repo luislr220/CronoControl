@@ -10,7 +10,7 @@ export default function Permisos() {
   const [fechaFinal, setFechaFinal] = useState("");
   const [justificacion, setJustificacion] = useState("");
   const [areasTrabajo, setAreasTrabajo] = useState([]);
-  const [solicitudesPermisos, setSolicitudesPermisos] = useState([]); // Estado para las solicitudes de permisos
+  //const [solicitudesPermisos, setSolicitudesPermisos] = useState([]); // Estado para las solicitudes de permisos
 
   useEffect(() => {
     // Función para obtener las áreas de trabajo disponibles
@@ -95,9 +95,9 @@ export default function Permisos() {
       if (!response.ok) {
         throw new Error("No se pudo obtener la lista de solicitudes de permisos");
       }
-      const data = await response.json();
+      //const data = await response.json();
       // Actualizar el estado de las solicitudes de permisos con los datos obtenidos
-      setSolicitudesPermisos(data);
+      //setSolicitudesPermisos(data);
     } catch (error) {
       console.error(error);
     }

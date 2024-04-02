@@ -17,7 +17,7 @@ export default function LoginForm() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate(location.state?.from || "/Turnos"); // Navega a la ruta anterior o a '/Turnos' por defecto
+      navigate(location.state?.from || "/Permisos"); // Navega a la ruta anterior o a '/Turnos' por defecto
     }
   }, [isAuthenticated, navigate, location.state?.from]);
 
@@ -63,7 +63,7 @@ export default function LoginForm() {
           "Usuario autenticado después del inicio de sesión:",
           isAuthenticated
         );
-        navigate("/Turnos"); // Redirige al usuario a la página de turnos
+        navigate("/Permisos"); // Redirige al usuario a la página de turnos
       }
     } catch (error) {
       setMessage("Error al enviar la solicitud de inicio de sesión.");
