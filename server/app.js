@@ -12,7 +12,6 @@ var sedeRoutes = require('./routes/sedeRoutes'); // Rutas para sedes
 var areaRoutes = require('./routes/areaRoutes'); // Importa las rutas de áreas
 var administradorRoutes = require('./routes/administradorRoutes'); // Importa las rutas de administrador
 var contratoRoutes = require('./routes/contratoRoutes');
-var horarioRoutes = require('./routes/horarioRoutes');
 var permisosRoutes = require('./routes/permisosRouter');
 var app = express();
 
