@@ -107,7 +107,7 @@ const ValidarSolis = () => {
         <div className="container">
           <div className="row">
             <div className="col">
-              <h1>Validar Solicitudes</h1>
+              <h1>Validar Turno</h1>
             </div>
             <br></br>
             <div className="col-5">

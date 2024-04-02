@@ -21,6 +21,10 @@ const permisoSchema = new mongoose.Schema({
   justificacion: {
     type: String,
     required: true
+  },
+  estado: {
+    type: String,
+    default: 'Pendiente'
   }
 });
 

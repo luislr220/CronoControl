@@ -62,7 +62,7 @@ export default function TurnoCrud() {
       } catch (error) {
         console.error(error);
       }
-    };    
+    };
 
     fetchAreas();
     fetchTurnos();
@@ -235,12 +235,12 @@ export default function TurnoCrud() {
       <Navigation />
       <h2 className="AGEMTitulo">Lista de Turnos</h2>
       <div className="AGEMcontenedor1">
-        <div className="AGEMBotonContainer">
+      <div className="AGEMBotonContainer custom-button-container">
           <Button variant="primary" className="custom-button" onClick={handleShowAddTurnoModal}>
             <span style={{ marginRight: '5px' }}>+</span> Nuevo Turno
           </Button>
           {/* Filtrar por área */}
-          <Form.Group controlId="formAreaFiltro">
+          <Form.Group controlId="formAreaFiltro" className="custom-filter-group">
             <Form.Control as="select" value={filtroArea} onChange={(e) => setFiltroArea(e.target.value)}>
               <option value="">Todas las áreas</option>
               {areas.map((area, index) => (
@@ -249,7 +249,7 @@ export default function TurnoCrud() {
             </Form.Control>
           </Form.Group>
           {/* Filtrar por estado */}
-          <Form.Group controlId="formEstadoFiltro">
+          <Form.Group controlId="formEstadoFiltro" className="custom-filter-group">
             <Form.Control as="select" value={filtroEstado} onChange={(e) => setFiltroEstado(e.target.value)}>
               <option value="">Todos los estados</option>
               <option value="Activo">Activo</option>
@@ -257,7 +257,7 @@ export default function TurnoCrud() {
             </Form.Control>
           </Form.Group>
           {/* Filtrar por cupo */}
-          <Form.Group controlId="formCupoFiltro">
+          <Form.Group controlId="formCupoFiltro" className="custom-filter-group">
             <Form.Control type="number" placeholder="Filtrar por cupo" value={filtroCupo} onChange={(e) => setFiltroCupo(e.target.value)} />
           </Form.Group>
         </div>
@@ -400,7 +400,7 @@ export default function TurnoCrud() {
               </div>
             </Form.Group>
             <Form.Group controlId="formAreaActualizar" className="row FormGroupMargin">
-              <Form.Label style={{ color: '#1C2B67', fontWeight: 'lighter'  }} className="col-sm-4">Área de Trabajo</Form.Label>
+              <Form.Label style={{ color: '#1C2B67', fontWeight: 'lighter' }} className="col-sm-4">Área de Trabajo</Form.Label>
               <div className="col-sm-8">
                 <Form.Control
                   as="select"
