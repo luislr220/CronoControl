@@ -6,6 +6,7 @@ import "../contratos/css/contrato.css";
 export default function Contratos() {
   const [contratos, setContratos] = useState([]);
   const [nuevoContrato, setNuevoContrato] = useState({
+    nombreContrato: "",
     fechaInicio: "",
     fechaFin: "",
     diasLaborales: "",
@@ -14,16 +15,18 @@ export default function Contratos() {
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [contratoSeleccionado, setContratoSeleccionado] = useState(null);
   const [valoresContratoSeleccionado, setValoresContratoSeleccionado] = useState({
+    nombreContrato: "",
     fechaInicio: "",
     fechaFin: "",
     diasLaborales: "",
     diasDescanso: "",
   });
   const [mostrarModalActualizar, setMostrarModalActualizar] = useState(false);
-  const [filtroFechaInicio, setFiltroFechaInicio] = useState("");
-  const [filtroFechaFin, setFiltroFechaFin] = useState("");
+
   const [filtroDiasLaborales, setFiltroDiasLaborales] = useState("");
   const [filtroDiasDescanso, setFiltroDiasDescanso] = useState("");
+  const [filtroFechaInicio, setFiltroFechaInicio] = useState("");
+  const [filtroFechaFin, setFiltroFechaFin] = useState("");
 
   // Función para formatear la fecha en un formato deseado (solo fecha, sin hora)
   const formatFecha = (fecha) => {
@@ -74,7 +77,7 @@ export default function Contratos() {
 
       const data = await response.json();
       setContratos([...contratos, data]);
-      setNuevoContrato({ fechaInicio: "", fechaFin: "", diasLaborales: "", diasDescanso: "" });
+      setNuevoContrato({ nombreContrato: "", fechaInicio: "", fechaFin: "", diasLaborales: "", diasDescanso: "" });
       setMostrarFormulario(false);
     } catch (error) {
       console.error(error);
@@ -147,20 +150,6 @@ export default function Contratos() {
             Agregar
           </Button>{" "}
           <FormControl
-            type="text"
-            placeholder="Filtrar por fecha de inicio..."
-            className="filtro"
-            value={filtroFechaInicio}
-            onChange={(e) => setFiltroFechaInicio(e.target.value)}
-          />
-          <FormControl
-            type="text"
-            placeholder="Filtrar por fecha de fin..."
-            className="filtro"
-            value={filtroFechaFin}
-            onChange={(e) => setFiltroFechaFin(e.target.value)}
-          />
-          <FormControl
             type="number"
             placeholder="Filtrar por días laborales..."
             className="filtro"
@@ -174,6 +163,20 @@ export default function Contratos() {
             value={filtroDiasDescanso}
             onChange={(e) => setFiltroDiasDescanso(e.target.value)}
           />
+          <FormControl
+            type="date"
+            placeholder="Filtrar por fecha de inicio..."
+            className="filtro"
+            value={filtroFechaInicio}
+            onChange={(e) => setFiltroFechaInicio(e.target.value)}
+          />
+          <FormControl
+            type="date"
+            placeholder="Filtrar por fecha de fin..."
+            className="filtro"
+            value={filtroFechaFin}
+            onChange={(e) => setFiltroFechaFin(e.target.value)}
+          />
         </div>
         <Modal
           show={mostrarFormulario}
@@ -184,6 +187,15 @@ export default function Contratos() {
           </Modal.Header>
           <Modal.Body>
             <Form>
+              <Form.Group controlId="formNombreContrato">
+                <Form.Label>Nombre Contrato</Form.Label>
+                <FormControl
+                  type="text"
+                  name="nombreContrato"
+                  value={nuevoContrato.nombreContrato}
+                  onChange={handleInputChange}
+                />
+              </Form.Group>
               <Form.Group controlId="formFechaInicio">
                 <Form.Label>Fecha de Inicio</Form.Label>
                 <FormControl
@@ -242,6 +254,20 @@ export default function Contratos() {
           </Modal.Header>
           <Modal.Body>
             <Form>
+              <Form.Group controlId="formNombreContratoActualizar">
+                <Form.Label>Nombre Contrato</Form.Label>
+                <FormControl
+                  type="text"
+                  name="nombreContrato"
+                  value={valoresContratoSeleccionado.nombreContrato}
+                  onChange={(e) =>
+                    setValoresContratoSeleccionado({
+                      ...valoresContratoSeleccionado,
+                      nombreContrato: e.target.value,
+                    })
+                  }
+                />
+              </Form.Group>
               <Form.Group controlId="formFechaInicioActualizar">
                 <Form.Label>Fecha de Inicio</Form.Label>
                 <FormControl
@@ -314,6 +340,7 @@ export default function Contratos() {
           <thead>
             <tr>
               <th>No.</th>
+              <th>Nombre Contrato</th>
               <th>Fecha de Inicio</th>
               <th>Fecha de Fin</th>
               <th>Días Laborales</th>
@@ -326,10 +353,10 @@ export default function Contratos() {
           <tbody>
             {contratos
               .filter((contrato) =>
-                contrato.fechaInicio.toLowerCase().includes(filtroFechaInicio.toLowerCase())
+                contrato.fechaInicio.includes(filtroFechaInicio)
               )
               .filter((contrato) =>
-                contrato.fechaFin.toLowerCase().includes(filtroFechaFin.toLowerCase())
+                contrato.fechaFin.includes(filtroFechaFin)
               )
               .filter((contrato) =>
                 contrato.diasLaborales.toString().includes(filtroDiasLaborales)
@@ -340,6 +367,7 @@ export default function Contratos() {
               .map((contrato, index) => (
                 <tr key={index}>
                   <td>{index + 1}</td>
+                  <td>{contrato.nombreContrato}</td>
                   <td>{formatFecha(contrato.fechaInicio)}</td>
                   <td>{formatFecha(contrato.fechaFin)}</td>
                   <td>{contrato.diasLaborales}</td>

@@ -959,6 +959,8 @@ export default function AgregarUsuario() {
                 sm={6}
                 xs={12}
                 sx={{ width: "100%", p: 2 }}
+
+                className="GridCardUsuario"
               >
                 <Card
                   sx={{

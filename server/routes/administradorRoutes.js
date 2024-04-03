@@ -65,8 +65,7 @@ router.post("/login", async (req, res) => {
 
 // Ruta para cerrar sesión
 router.post("/logout", async (req, res) => {
-  try {
-    // Devuelve una respuesta indicando que la sesión se ha cerrado exitosamente
+  try {    // Devuelve una respuesta indicando que la sesión se ha cerrado exitosamente
     res.json({ message: "Sesión cerrada exitosamente" });
   } catch (error) {
     console.error("Error al cerrar sesión:", error);
