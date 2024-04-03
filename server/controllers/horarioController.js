@@ -9,7 +9,7 @@ exports.getAllHorarios = async (req, res) => {
       res.status(500).json({ message: err.message });
   }
 };
-
+ 
 exports.createHorario = async (req, res) => {
   const horario = new Horario({
       nombreEmpleado: req.body.nombreEmpleado,

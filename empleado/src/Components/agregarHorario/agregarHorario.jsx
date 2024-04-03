@@ -1,10 +1,8 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../agregarHorario/css/agregarHorario.css';
 import Navigation from "../NavigationConponent/Navigation";
 import { faTrash, faEdit, faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
 
 function MensajeEmergente({ mensaje, onClose }) {
   return (
@@ -30,10 +28,9 @@ function VisualizarHorario({ horario, onClose }) {
               <td>{horario.nombreEmpleado}</td>
             </tr>
             <tr>
-  <td><strong>Contrato:</strong></td>
-  <td>{horario.contrato}</td>
-</tr>
-
+              <td><strong>Contrato:</strong></td>
+              <td>{horario.contrato}</td>
+            </tr>
             <tr>
               <td><strong>Turno:</strong></td>
               <td>{horario.turno}</td>
@@ -56,15 +53,14 @@ function VisualizarHorario({ horario, onClose }) {
 const FormularioHorario = () => {
   const [formulario, setFormulario] = useState({
     nombreEmpleado: '',
-    contrato: '', // Cambio aquí
+    contrato: '', 
     turno: '',
-    correo: '', // El correo del usuario autenticado se asignará aquí
+    correo: '', 
     razon: ''
   });
 
   useEffect(() => {
-    // Obtener el correo del usuario autenticado al cargar el componente
-    const currentUserEmail = 'fili.navarro0311@gmail.com'; // Reemplaza esto con el código para obtener el correo del usuario actual
+    const currentUserEmail = 'fili.navarro0311@gmail.com';
     setFormulario(prevState => ({
       ...prevState,
       correo: currentUserEmail
@@ -76,10 +72,8 @@ const FormularioHorario = () => {
   const [filtroNombreEmpleado, setFiltroNombreEmpleado] = useState('');
   const [filtroContrato, setFiltroContrato] = useState('');
   const [filtroTurno, setFiltroTurno] = useState('');
-  const [administradores, setAdministradores] = useState([]);
   const [turnos, setTurnos] = useState([]);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
-  const [contador, setContador] = useState(1);
   const [horarioSeleccionado, setHorarioSeleccionado] = useState(null);
   const [contratos, setContratos] = useState([]);
 
@@ -122,13 +116,12 @@ const FormularioHorario = () => {
         fetchHistorial();
         setFormulario({
           nombreEmpleado: '',
-          contrato: '', // Corregir aquí
+          contrato: '', 
           turno: '',
           correo: '',
           razon: ''
         });
         setMensaje(formulario._id ? 'Horario actualizado correctamente' : 'Horario guardado correctamente');
-        setContador(prevCount => prevCount + 1); // Corregir aquí
       } else {
         console.error('Error al enviar la solicitud');
       }
@@ -136,7 +129,6 @@ const FormularioHorario = () => {
       console.error('Error de red:', error);
     }
   };
-  
 
   const filtrarHistorial = () => {
     let historialFiltrado = historial.filter((horario) => {
@@ -149,11 +141,8 @@ const FormularioHorario = () => {
     return historialFiltrado;
   };
   
-  
-
   useEffect(() => {
     fetchHistorial();
-    fetchAdministradores();
     fetchTurnos();
     fetchContratos();
   }, []);
@@ -203,20 +192,6 @@ const FormularioHorario = () => {
     setMensaje('');
   };
 
-  const fetchAdministradores = async () => {
-    try {
-      const response = await fetch('http://localhost:3002/administrador');
-      if (response.ok) {
-        const data = await response.json();
-        setAdministradores(data);
-      } else {
-        console.error('Error al obtener los administradores');
-      }
-    } catch (error) {
-      console.error('Error de red:', error);
-    }
-  };
-
   const fetchTurnos = async () => {
     try {
       const response = await fetch('http://localhost:3002/turnos');
@@ -245,15 +220,11 @@ const FormularioHorario = () => {
     }
   };
 
-  const handleMostrarFormulario = () => {
-    setMostrarFormulario(true);
-  };
-
   const handleCloseFormulario = () => {
     setMostrarFormulario(false);
     setFormulario({
         nombreEmpleado: '',
-        contrato: '', // Corregir aquí
+        contrato: '', 
         turno: '',
         correo: '',
         razon: ''
@@ -289,11 +260,11 @@ const FormularioHorario = () => {
                     <td><label htmlFor="contrato">Contrato:</label></td>
                     <td>
                     <select id="contrato" name="contrato" value={formulario.contrato} onChange={handleChange} required>
-  <option value="">Selecciona el estado del contrato</option>
-  {contratos.map((contrato, index) => (
-    <option key={index} value={contrato.nombreContrato}>{contrato.nombreContrato}</option>
-  ))}
-</select>
+                      <option value="">Selecciona el estado del contrato</option>
+                      {contratos.map((contrato, index) => (
+                        <option key={index} value={contrato.nombreContrato}>{contrato.nombreContrato}</option>
+                      ))}
+                    </select>
                     </td>
                   </tr>
                   <tr>
