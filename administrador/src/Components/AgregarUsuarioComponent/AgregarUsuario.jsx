@@ -1,23 +1,18 @@
 import React, { useState, useEffect } from "react";
+import "../AgregarUsuarioComponent/css/agregarEmpleado.css";
 import {
   FormControl,
   Form,
-  Modal,
   Alert,
   ProgressBar,
-  Button,InputGroup
+  Button
 } from "react-bootstrap";
-import { format } from "date-fns";
-import "../AgregarUsuarioComponent/css/agregarEmpleado.css";
 import Navigation from "../NavigationComponent/Navigation";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import Typography from "@mui/material/Typography";
-import { CardActionArea, CardActions } from "@mui/material";
-import Avatar from "@mui/material/Avatar";
-import Stack from "@mui/material/Stack";
-import Grid from "@mui/material/Grid";
 import BTNSobrecarga from "./btnSobrecarga";
+import UsuarioGrid from "./usuarioGrid";
+import AgregarUsuarioModal from "./AgregarUsuarioModal";
+import ActualizarUsuarioModal from "./ActualizarUsuarioModal";
+import ConfirmarEliminacionModal from "./ConfirmarEliminacionModal";
 
 export default function AgregarUsuario() {
   const [administrador, setAdministrador] = useState([]);
@@ -59,7 +54,7 @@ export default function AgregarUsuario() {
   const [filtroRegion, setFiltroRegion] = useState(""); // Nuevo estado para el filtro por región
   const [filtroArea, setFiltroArea] = useState(""); // Nuevo estado para el filtro por Área
   const [filtroApellidoModal, setFiltroApellidoModal] = useState(""); // Estado para filtrar por apellido
-  const [roles, setRoles] = useState("");
+  const [roles, setRoles] = useState([]);
   const [filtroRol, setFiltroRol] = useState("");
   const [errorCorreoDuplicado, setErrorCorreoDuplicado] = useState("");
   const [errorCorreoDuplicadoActualizar, setErrorCorreoDuplicadoActualizar] =
@@ -418,69 +413,12 @@ export default function AgregarUsuario() {
     }
   };
 
-  //FUNCIONES DEL AVATAR DEL USUARIO
-  function stringToColor(string) {
-    let hash = 0;
-    let i;
-
-    /* eslint-disable no-bitwise */
-    for (i = 0; i < string.length; i += 1) {
-      hash = string.charCodeAt(i) + ((hash << 5) - hash);
-    }
-
-    let color = "#";
-
-    for (i = 0; i < 3; i += 1) {
-      const value = (hash >> (i * 8)) & 0xff;
-      color += `00${value.toString(16)}`.slice(-2);
-    }
-    /* eslint-enable no-bitwise */
-
-    return color;
-  }
-
-  function stringAvatar(Nombre) {
-    // Verificar si el nombre tiene al menos dos partes separadas por un espacio
-    const nombreParts = Nombre.split(" ");
-    if (nombreParts.length >= 2) {
-      return {
-        sx: {
-          bgcolor: stringToColor(Nombre),
-          width: 150,
-          height: 150,
-          fontSize: 80,
-        },
-        children: `${nombreParts[0][0]}${nombreParts[1][0]}`,
-      };
-    } else if (nombreParts.length === 1) {
-      // Si el nombre tiene solo una parte, usar la primera letra de esa parte
-      return {
-        sx: {
-          bgcolor: stringToColor(Nombre),
-          width: 150,
-          height: 150,
-          fontSize: 80,
-        },
-        children: `${nombreParts[0][0]}`,
-      };
-    } else {
-      // Si el nombre no tiene el formato esperado, manejarlo según sea necesario
-      return {
-        sx: {
-          bgcolor: stringToColor(Nombre),
-          width: 150,
-          height: 150,
-          fontSize: 80,
-        },
-        children: "", // O proporcionar una cadena predeterminada
-      };
-    }
-  }
-
   return (
     <div>
       <Navigation />
       <div className="AGEMcontenedorUsuario">
+      <BTNSobrecarga/>
+      <br/>
         {/*SECCIÓN DE BOTON AGREGAR Y FILTROS*/}
         <div className="AGEMBotonContainerUsuario">
           <Button
@@ -546,13 +484,14 @@ export default function AgregarUsuario() {
           <Form.Control
             as="select"
             className="AGEMBuscador"
-            value={filtroRol} // Utiliza filtroRol en lugar de roles aquí
+            value={filtroRol}
             onChange={(e) => setFiltroRol(e.target.value)}
           >
             <option value="">Todos los roles</option>
             {loading ? (
               <option disabled>Cargando roles...</option>
             ) : (
+              Array.isArray(roles) &&
               roles.map((rol, index) => (
                 <option key={index} value={rol}>
                   {rol}
@@ -561,423 +500,51 @@ export default function AgregarUsuario() {
             )}
           </Form.Control>
         </div>
-        <BTNSobrecarga/>
-
 
         {/*MODAL PARA AGREGAR UN Administrador */}
-        <Modal
-          show={mostrarFormulario}
-          onHide={() => setMostrarFormulario(false)}
-        >
-          <Modal.Header closeButton style={{ backgroundColor: "#1C2B67" }}>
-            <Modal.Title style={{ color: "#FFFFFF" }}>
-              Agregar Usuario
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Form>
-              <Form.Group controlId="formNombre">
-                <Form.Label style={{ color: "#1C2B67", fontWeight: "bold" }}>
-                  Nombre
-                </Form.Label>
-                <FormControl
-                  type="text"
-                  name="Nombre"
-                  value={nuevoAdministrador.Nombre}
-                  onChange={handleInputChange}
-                />
-              </Form.Group>
-              <Form.Group controlId="formAppE">
-                <Form.Label style={{ color: "#1C2B67", fontWeight: "bold" }}>
-                  Apellido Paterno
-                </Form.Label>
-                <FormControl
-                  type="text"
-                  name="AppE"
-                  value={nuevoAdministrador.AppE}
-                  onChange={handleInputChange}
-                />
-              </Form.Group>
-              <Form.Group controlId="formApmE">
-                <Form.Label style={{ color: "#1C2B67", fontWeight: "bold" }}>
-                  Apellido Materno
-                </Form.Label>
-                <FormControl
-                  type="text"
-                  name="ApmE"
-                  value={nuevoAdministrador.ApmE}
-                  onChange={handleInputChange}
-                />
-              </Form.Group>
-              <Form.Group controlId="formFechaNac">
-                <Form.Label style={{ color: "#1C2B67", fontWeight: "bold" }}>
-                  Fecha de Nacimiento
-                </Form.Label>
-                <FormControl
-                  type="date"
-                  name="FechaNac"
-                  value={nuevoAdministrador.FechaNac}
-                  onChange={handleInputChange}
-                />
-              </Form.Group>
-              <Form.Group controlId="formCorreo">
-                <Form.Label style={{ color: "#1C2B67", fontWeight: "bold" }}>
-                  Correo
-                </Form.Label>
-                <FormControl
-                  type="email"
-                  name="Correo"
-                  value={nuevoAdministrador.Correo}
-                  onChange={handleInputChange}
-                />
-                {errorCorreoDuplicado && (
-                  <Alert variant="danger">{errorCorreoDuplicado}</Alert>
-                )}
-              </Form.Group>
-
-              <Form.Group controlId="formRol">
-                <Form.Label style={{ color: "#1C2B67", fontWeight: "bold" }}>
-                  Rol
-                </Form.Label>
-                <Form.Control
-                  as="select"
-                  name="Rol"
-                  value={nuevoAdministrador.Rol}
-                  onChange={(e) => {
-                    handleInputChange(e); // Manejar el cambio de forma común
-                    handleRolChange(e); // Llamar al manejador de cambio de rol
-                  }}
-                >
-                  <option value="">Selecciona un rol</option>
-                  <option value="Administrador">Administrador</option>
-                  <option value="Empleado">Empleado</option>
-                </Form.Control>
-              </Form.Group>
-
-              <Form.Group controlId="formContraseña">
-                {mostrarContraseña && (
-                  <>
-                    <Form.Label
-                      style={{ color: "#1C2B67", fontWeight: "bold" }}
-                    >
-                      Contraseña
-                    </Form.Label>
-                    <FormControl
-                      type="password"
-                      name="Contraseña"
-                      value={nuevoAdministrador.Contraseña}
-                      onChange={handleInputChange}
-                    />
-                  </>
-                )}
-              </Form.Group>
-
-              <Form.Group controlId="formRegion">
-                <Form.Label style={{ color: "#1C2B67", fontWeight: "bold" }}>
-                  Sede
-                </Form.Label>
-                <Form.Control
-                  as="select"
-                  name="Region"
-                  value={nuevoAdministrador.Region}
-                  onChange={handleRegionChange}
-                >
-                  <option value="">Selecciona una Sede</option>
-                  {loading ? (
-                    <option disabled>Cargando sedes...</option>
-                  ) : (
-                    sedes.map((sede) => (
-                      <option key={sede._id} value={sede.nombre}>
-                        {sede.nombre}
-                      </option>
-                    ))
-                  )}
-                </Form.Control>
-              </Form.Group>
-
-              <Form.Group controlId="formArea">
-                <Form.Label style={{ color: "#1C2B67", fontWeight: "bold" }}>
-                  Área de Trabajo
-                </Form.Label>
-                <Form.Control
-                  as="select"
-                  name="AreaTrabajo"
-                  value={nuevoAdministrador.AreaTrabajo}
-                  onChange={handleInputChange}
-                >
-                  <option value="">Selecciona una área</option>
-                  {loading ? (
-                    <option disabled>Cargando áreas...</option>
-                  ) : (
-                    areasPorRegion.map((area) => (
-                      <option key={area._id} value={area.nombre}>
-                        {area.nombre}
-                      </option>
-                    ))
-                  )}
-                </Form.Control>
-              </Form.Group>
-            </Form>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              variant="primary"
-              className="AGEMBotonverde"
-              onClick={agregarAdministrador}
-            >
-              Agregar
-            </Button>
-            <Button
-              variant="primary"
-              className="AGEMBotonverde"
-              onClick={() => setMostrarFormulario(false)}
-            >
-              Cancelar
-            </Button>
-          </Modal.Footer>
-        </Modal>
+        <AgregarUsuarioModal
+          mostrar={mostrarFormulario}
+          onClose={() => setMostrarFormulario(false)}
+          nuevoAdministrador={nuevoAdministrador}
+          handleInputChange={handleInputChange}
+          handleRegionChange={handleRegionChange}
+          agregarAdministrador={agregarAdministrador}
+          loading={loading}
+          sedes={sedes}
+          areasPorRegion={areasPorRegion}
+          errorCorreoDuplicado={errorCorreoDuplicado}
+          handleRolChange={handleRolChange} // Pasar handleRolChange como prop
+          mostrarContraseña={mostrarContraseña}
+        />
 
         {/* Modal para actualizar */}
-        <Modal show={mostrarModalActualizar} onHide={cerrarModalActualizar}>
-          <Modal.Header closeButton style={{ backgroundColor: "#1C2B67" }}>
-            <Modal.Title style={{ color: "#FFFFFF" }}>
-              Actualizar Usuario
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Form>
-              <Form.Group controlId="formNombreActualizar">
-                <Form.Label style={{ color: "#1C2B67", fontWeight: "bold" }}>
-                  Nombre
-                </Form.Label>
-                <FormControl
-                  type="text"
-                  name="Nombre"
-                  value={valoresAdministradorSeleccionado.Nombre}
-                  onChange={(e) =>
-                    setValoresAdministradorSeleccionado({
-                      ...valoresAdministradorSeleccionado,
-                      Nombre: e.target.value,
-                    })
-                  }
-                />
-              </Form.Group>
-              <Form.Group controlId="formAppEActualizar">
-                <Form.Label style={{ color: "#1C2B67", fontWeight: "bold" }}>
-                  Apellido Paterno
-                </Form.Label>
-                <FormControl
-                  type="text"
-                  name="AppE"
-                  value={valoresAdministradorSeleccionado.AppE}
-                  onChange={(e) =>
-                    setValoresAdministradorSeleccionado({
-                      ...valoresAdministradorSeleccionado,
-                      AppE: e.target.value,
-                    })
-                  }
-                />
-              </Form.Group>
-              <Form.Group controlId="formApmEActualizar">
-                <Form.Label style={{ color: "#1C2B67", fontWeight: "bold" }}>
-                  Apellido Materno
-                </Form.Label>
-                <FormControl
-                  type="text"
-                  name="ApmE"
-                  value={valoresAdministradorSeleccionado.ApmE}
-                  onChange={(e) =>
-                    setValoresAdministradorSeleccionado({
-                      ...valoresAdministradorSeleccionado,
-                      ApmE: e.target.value,
-                    })
-                  }
-                />
-              </Form.Group>
-              <Form.Group controlId="formFechaNacActualizar">
-                <Form.Label style={{ color: "#1C2B67", fontWeight: "bold" }}>
-                  Fecha de Nacimiento
-                </Form.Label>
-                <FormControl
-                  type="date"
-                  name="FechaNac"
-                  value={valoresAdministradorSeleccionado.FechaNac}
-                  onChange={(e) =>
-                    setValoresAdministradorSeleccionado({
-                      ...valoresAdministradorSeleccionado,
-                      FechaNac: e.target.value,
-                    })
-                  }
-                />
-              </Form.Group>
-              <Form.Group controlId="formCorreoActualizar">
-                <Form.Label style={{ color: "#1C2B67", fontWeight: "bold" }}>
-                  Correo
-                </Form.Label>
-                <FormControl
-                  type="email"
-                  name="Correo"
-                  value={valoresAdministradorSeleccionado.Correo}
-                  onChange={handleInputChange}
-                />
-                {errorCorreoDuplicadoActualizar && (
-                  <Alert variant="danger">
-                    {errorCorreoDuplicadoActualizar}
-                  </Alert>
-                )}
-              </Form.Group>
-
-              <Form.Group controlId="formRolActualizar">
-                <Form.Label style={{ color: "#1C2B67", fontWeight: "bold" }}>
-                  Rol
-                </Form.Label>
-                <Form.Control
-                  as="select"
-                  name="Rol"
-                  value={valoresAdministradorSeleccionado.Rol}
-                  onChange={(e) => {
-                    const nuevoRol = e.target.value;
-                    setValoresAdministradorSeleccionado({
-                      ...valoresAdministradorSeleccionado,
-                      Rol: nuevoRol,
-                      Contraseña:
-                        nuevoRol === "Empleado"
-                          ? ""
-                          : valoresAdministradorSeleccionado.Contraseña, // Resetear la contraseña si el nuevo rol es "Empleado"
-                    });
-                  }}
-                >
-                  <option value="">Selecciona un rol</option>
-                  <option value="Administrador">Administrador</option>
-                  <option value="Empleado">Empleado</option>
-                </Form.Control>
-              </Form.Group>
-
-              <Form.Group controlId="formContraseñaActualizar">
-                {valoresAdministradorSeleccionado.Rol === "Administrador" && (
-                  <div>
-                    <Form.Label
-                      style={{ color: "#1C2B67", fontWeight: "bold" }}
-                    >
-                      Nueva Contraseña
-                    </Form.Label>
-                    <InputGroup>
-                      <FormControl
-                        type={mostrarContraseña ? "password" : "text"}
-                        name="Contraseña"
-                        value={valoresAdministradorSeleccionado.Contraseña}
-                        onChange={handleInputChange}
-                      />
-                      <Button
-                        variant="outline-secondary"
-                        onClick={() => setMostrarContraseña(!mostrarContraseña)}
-                      >
-                        {mostrarContraseña ? "Mostrar" : "Ocultar"}
-                      </Button>
-                    </InputGroup>
-                  </div>
-                )}
-              </Form.Group>
-
-              <Form.Group controlId="formRegionActualizar">
-                <Form.Label style={{ color: "#1C2B67", fontWeight: "bold" }}>
-                  Sede
-                </Form.Label>
-                <Form.Control
-                  as="select"
-                  name="Region"
-                  value={valoresAdministradorSeleccionado.Region}
-                  onChange={(e) => {
-                    const regionSeleccionada = e.target.value;
-                    setValoresAdministradorSeleccionado({
-                      ...valoresAdministradorSeleccionado,
-                      Region: regionSeleccionada,
-                    });
-                    // Filtrar las áreas por región seleccionada
-                    const areasFiltradas = areas.filter(
-                      (area) => area.sede === regionSeleccionada
-                    );
-                    setAreasPorRegionActualizar(areasFiltradas);
-                  }}
-                >
-                  <option value="">Selecciona una sede</option>
-                  {sedes.map((sede) => (
-                    <option key={sede._id} value={sede.nombre}>
-                      {sede.nombre}
-                    </option>
-                  ))}
-                </Form.Control>
-              </Form.Group>
-
-              <Form.Group controlId="formAreaActualizar">
-                <Form.Label style={{ color: "#1C2B67", fontWeight: "bold" }}>
-                  Área de Trabajo
-                </Form.Label>
-                <Form.Control
-                  as="select"
-                  name="AreaTrabajo"
-                  value={valoresAdministradorSeleccionado.AreaTrabajo}
-                  onChange={(e) =>
-                    setValoresAdministradorSeleccionado({
-                      ...valoresAdministradorSeleccionado,
-                      AreaTrabajo: e.target.value,
-                    })
-                  }
-                >
-                  <option value="">Selecciona una área</option>
-                  {areasPorRegionActualizar.map((area) => (
-                    <option key={area._id} value={area.nombre}>
-                      {area.nombre}
-                    </option>
-                  ))}
-                </Form.Control>
-              </Form.Group>
-            </Form>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              variant="primary"
-              className="AGEMBotonverde"
-              onClick={actualizarAdministrador}
-            >
-              Actualizar
-            </Button>
-            <Button
-              variant="primary"
-              className="AGEMBotonverde"
-              onClick={cerrarModalActualizar}
-            >
-              Cancelar
-            </Button>
-          </Modal.Footer>
-        </Modal>
+        <ActualizarUsuarioModal
+          mostrar={mostrarModalActualizar}
+          onClose={cerrarModalActualizar}
+          valoresAdministradorSeleccionado={valoresAdministradorSeleccionado}
+          handleInputChange={handleInputChange}
+          handleRegionChange={handleRegionChange}
+          actualizarAdministrador={actualizarAdministrador}
+          loading={loading}
+          sedes={sedes}
+          areasPorRegionActualizar={areasPorRegionActualizar}
+          errorCorreoDuplicadoActualizar={errorCorreoDuplicadoActualizar}
+          mostrarContraseña={mostrarContraseña} // Asegúrate de pasar mostrarContraseña como prop
+          setMostrarContraseña={setMostrarContraseña} // Asegúrate de pasar setMostrarContraseña como prop
+          areas={areas} // Asegúrate de pasar areas como prop
+          setAreasPorRegionActualizar={setAreasPorRegionActualizar}
+          setValoresAdministradorSeleccionado={
+            setValoresAdministradorSeleccionado
+          }
+        />
 
         {/* MODAL PARA CONFIRMAR SI DESEA ELIMINAR*/}
-        <Modal show={mostrarModalConfirmacion} onHide={ocultarConfirmacion}>
-          <Modal.Header closeButton>
-            <Modal.Title>Confirmar eliminación</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            ¿Estás seguro de que quieres eliminar este usuario?
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              variant="primary"
-              className="AGEMBotonverde"
-              onClick={() => eliminarAdministrador(usuarioAEliminar._id)}
-            >
-              Sí, eliminar
-            </Button>
-
-            <Button
-              variant="primary"
-              className="AGEMBotonverde"
-              onClick={ocultarConfirmacion}
-            >
-              Cancelar
-            </Button>
-          </Modal.Footer>
-        </Modal>
+        <ConfirmarEliminacionModal
+          mostrarModalConfirmacion={mostrarModalConfirmacion}
+          ocultarConfirmacion={ocultarConfirmacion}
+          eliminarAdministrador={eliminarAdministrador}
+          usuarioAEliminar={usuarioAEliminar}
+        />
 
         {/*ALERTA QUE SE MUESTRA CUANDO SE AGREGA, ACTUALIZA Y ELIMINA A UN USUARIO */}
         <Alert
@@ -991,114 +558,16 @@ export default function AgregarUsuario() {
         </Alert>
 
         {/*CARDS PARA MOSTRAR A LOS USUARIOS*/}
-        <Grid container spacing={2}>
-          {administrador
-            .filter((administrador) =>
-              administrador.Nombre.toLowerCase().includes(filtro.toLowerCase())
-            )
-            .filter((administrador) =>
-              administrador.Region.toLowerCase().includes(
-                filtroRegion.toLowerCase()
-              )
-            )
-            .filter((administrador) =>
-              administrador.AreaTrabajo.toLowerCase().includes(
-                filtroArea.toLowerCase()
-              )
-            )
-            .filter((administrador) =>
-              `${administrador.AppE} ${administrador.ApmE}`
-                .toLowerCase()
-                .includes(filtroApellidoModal.toLowerCase())
-            )
-            .filter(
-              (administrador) =>
-                filtroRol === "" ||
-                administrador.Rol.toLowerCase().includes(
-                  filtroRol.toLowerCase()
-                )
-            )
-            .map((administrador, index) => (
-              <Grid
-                key={index}
-                item
-                xl={2}
-                lg={3}
-                md={4}
-                sm={6}
-                xs={12}
-                sx={{ width: "100%", p: 2 }}
-                className="GridCardUsuario"
-              >
-                <Card
-                  sx={{
-                    maxWidth: 300,
-                    height: "100%",
-                    display: "flex",
-                    flexDirection: "column",
-                  }}
-                  className="AGEMCard"
-                >
-                  <CardActionArea>
-                    <Stack
-                      direction="row"
-                      spacing={2}
-                      sx={{ display: "flex", justifyContent: "center", pt: 2 }}
-                    >
-                      <Avatar {...stringAvatar(administrador.Nombre)} />
-                    </Stack>
-                    <CardContent>
-                      <Typography gutterBottom variant="h5" component="div">
-                        {`${administrador.Nombre} ${administrador.AppE} ${administrador.ApmE}`}
-                      </Typography>
-                      <Typography variant="body2">
-                        Id: {administrador.id}
-                      </Typography>
-                      <Typography variant="body2">
-                        Correo: {administrador.Correo}
-                      </Typography>
-                      {administrador.Rol === "Administrador" && (
-                        <Typography variant="body2">
-                          Contraseña:{" "}
-                          {administrador.Contraseña.replace(/./g, "*")}{" "}
-                          {/* Reemplaza cada carácter de la contraseña con un asterisco */}
-                        </Typography>
-                      )}
-                      <Typography variant="body2">
-                        Rol: {administrador.Rol}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        Fecha de nacimiento:{" "}
-                        {format(new Date(administrador.FechaNac), "yyyy-MM-dd")}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        Sede: {administrador.Region}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        Área: {administrador.AreaTrabajo}
-                      </Typography>
-                    </CardContent>
-                  </CardActionArea>
-                  <CardActions className="myCardActions">
-                    <Button
-                      variant="primary"
-                      className="AGEMBotonverde"
-                      onClick={() => abrirModalActualizar(administrador)}
-                    >
-                      Actualizar
-                    </Button>{" "}
-                    <Button
-                      variant="primary"
-                      className="AGEMBotonverde"
-                      onClick={() => mostrarConfirmacion(administrador)}
-                    >
-                      Eliminar
-                    </Button>{" "}
-                  </CardActions>
-                </Card>
-              </Grid>
-            ))}
-        </Grid>
+        <UsuarioGrid
+          administrador={administrador}
+          filtro={filtro}
+          filtroRegion={filtroRegion}
+          filtroArea={filtroArea}
+          filtroApellidoModal={filtroApellidoModal}
+          filtroRol={filtroRol}
+          abrirModalActualizar={abrirModalActualizar}
+          mostrarConfirmacion={mostrarConfirmacion}
+        />
       </div>
     </div>
   );

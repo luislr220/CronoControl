@@ -1,30 +1,57 @@
 const express = require("express");
 const router = express.Router();
+const mongoose = require('mongoose');
 const administradorController = require("../controllers/administradorController");
 const cors = require("cors");
 const Administrador = require("../models/administradorSchema");
 const { enviarCorreo } = require("../controllers/authController");
 const jwt = require("jsonwebtoken");
-const fs = require('fs');
+const fs = require("fs");
+const multer = require("multer");
+const upload = multer({ dest: "uploads/" });
 
 // Middleware para permitir CORS
 router.use(cors());
 
-
-router.post('/usuarios/cargar', async (req, res) => {
+router.post('/cargar', upload.single('file'), async (req, res) => {
   try {
-    const usuarios = req.body; // Los datos del archivo JSON serán enviados en el cuerpo de la solicitud
+    console.log('Recibiendo datos del archivo JSON:', req.file);
+    const usuarios = JSON.parse(fs.readFileSync(req.file.path, 'utf8'));
+
+    // Buscar el último administrador para obtener su ID
+    const ultimoAdministrador = await Administrador.findOne().sort({
+      id: -1,
+    });
+
+    let nuevoID = ultimoAdministrador ? ultimoAdministrador.id + 1 : 1; // Valor predeterminado si no hay administradores existentes
+
     // Iterar sobre los usuarios y guardarlos en la base de datos
     for (const usuario of usuarios) {
-      const nuevoUsuario = new Administrador(usuario);
+      // Crear un nuevo administrador con el ID generado
+      const nuevoUsuario = new Administrador({
+        ...usuario,
+        id: nuevoID,
+      });
+
       await nuevoUsuario.save();
+
+      // Incrementar el ID para el próximo usuario
+      nuevoID++;
     }
+
+    console.log('Usuarios guardados exitosamente');
     res.status(201).json({ message: 'Usuarios cargados exitosamente' });
+
+    // Eliminar el archivo después de cargar los datos
+    fs.unlinkSync(req.file.path);
   } catch (error) {
     console.error('Error al cargar usuarios:', error);
     res.status(500).json({ error: 'Error en el servidor al cargar usuarios' });
   }
 });
+
+
+
 
 // Ruta para enviar el token de inicio de sesión por correo electrónico
 router.post("/login/token", async (req, res) => {
