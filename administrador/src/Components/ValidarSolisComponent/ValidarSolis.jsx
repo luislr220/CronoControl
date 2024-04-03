@@ -8,11 +8,9 @@ import Navigation from '../NavigationComponent/Navigation';
 
 const ValidarSolis = () => {
   const [turnos, setTurnos] = useState([]);
-  const [solicitudesPermisos, setSolicitudesPermisos] = useState([]);
   const [searchInputEmpleado, setSearchInputEmpleado] = useState('');
   const [searchInputTurno, setSearchInputTurno] = useState('');
   const [filteredTurnos, setFilteredTurnos] = useState([]);
-  const [filteredSolicitudes, setFilteredSolicitudes] = useState([]);
 
   useEffect(() => {
     const fetchTurnos = async () => {
@@ -22,29 +20,16 @@ const ValidarSolis = () => {
           throw new Error('No se pudo obtener la lista de turnos');
         }
         const data = await response.json();
-        setTurnos(data);
-        setFilteredTurnos(data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    const fetchSolicitudesPermisos = async () => {
-      try {
-        const response = await fetch('http://localhost:3002/solicitudes-permisos');
-        if (!response.ok) {
-          throw new Error('No se pudo obtener la lista de solicitudes de permisos');
-        }
-        const data = await response.json();
-        setSolicitudesPermisos(data);
-        setFilteredSolicitudes(data);
+        // Agregar propiedad de estado 'status' para cada turno
+        const turnosWithStatus = data.map(turno => ({ ...turno, status: 'Pendiente' }));
+        setTurnos(turnosWithStatus);
+        setFilteredTurnos(turnosWithStatus);
       } catch (error) {
         console.error(error);
       }
     };
 
     fetchTurnos();
-    fetchSolicitudesPermisos();
   }, []);
 
   useEffect(() => {
@@ -61,42 +46,20 @@ const ValidarSolis = () => {
     filterTurnos();
   }, [turnos, searchInputEmpleado, searchInputTurno]);
 
-  useEffect(() => {
-    const filterSolicitudes = () => {
-      let filtered = solicitudesPermisos.filter((solicitud) => {
-        return (
-          solicitud.nombre.toLowerCase().includes(searchInputEmpleado.toLowerCase()) &&
-          solicitud.fechaInicio.toLowerCase().includes(searchInputTurno.toLowerCase())
-        );
-      });
-      setFilteredSolicitudes(filtered);
-    };
-
-    filterSolicitudes();
-  }, [solicitudesPermisos, searchInputEmpleado, searchInputTurno]);
-
   const handleValidarTurno = (turnoId) => {
     console.log(`Validando turno con ID ${turnoId}`);
-    // Aquí podrías escribir la lógica para validar el turno
+    const updatedTurnos = turnos.map(turno =>
+      turno.id === turnoId ? { ...turno, status: 'Aprobada' } : turno
+    );
+    setTurnos(updatedTurnos);
   };
 
   const handleRechazarTurno = (turnoId) => {
     console.log(`Rechazando turno con ID ${turnoId}`);
-    const updatedTurnos = filteredTurnos.filter(turno => turno.id !== turnoId);
-    setFilteredTurnos(updatedTurnos);
-    // Aquí podrías escribir la lógica para rechazar el turno
-  };
-
-  const handleValidarSolicitud = (solicitudId) => {
-    console.log(`Validando solicitud con ID ${solicitudId}`);
-    // Aquí podrías escribir la lógica para validar la solicitud de permisos
-  };
-
-  const handleRechazarSolicitud = (solicitudId) => {
-    console.log(`Rechazando solicitud con ID ${solicitudId}`);
-    const updatedSolicitudes = filteredSolicitudes.filter(solicitud => solicitud.id !== solicitudId);
-    setFilteredSolicitudes(updatedSolicitudes);
-    // Aquí podrías escribir la lógica para rechazar la solicitud de permisos
+    const updatedTurnos = turnos.map(turno =>
+      turno.id === turnoId ? { ...turno, status: 'Rechazada' } : turno
+    );
+    setTurnos(updatedTurnos);
   };
 
   return (
@@ -169,6 +132,7 @@ const ValidarSolis = () => {
                     <th>Nombre</th>
                     <th>Hora Inicio</th>
                     <th>Hora Final</th>
+                    <th>Estado</th> {/* Agregado el encabezado del estado */}
                     <th>Acciones</th>
                   </tr>
                 </thead>
@@ -184,6 +148,7 @@ const ValidarSolis = () => {
                       <td>{turno.Nombre}</td>
                       <td>{turno.HoraInicio}</td>
                       <td>{turno.HoraFinal}</td>
+                      <td>{turno.status}</td> {/* Mostrar el estado del turno */}
                       <td style={{ textAlign: 'center' }}>
                         <button
                           className="btn btn-success mr-2"
@@ -194,51 +159,6 @@ const ValidarSolis = () => {
                         <button
                           className="btn btn-danger"
                           onClick={() => handleRechazarTurno(turno.id)}
-                        >
-                          <FontAwesomeIcon icon={faTimes} />
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <div className="">
-              <h2>Solicitudes de Vacaciones</h2>
-              <table className="table rounded">
-                <thead>
-                  <tr>
-                    <th></th>
-                    <th>Nombre</th>
-                    <th>Fecha Inicio</th>
-                    <th>Fecha Final</th>
-                    <th>Justificación</th>
-                    <th>Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredSolicitudes.map((solicitud, index) => (
-                    <tr key={index}>
-                      <td>
-                        <FontAwesomeIcon
-                          icon={faCircleUser}
-                          style={{ color: '#000000', fontSize: '1.5rem' }}
-                        />
-                      </td>
-                      <td>{solicitud.nombre}</td>
-                      <td>{solicitud.fechaInicio}</td>
-                      <td>{solicitud.fechaFinal}</td>
-                      <td>{solicitud.justificacion}</td>
-                      <td style={{ textAlign: 'center' }}>
-                        <button
-                          className="btn btn-success mr-2"
-                          onClick={() => handleValidarSolicitud(solicitud.id)}
-                        >
-                          <FontAwesomeIcon icon={faCheck} />
-                        </button>
-                        <button
-                          className="btn btn-danger"
-                          onClick={() => handleRechazarSolicitud(solicitud.id)}
                         >
                           <FontAwesomeIcon icon={faTimes} />
                         </button>

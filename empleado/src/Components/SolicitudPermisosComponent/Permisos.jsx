@@ -1,19 +1,21 @@
 import React, { useState, useEffect } from "react";
 import "./css/permisos.css";
 import Navigation from "../NavigationConponent/Navigation";
-import { Form, Button, Row, Col, Alert } from "react-bootstrap";
+import { Form, Button, Row, Col, Alert, Spinner } from "react-bootstrap";
+
 
 export default function Permisos() {
   const [nombre, setNombre] = useState("");
-  const [sede, setSede] = useState(""); // Nuevo estado para la sede seleccionada
+  const [sede, setSede] = useState("");
   const [areaTrabajo, setAreaTrabajo] = useState("");
   const [fechaInicio, setFechaInicio] = useState("");
   const [fechaFinal, setFechaFinal] = useState("");
   const [justificacion, setJustificacion] = useState("");
-  const [sedes, setSedes] = useState([]); // Nuevo estado para almacenar las sedes
+  const [sedes, setSedes] = useState([]);
   const [areasTrabajo, setAreasTrabajo] = useState([]);
   const [mensajeExito, setMensajeExito] = useState("");
   const [mensajeError, setMensajeError] = useState("");
+  const [isLoading, setIsLoading] = useState(false); // Nuevo estado para controlar la barra de carga
 
   useEffect(() => {
     const fetchAreasTrabajo = async () => {
@@ -29,7 +31,7 @@ export default function Permisos() {
       }
     };
 
-    const fetchSedes = async () => { // Nueva función para obtener las sedes
+    const fetchSedes = async () => {
       try {
         const response = await fetch("http://localhost:3002/sedes");
         if (!response.ok) {
@@ -43,16 +45,15 @@ export default function Permisos() {
     };
 
     fetchAreasTrabajo();
-    fetchSedes(); // Llamada a la función para obtener las sedes al cargar el componente
+    fetchSedes();
   }, []);
 
   const handleNombreChange = (e) => {
     setNombre(e.target.value);
   };
 
-  const handleSedeChange = (e) => { // Manejador para el cambio de sede
+  const handleSedeChange = (e) => {
     setSede(e.target.value);
-    // Reiniciar el valor del área seleccionada al cambiar la sede
     setAreaTrabajo("");
   };
 
@@ -82,6 +83,8 @@ export default function Permisos() {
       justificacion: justificacion
     };
 
+    setIsLoading(true); // Mostrar la barra de carga antes de enviar la solicitud
+
     try {
       const response = await fetch("http://localhost:3002/permisos", {
         method: "POST",
@@ -98,29 +101,13 @@ export default function Permisos() {
       setMensajeExito("Solicitud enviada exitosamente");
       setMensajeError("");
     } catch (error) {
-      console.error("Error:", error);
-      // Aquí podrías manejar el error de alguna manera (mostrar un mensaje al usuario, etc.)
-    }
-  };
-
-  // Función para actualizar la lista de solicitudes de permisos después de enviar una nueva solicitud
-  const actualizarSolicitudesPermisos = async () => {
-    try {
-      const response = await fetch("http://localhost:3002/solicitudes-permisos");
-      if (!response.ok) {
-        throw new Error("No se pudo obtener la lista de solicitudes de permisos");
-      }
-      //const data = await response.json();
-      // Actualizar el estado de las solicitudes de permisos con los datos obtenidos
-      //setSolicitudesPermisos(data);
-    } catch (error) {
-      console.error(error);
       setMensajeError("Error al enviar la solicitud");
       setMensajeExito("");
+    } finally {
+      setIsLoading(false); // Ocultar la barra de carga después de completar la solicitud
     }
   };
 
-  // Filtrar las áreas de trabajo basadas en la sede seleccionada
   const filteredAreas = areasTrabajo.filter(area => area.sede === sede);
 
   return (
@@ -128,19 +115,21 @@ export default function Permisos() {
       <Navigation />
       <br />
       <br />
+      <h1>Solicitar Vacaciones</h1>
+      <br />
       <div className="permisos-form-container" style={{ border: '1px solid #ccc', borderRadius: '10px', padding: '20px' }}>
-        <h2>Solicitud de Vacaciones</h2>
+        
         <br />
         <br />
         {mensajeExito && <Alert variant="success">{mensajeExito}</Alert>}
         {mensajeError && <Alert variant="danger">{mensajeError}</Alert>}
         <Form onSubmit={handleSubmit}>
           <Form.Group as={Row} controlId="nombre">
-            <Form.Label column sm={3}>Nombre completo:</Form.Label>
+            <Form.Label column sm={3}>Nombre:</Form.Label>
             <Col sm={9}>
               <Form.Control
                 type="text"
-                placeholder="Ingresa tu nombre"
+                placeholder=""
                 value={nombre}
                 onChange={handleNombreChange}
               />
@@ -221,12 +210,12 @@ export default function Permisos() {
           </Form.Group>
 
           <br />
-
   
           <div className="text-center">
             <Button variant="primary" type="submit">
               Enviar Solicitud
             </Button>
+            {isLoading && <Spinner animation="border" variant="primary" />}
           </div>
         </Form>
       </div>
