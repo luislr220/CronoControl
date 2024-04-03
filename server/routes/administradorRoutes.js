@@ -4,31 +4,27 @@ const administradorController = require("../controllers/administradorController"
 const cors = require("cors");
 const Administrador = require("../models/administradorSchema");
 const { enviarCorreo } = require("../controllers/authController");
-const uploadController = require("../controllers/uploadController");
 const jwt = require("jsonwebtoken");
-const multer = require("multer");
-const { v4: uuidv4 } = require("uuid");
+const fs = require('fs');
 
 // Middleware para permitir CORS
 router.use(cors());
 
-// Configuración de Multer para almacenar archivos en el sistema de archivos del servidor
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "./uploads");
-  },
-  filename: function (req, file, cb) {
-    cb(null, "usuarios.json");
-  },
-});
-const upload = multer({ storage: storage });
 
-// Ruta para manejar la carga de usuarios desde un archivo JSON
-router.post(
-  "/upload-users",
-  upload.single("file"),
-  uploadController.uploadUsers
-);
+router.post('/usuarios/cargar', async (req, res) => {
+  try {
+    const usuarios = req.body; // Los datos del archivo JSON serán enviados en el cuerpo de la solicitud
+    // Iterar sobre los usuarios y guardarlos en la base de datos
+    for (const usuario of usuarios) {
+      const nuevoUsuario = new Administrador(usuario);
+      await nuevoUsuario.save();
+    }
+    res.status(201).json({ message: 'Usuarios cargados exitosamente' });
+  } catch (error) {
+    console.error('Error al cargar usuarios:', error);
+    res.status(500).json({ error: 'Error en el servidor al cargar usuarios' });
+  }
+});
 
 // Ruta para enviar el token de inicio de sesión por correo electrónico
 router.post("/login/token", async (req, res) => {
