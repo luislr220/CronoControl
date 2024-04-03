@@ -17,6 +17,7 @@ import { CardActionArea, CardActions } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
 import Grid from "@mui/material/Grid";
+import BTNSobrecarga from "./btnSobrecarga";
 
 export default function AgregarUsuario() {
   const [administrador, setAdministrador] = useState([]);
@@ -560,6 +561,8 @@ export default function AgregarUsuario() {
             )}
           </Form.Control>
         </div>
+        <BTNSobrecarga/>
+
 
         {/*MODAL PARA AGREGAR UN Administrador */}
         <Modal
@@ -1047,6 +1050,9 @@ export default function AgregarUsuario() {
                     <CardContent>
                       <Typography gutterBottom variant="h5" component="div">
                         {`${administrador.Nombre} ${administrador.AppE} ${administrador.ApmE}`}
+                      </Typography>
+                      <Typography variant="body2">
+                        Id: {administrador.id}
                       </Typography>
                       <Typography variant="body2">
                         Correo: {administrador.Correo}

@@ -4,10 +4,31 @@ const administradorController = require("../controllers/administradorController"
 const cors = require("cors");
 const Administrador = require("../models/administradorSchema");
 const { enviarCorreo } = require("../controllers/authController");
+const uploadController = require("../controllers/uploadController");
 const jwt = require("jsonwebtoken");
+const multer = require("multer");
+const { v4: uuidv4 } = require("uuid");
 
 // Middleware para permitir CORS
 router.use(cors());
+
+// Configuración de Multer para almacenar archivos en el sistema de archivos del servidor
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "./uploads");
+  },
+  filename: function (req, file, cb) {
+    cb(null, "usuarios.json");
+  },
+});
+const upload = multer({ storage: storage });
+
+// Ruta para manejar la carga de usuarios desde un archivo JSON
+router.post(
+  "/upload-users",
+  upload.single("file"),
+  uploadController.uploadUsers
+);
 
 // Ruta para enviar el token de inicio de sesión por correo electrónico
 router.post("/login/token", async (req, res) => {
@@ -65,7 +86,8 @@ router.post("/login", async (req, res) => {
 
 // Ruta para cerrar sesión
 router.post("/logout", async (req, res) => {
-  try {    // Devuelve una respuesta indicando que la sesión se ha cerrado exitosamente
+  try {
+    // Devuelve una respuesta indicando que la sesión se ha cerrado exitosamente
     res.json({ message: "Sesión cerrada exitosamente" });
   } catch (error) {
     console.error("Error al cerrar sesión:", error);
@@ -95,8 +117,27 @@ router.post(
   administradorController.validarCorreoUnico,
   async (req, res) => {
     try {
-      const nuevoAdministrador = new Administrador(req.body);
+      // Buscar el último administrador para obtener su ID
+      const ultimoAdministrador = await Administrador.findOne().sort({
+        id: -1,
+      });
+
+      let nuevoID = 1; // Valor predeterminado si no hay administradores existentes
+
+      if (ultimoAdministrador) {
+        // Si hay administradores existentes, incrementar el ID
+        nuevoID = ultimoAdministrador.id + 1;
+      }
+
+      // Crear un nuevo administrador con el ID generado
+      const nuevoAdministrador = new Administrador({
+        ...req.body,
+        id: nuevoID,
+      });
+
+      // Guardar el administrador en la base de datos
       await nuevoAdministrador.save();
+
       res.status(201).send(nuevoAdministrador);
     } catch (error) {
       res.status(400).json({ error: "Error al crear un nuevo administrador" });
