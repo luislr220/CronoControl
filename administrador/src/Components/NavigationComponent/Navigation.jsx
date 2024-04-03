@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./css/Navigation.css";
+import "./Navigation.css";
 import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
 import Box from "@mui/material/Box";
@@ -10,7 +10,7 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
-import { BsCheckCircle, BsClockHistory, BsPeople, BsBuilding, BsCalendar, BsFilePost } from "react-icons/bs"; // Íconos de react-icons/bs
+import { BsCheckCircle, BsClockHistory, BsPeople, BsBuilding, BsCalendar, BsFilePost } from "react-icons/bs";
 import logoEmpresa from "../../assets/logo/LogoPNG.png";
 import Dropdown from 'react-bootstrap/Dropdown';
 
@@ -22,11 +22,11 @@ export default function Navigation() {
   };
 
   return (
-    <div style={{ backgroundColor: '#1C2B67' }}>
-      <Navbar className="navbar-custom">
+    <div>
+      <Navbar className="navbar" style={{ backgroundColor: '#1C2B67' }}>
         <Container>
           <IconButton onClick={toggleDrawer(true)} aria-label="menu">
-            <MenuIcon style={{ color: '#ffffff' }} /> {/* Color blanco */}
+            <MenuIcon style={{ color: '#ffffff' }} />
           </IconButton>
           <Drawer open={open} onClose={toggleDrawer(false)}>
             <DrawerList />
@@ -59,10 +59,10 @@ function DrawerList() {
           <div key={index}>
             {item.subItems ? (
               <Dropdown>
-                <Dropdown.Toggle variant="transparent" style={{ border: 'none', background: 'transparent', color: '#ffffff' }}>
+                <Dropdown.Toggle variant="transparent" style={{ border: 'none', background: 'transparent', color: '#ffffff', display: 'flex', justifyContent: 'flex-start' }}> {/* Alinea el contenido del botón a la izquierda */}
                   <ListItem disablePadding>
                     <ListItemButton>
-                      <span className="icono-lista" style={{ color: '#ffffff' }}>{item.icon}</span>
+                      <span className="icono-lista icono-desplegable" style={{ color: '#ffffff' }}>{item.icon}</span>
                       <ListItemText primary={item.text} style={{ color: '#ffffff' }} />
                     </ListItemButton>
                   </ListItem>
@@ -78,7 +78,7 @@ function DrawerList() {
             ) : (
               <ListItem disablePadding>
                 <ListItemButton component="a" href={item.href}>
-                  <span className="icono-lista" style={{ color: '#ffffff' }}>{item.icon}</span>
+                <span className="icono-lista icono-desplegable" style={{ color: '#ffffff', marginLeft: '10px' }}>{item.icon}</span> {/* Agrega margen izquierdo al icono */}
                   <ListItemText primary={item.text} style={{ color: '#ffffff' }} />
                 </ListItemButton>
               </ListItem>
