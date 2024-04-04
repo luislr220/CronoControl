@@ -41,6 +41,7 @@ export default function Navigation() {
           </ListItem>
         ))}
       </List>
+      <LogoutButton />
     </Box>
   );
 
@@ -56,7 +57,6 @@ export default function Navigation() {
       {DrawerList}
     </Drawer>
   </Container>
-  <LogoutButton/>
 </Navbar>
 </div>
 
