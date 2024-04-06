@@ -1,12 +1,12 @@
 const mongoose = require("mongoose");
 
 const turnoSchema = new mongoose.Schema({
-  Nombre: { type: String, required: true },
-  HoraInicio: { type: String, required: true },
-  HoraFinal: { type: String, required: true },
-  Area: { type: String, required: true }, // Corregido de Date a String
-  Cupo: { type: String, required: true },
-  Estado: { type: String, required: true }
+  Nombre: { type: String, required: false },
+  HoraInicio: { type: String, required: false },
+  HoraFinal: { type: String, required: false },
+  Area: { type: String, required: false }, // Corregido de Date a String
+  Cupo: { type: String, required: false },
+  Estado: { type: String, required: false }
 });
 
 module.exports = mongoose.model("Turno", turnoSchema);

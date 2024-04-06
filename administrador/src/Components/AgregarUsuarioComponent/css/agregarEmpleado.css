@@ -1,4 +1,4 @@
-.AGEMcontenedor1 {
+.AGEMcontenedorUsuario {
   padding: 3%;
 }
 
@@ -16,7 +16,20 @@
   overflow: hidden;
 }
 
-.AGEMBotonContainer {
+.AGEMBotonverde {
+  background-color: #1c2b67;
+  border: none;
+  transition: background-color 0.3s ease; /* Transición suave del color de fondo */
+}
+
+.AGEMBotonCargaMasiva{
+  background-color: #1c2b67;
+  border: none;
+  transition: background-color 0.3s ease; /* Transición suave del color de fondo */
+  margin: 1px;
+}
+
+.AGEMBotonContainerUsuario {
   display: flex;
   justify-content: space-between; /* Espacio entre los elementos */
   align-items: center;

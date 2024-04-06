@@ -13,6 +13,8 @@ var areaRoutes = require('./routes/areaRoutes'); // Importa las rutas de áreas
 var administradorRoutes = require('./routes/administradorRoutes'); // Importa las rutas de administrador
 var contratoRoutes = require('./routes/contratoRoutes');
 var permisosRoutes = require('./routes/permisosRouter');
+var actividadRoutes = require('./routes/actividadRoutes'); // Importa las rutas de actividades
+var horarioRoutes = require('./routes/horarioRoutes');
 var app = express();
 
 let dotenv = require('dotenv');
@@ -43,6 +45,9 @@ app.use('/areas', areaRoutes);
 app.use('/administrador', administradorRoutes);
 app.use('/contratos', contratoRoutes);
 app.use('/permisos',permisosRoutes)
+app.use('/actividades', actividadRoutes); // Usa las rutas de actividades
+app.use('/horario', horarioRoutes);
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

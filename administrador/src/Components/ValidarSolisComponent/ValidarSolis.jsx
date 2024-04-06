@@ -108,16 +108,6 @@ const ValidarSolis = () => {
                 Actualizar
               </button>
             </div>
-            <div className="col-1">
-              <button type="button" className="btn btn-success btn-sm">
-                Aceptar todo
-              </button>
-            </div>
-            <div className="col-1">
-              <button type="button" className="btn btn-danger btn-sm">
-                Denegar todo
-              </button>
-            </div>
           </div>
         </div>
         <br></br>

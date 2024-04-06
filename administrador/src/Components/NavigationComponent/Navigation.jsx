@@ -23,7 +23,7 @@ export default function Navigation() {
 
   return (
     <div style={{ backgroundColor: '#1C2B67' }}>
-      <Navbar className="navbar-custom">
+      <Navbar className="navbar-custom" style={{backgroundColor: '#1C2B67'}}>
         <Container>
           <IconButton onClick={toggleDrawer(true)} aria-label="menu">
             <MenuIcon style={{ color: '#ffffff' }} /> {/* Color blanco */}
@@ -45,10 +45,10 @@ function DrawerList() {
     ] },
     { text: "Agregar Turno", href: "/turnoCrud", icon: <BsClockHistory /> },
     { text: "Agregar usuario", href: "/agregarUsuario", icon: <BsPeople /> },
-    { text: "Agregar Sede", href: "/agregarSede", icon: <BsBuilding /> },
-    { text: "Agregar Área", href: "/agregarArea", icon: <BsCalendar /> },
+    { text: "Gestion de área y sede", href: "/agregarArea", icon: <BsCalendar /> },
     { text: "Agregar Contrato", href: "/agregarContrato", icon: <BsFilePost /> },
     { text: "Agregar Horario", href: "/agregarHorario", icon: <BsFilePost /> },
+    { text: "Asignar Actividades", href: "/asignarActividades", icon: <BsBuilding /> },
   ];
 
   return (

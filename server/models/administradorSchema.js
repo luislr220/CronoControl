@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
 const administradorSchema = new mongoose.Schema({
+  id: { type: Number, required: false },
   Nombre: { type: String, required: true },
   AppE: { type: String, required: true },
   ApmE: { type: String, required: true },
