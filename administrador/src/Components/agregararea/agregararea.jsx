@@ -242,7 +242,7 @@ const AreasTrabajo = () => {
   return (
     <div>
       <Navigation />
-      <h2 className="titulo">Gestión de Áreas de Trabajo</h2>
+      <h2 className="titulo">Gestión de Áreas y Sedes de Trabajo</h2>
       <div className="contenedor">
         <div className="boton-container">
           <Button

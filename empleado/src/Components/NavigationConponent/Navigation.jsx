@@ -24,13 +24,14 @@ export default function Navigation() {
 
   const drawerItems = [
     { text: "Solicitar vacaciones", href: "/Permisos", icon: <BsClockHistory /> },
+    { text: "Solicitar horario", href: "/agregarHorario", icon: <BsClockHistory /> },
 
   ];
 
   const DrawerList = (
-    <Box sx={{backgroundColor: '#1C2B67' }} role="presentation" onClick={toggleDrawer(false)}>
+    <Box sx={{width: 250, backgroundColor: '#1C2B67' }} role="presentation" onClick={toggleDrawer(false)}>
       <List>
-        <img src={logoEmpresa} alt="Logo Empresa" style={{ margin: '10px auto', height: '120px', width: '150px', display: 'block', borderRadius: '10px' }} />
+      <img src={logoEmpresa} alt="Logo Empresa" style={{ margin: '10px auto', height: '140px', width: 'auto', display: 'block', borderRadius: '10px' }} />
         {drawerItems.map((item, index) => (
           <ListItem key={item.text} disablePadding>
             <ListItemButton component="a" href={item.href}>
@@ -40,6 +41,7 @@ export default function Navigation() {
           </ListItem>
         ))}
       </List>
+      <LogoutButton />
     </Box>
   );
 
@@ -55,7 +57,6 @@ export default function Navigation() {
       {DrawerList}
     </Drawer>
   </Container>
-  <LogoutButton/>
 </Navbar>
 </div>
 

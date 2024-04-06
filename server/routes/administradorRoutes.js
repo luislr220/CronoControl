@@ -1,13 +1,57 @@
 const express = require("express");
 const router = express.Router();
+const mongoose = require('mongoose');
 const administradorController = require("../controllers/administradorController");
 const cors = require("cors");
 const Administrador = require("../models/administradorSchema");
 const { enviarCorreo } = require("../controllers/authController");
 const jwt = require("jsonwebtoken");
+const fs = require("fs");
+const multer = require("multer");
+const upload = multer({ dest: "uploads/" });
 
 // Middleware para permitir CORS
 router.use(cors());
+
+router.post('/cargar', upload.single('file'), async (req, res) => {
+  try {
+    console.log('Recibiendo datos del archivo JSON:', req.file);
+    const usuarios = JSON.parse(fs.readFileSync(req.file.path, 'utf8'));
+
+    // Buscar el último administrador para obtener su ID
+    const ultimoAdministrador = await Administrador.findOne().sort({
+      id: -1,
+    });
+
+    let nuevoID = ultimoAdministrador ? ultimoAdministrador.id + 1 : 1; // Valor predeterminado si no hay administradores existentes
+
+    // Iterar sobre los usuarios y guardarlos en la base de datos
+    for (const usuario of usuarios) {
+      // Crear un nuevo administrador con el ID generado
+      const nuevoUsuario = new Administrador({
+        ...usuario,
+        id: nuevoID,
+      });
+
+      await nuevoUsuario.save();
+
+      // Incrementar el ID para el próximo usuario
+      nuevoID++;
+    }
+
+    console.log('Usuarios guardados exitosamente');
+    res.status(201).json({ message: 'Usuarios cargados exitosamente' });
+
+    // Eliminar el archivo después de cargar los datos
+    fs.unlinkSync(req.file.path);
+  } catch (error) {
+    console.error('Error al cargar usuarios:', error);
+    res.status(500).json({ error: 'Error en el servidor al cargar usuarios' });
+  }
+});
+
+
+
 
 // Ruta para enviar el token de inicio de sesión por correo electrónico
 router.post("/login/token", async (req, res) => {
@@ -45,27 +89,25 @@ router.post("/login/token", async (req, res) => {
 router.post("/login", async (req, res) => {
   const { correo, token } = req.body;
   try {
-    // Busca al usuario por su correo electrónico y el token recibido
     const empleado = await Administrador.findOne({
       Correo: correo,
       loginToken: token,
     });
     if (!empleado) {
-      // Si no se encuentra al usuario o el token es inválido, devuelve un error
-      return res
-        .status(401)
-        .json({ error: "Correo electrónico o token inválido" });
+      return res.status(401).json({ error: "Correo electrónico o token inválido" });
     }
-    res.json({ message: "Inicio de sesión exitoso" });
+    res.json({ message: "Inicio de sesión exitoso", user: empleado }); // Devuelve los datos del usuario junto con el mensaje de éxito
   } catch (error) {
     console.error("Error al iniciar sesión:", error);
     res.status(500).json({ error: "Error en el servidor" });
   }
 });
 
+
 // Ruta para cerrar sesión
 router.post("/logout", async (req, res) => {
-  try {    // Devuelve una respuesta indicando que la sesión se ha cerrado exitosamente
+  try {
+    // Devuelve una respuesta indicando que la sesión se ha cerrado exitosamente
     res.json({ message: "Sesión cerrada exitosamente" });
   } catch (error) {
     console.error("Error al cerrar sesión:", error);
@@ -95,8 +137,27 @@ router.post(
   administradorController.validarCorreoUnico,
   async (req, res) => {
     try {
-      const nuevoAdministrador = new Administrador(req.body);
+      // Buscar el último administrador para obtener su ID
+      const ultimoAdministrador = await Administrador.findOne().sort({
+        id: -1,
+      });
+
+      let nuevoID = 1; // Valor predeterminado si no hay administradores existentes
+
+      if (ultimoAdministrador) {
+        // Si hay administradores existentes, incrementar el ID
+        nuevoID = ultimoAdministrador.id + 1;
+      }
+
+      // Crear un nuevo administrador con el ID generado
+      const nuevoAdministrador = new Administrador({
+        ...req.body,
+        id: nuevoID,
+      });
+
+      // Guardar el administrador en la base de datos
       await nuevoAdministrador.save();
+
       res.status(201).send(nuevoAdministrador);
     } catch (error) {
       res.status(400).json({ error: "Error al crear un nuevo administrador" });

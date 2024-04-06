@@ -193,51 +193,6 @@ const ValidarSolis = () => {
                 </tbody>
               </table>
             </div>
-            <div className="">
-              <h2>Solicitudes de Vacaciones</h2>
-              <table className="table rounded">
-                <thead>
-                  <tr>
-                    <th></th>
-                    <th>Nombre</th>
-                    <th>Fecha Inicio</th>
-                    <th>Fecha Final</th>
-                    <th>Justificación</th>
-                    <th>Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredSolicitudes.map((solicitud, index) => (
-                    <tr key={index}>
-                      <td>
-                        <FontAwesomeIcon
-                          icon={faCircleUser}
-                          style={{ color: '#000000', fontSize: '1.5rem' }}
-                        />
-                      </td>
-                      <td>{solicitud.nombre}</td>
-                      <td>{solicitud.fechaInicio}</td>
-                      <td>{solicitud.fechaFinal}</td>
-                      <td>{solicitud.justificacion}</td>
-                      <td style={{ textAlign: 'center' }}>
-                        <button
-                          className="btn btn-success mr-2"
-                          onClick={() => handleValidarSolicitud(solicitud.id)}
-                        >
-                          <FontAwesomeIcon icon={faCheck} />
-                        </button>
-                        <button
-                          className="btn btn-danger"
-                          onClick={() => handleRechazarSolicitud(solicitud.id)}
-                        >
-                          <FontAwesomeIcon icon={faTimes} />
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
           </div>
         </div>
       </Container>
@@ -246,5 +201,3 @@ const ValidarSolis = () => {
 };
 
 export default ValidarSolis;
-
-

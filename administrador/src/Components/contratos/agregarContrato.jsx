@@ -31,6 +31,7 @@ export default function Contratos() {
   // Función para formatear la fecha en un formato deseado (solo fecha, sin hora)
   const formatFecha = (fecha) => {
     const fechaObj = new Date(fecha);
+    fechaObj.setMinutes(fechaObj.getMinutes() + fechaObj.getTimezoneOffset())
     const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
     const fechaFormateada = fechaObj.toLocaleDateString('es-MX', options);
     return fechaFormateada;

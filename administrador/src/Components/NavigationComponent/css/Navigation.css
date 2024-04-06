@@ -1,0 +1,42 @@
+/* Navigation.css */
+
+.barra-verde {
+  background-color: #1C2B67; /* Color de fondo de la barra */
+}
+
+.navbar-custom {
+  background-color: #1C2B67; /* Color de fondo de la barra de navegación */
+  padding: 10px 20px; /* Ajuste de relleno para el contenido de la barra de navegación */
+}
+
+.drawer-list {
+  width: 250px; /* Ancho del menú lateral */
+  background-color: #1C2B67; /* Color de fondo del menú lateral */
+  color: #ffffff; /* Color del texto del menú lateral */
+}
+
+.drawer-header {
+  text-align: center; /* Alineación del texto en el encabezado del menú lateral */
+  margin-bottom: 20px; /* Margen inferior del encabezado del menú lateral */
+}
+
+.menu-item {
+  display: flex; /* Utiliza flexbox para los elementos de la lista */
+  align-items: center; /* Alinea verticalmente los elementos de la lista */
+  padding: 10px 20px; /* Ajuste de relleno para los elementos de la lista */
+  text-decoration: none; /* Elimina el subrayado del enlace */
+  color: #ffffff; /* Color del texto del enlace */
+}
+
+.menu-item:hover {
+  background-color: #34568B; /* Cambia el color de fondo al pasar el ratón sobre los elementos de la lista */
+}
+
+.sub-menu {
+  padding-left: 20px; /* Ajuste de relleno para los elementos del submenú */
+}
+
+.icono-desplegable {
+  margin-right: 20px; /* Ajusta el margen derecho según sea necesario */
+}
+

@@ -5,13 +5,13 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
 const app = express();
-const PORT = 3002;
+const PORT = 3003;
 
 // Middleware
 app.use(bodyParser.json());
 
 // MongoDB setup
-mongoose.connect('mongodb://localhost:27017/solicitudesturno', {
+mongoose.connect('http://localhost:3002/permisos', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
