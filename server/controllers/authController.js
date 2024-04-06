@@ -88,7 +88,7 @@ const enviarCorreo = async (correoDestinatario, token) => {
 <body>
   <div class="container">
     <div class="blue-bar"></div>
-    <h1>Token de auntenticación</h1>
+    <h1>Token de autenticación</h1>
     <p>Saludos cordiales, este correo es para confirmar que tu solicitud fue aprobada por ingresar el siguiente token.</p>
     <p>El token es:</p>
     <strong>${token}</strong>

@@ -2,19 +2,19 @@ import React from "react";
 import { Modal, Button, Form, FormControl, Alert } from "react-bootstrap";
 
 export default function AgregarUsuarioModal({
-    mostrar,
-    onClose,
-    nuevoAdministrador,
-    handleInputChange,
-    handleRegionChange,
-    agregarAdministrador,
-    loading,
-    sedes,
-    areasPorRegion,
-    errorCorreoDuplicado,
-    handleRolChange, // Recibir handleRolChange como prop
-    mostrarContraseña, // Recibir mostrarContraseña como prop
-  }) {
+  mostrar,
+  onClose,
+  nuevoAdministrador,
+  handleInputChange,
+  handleRegionChange,
+  agregarAdministrador,
+  loading,
+  sedes,
+  areasPorRegion,
+  errorCorreoDuplicado,
+  handleRolChange, // Recibir handleRolChange como prop
+  mostrarContraseña, // Recibir mostrarContraseña como prop
+}) {
   return (
     <Modal show={mostrar} onHide={onClose}>
       <Modal.Header closeButton style={{ backgroundColor: "#1C2B67" }}>

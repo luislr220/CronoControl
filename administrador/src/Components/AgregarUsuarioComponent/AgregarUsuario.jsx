@@ -1,12 +1,16 @@
+/**
+ * Nombre del Autor: Luis Armando Largo Ramirez
+ *
+ * Funcionalidad:
+ * Componente principal para agregar usuarios, mostrar lista de usuarios y realizar operaciones CRUD.
+ * Este componente renderiza un formulario para agregar nuevos usuarios, así como una lista de usuarios existentes.
+ * También permite actualizar y eliminar usuarios existentes.
+ * También tiene un boton para la carga de archivos, donde renderiza el componente
+ */
+
 import React, { useState, useEffect } from "react";
 import "../AgregarUsuarioComponent/css/agregarEmpleado.css";
-import {
-  FormControl,
-  Form,
-  Alert,
-  ProgressBar,
-  Button
-} from "react-bootstrap";
+import { FormControl, Form, Alert, ProgressBar, Button } from "react-bootstrap";
 import Navigation from "../NavigationComponent/Navigation";
 import BTNSobrecarga from "./btnSobrecarga";
 import UsuarioGrid from "./usuarioGrid";
@@ -15,11 +19,18 @@ import ActualizarUsuarioModal from "./ActualizarUsuarioModal";
 import ConfirmarEliminacionModal from "./ConfirmarEliminacionModal";
 
 export default function AgregarUsuario() {
+  // Estado para los datos del administrador
   const [administrador, setAdministrador] = useState([]);
-  const [filtro, setFiltro] = useState(""); // Filtro por nombre
+  // Estado para filtrar al usuario
+  const [filtro, setFiltro] = useState("");
+  // Estado para los datos de la sede
   const [sedes, setSedes] = useState([]);
+  // Estado para los datos de area
   const [areas, setAreas] = useState([]);
+  // Estado para controlar la carga de datos
   const [loading, setLoading] = useState(true);
+
+  // Estado para los datos del nuevo administrador a agregar
   const [nuevoAdministrador, setNuevoAdministrador] = useState({
     Nombre: "",
     AppE: "",
@@ -31,9 +42,15 @@ export default function AgregarUsuario() {
     AreaTrabajo: "",
     Rol: "",
   });
+
+  // Estado para controlar la visibilidad del formulario de agregar usuario
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
+
+  // Estado para el administrador seleccionado para actualizar
   const [administradorSeleccionado, setAdministradorSeleccionado] =
     useState(null);
+
+  // Estado para los valores del administrador seleccionado para actualizar
   const [
     valoresAdministradorSeleccionado,
     setValoresAdministradorSeleccionado,
@@ -46,25 +63,34 @@ export default function AgregarUsuario() {
     Contraseña: "",
     Region: "",
     AreaTrabajo: "",
-    Rol: "", // Establecer valor por defecto
+    Rol: "",
   });
 
+  // Estado para controlar la visibilidad del modal de actualización
   const [mostrarModalActualizar, setMostrarModalActualizar] = useState(false);
-
-  const [filtroRegion, setFiltroRegion] = useState(""); // Nuevo estado para el filtro por región
-  const [filtroArea, setFiltroArea] = useState(""); // Nuevo estado para el filtro por Área
-  const [filtroApellidoModal, setFiltroApellidoModal] = useState(""); // Estado para filtrar por apellido
+  // Estado para filtrar por región
+  const [filtroRegion, setFiltroRegion] = useState("");
+  // Estado para filtrar por Área
+  const [filtroArea, setFiltroArea] = useState("");
+  // Estado para filtrar por apellido
+  const [filtroApellidoModal, setFiltroApellidoModal] = useState("");
+  // Estado para los roles
   const [roles, setRoles] = useState([]);
+  // Estado para filtrar por rol
   const [filtroRol, setFiltroRol] = useState("");
+  // Estado para controlar si el correo está duplicado al agregar un usuario
   const [errorCorreoDuplicado, setErrorCorreoDuplicado] = useState("");
+  // Estado para controlar si el correo está duplicado al actualizar un usuario
   const [errorCorreoDuplicadoActualizar, setErrorCorreoDuplicadoActualizar] =
     useState("");
-  // Estado para las áreas de trabajo disponibles basadas en la región seleccionada
+  // Estado para las áreas de trabajo disponibles basadas en la sede seleccionada
   const [areasPorRegion, setAreasPorRegion] = useState([]);
+  // Estado para las áreas de trabajo disponibles basadas en la sede seleccionada para actualizar
   const [areasPorRegionActualizar, setAreasPorRegionActualizar] = useState([]);
+  // Estado para las áreas de trabajo disponibles basadas en la sede seleccionada para actualizar
   const areasFiltradas = areas.filter((area) => area.sede === filtroRegion);
 
-  //Estados para mostrar advertencia de si desea eliminar
+  // Estado para mostrar el modal de confirmación al eliminar un usuario
   const [mostrarModalConfirmacion, setMostrarModalConfirmacion] =
     useState(false);
   const [usuarioAEliminar, setUsuarioAEliminar] = useState(null);
@@ -417,8 +443,8 @@ export default function AgregarUsuario() {
     <div>
       <Navigation />
       <div className="AGEMcontenedorUsuario">
-      <BTNSobrecarga/>
-      <br/>
+        <BTNSobrecarga />
+        <br />
         {/*SECCIÓN DE BOTON AGREGAR Y FILTROS*/}
         <div className="AGEMBotonContainerUsuario">
           <Button

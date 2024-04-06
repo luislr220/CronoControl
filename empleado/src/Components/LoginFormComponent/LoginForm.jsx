@@ -50,26 +50,24 @@ export default function LoginForm() {
   const handleTokenSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Enviar solicitud al servidor para validar el inicio de sesión con el correo electrónico y el token ingresados
       const response = await axios.post(
         "http://localhost:3002/administrador/login",
         { correo: email, token: token }
       );
       setMessage(response.data.message);
-      // Si el inicio de sesión es exitoso, realiza el login
       if (response.data.message === "Inicio de sesión exitoso") {
-        login();
-        /*console.log(
-          "Usuario autenticado después del inicio de sesión:",
-          isAuthenticated
-        ); */
-        navigate("/Permisos"); // Redirige al usuario a la página de turnos
+        login(response.data.user);
+        console.log(response.data.user); // Agrega esta línea para verificar los datos del usuario
+        navigate("/Permisos");
       }
     } catch (error) {
       setMessage("Error al enviar la solicitud de inicio de sesión.");
       console.error("Error:", error);
     }
   };
+  
+  
+  
 
   return (
     <div className="login-container">

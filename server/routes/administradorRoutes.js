@@ -89,23 +89,20 @@ router.post("/login/token", async (req, res) => {
 router.post("/login", async (req, res) => {
   const { correo, token } = req.body;
   try {
-    // Busca al usuario por su correo electrónico y el token recibido
     const empleado = await Administrador.findOne({
       Correo: correo,
       loginToken: token,
     });
     if (!empleado) {
-      // Si no se encuentra al usuario o el token es inválido, devuelve un error
-      return res
-        .status(401)
-        .json({ error: "Correo electrónico o token inválido" });
+      return res.status(401).json({ error: "Correo electrónico o token inválido" });
     }
-    res.json({ message: "Inicio de sesión exitoso" });
+    res.json({ message: "Inicio de sesión exitoso", user: empleado }); // Devuelve los datos del usuario junto con el mensaje de éxito
   } catch (error) {
     console.error("Error al iniciar sesión:", error);
     res.status(500).json({ error: "Error en el servidor" });
   }
 });
+
 
 // Ruta para cerrar sesión
 router.post("/logout", async (req, res) => {
