@@ -1,12 +1,10 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
-const turnoSchema = new mongoose.Schema({
-  Nombre: { type: String, required: false },
-  HoraInicio: { type: String, required: false },
-  HoraFinal: { type: String, required: false },
-  Area: { type: String, required: false }, // Corregido de Date a String
-  Cupo: { type: String, required: false },
-  Estado: { type: String, required: false }
+const solicitudTurnoSchema = new mongoose.Schema({
+  usuario: { type: mongoose.Schema.Types.ObjectId, ref: 'Administrador' },
+  turnoSeleccionado: { type: mongoose.Schema.Types.ObjectId, ref: 'Turno' },
+  justificacion: { type: String, required: true },
+  estado: { type: String, default: 'Pendiente' }
 });
 
-module.exports = mongoose.model("Turno", turnoSchema);
+module.exports = mongoose.model('SolicitudTurno', solicitudTurnoSchema);
