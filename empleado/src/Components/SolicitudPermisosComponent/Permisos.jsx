@@ -19,6 +19,13 @@ export default function Permisos() {
   const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
 
   useEffect(() => {
+    console.log("isLoading:", isLoading);
+    console.log("userData:", userData);
+    console.log("sedes:", sedes);
+    console.log("areasTrabajo:", areasTrabajo);
+  }, [isLoading, userData, sedes, areasTrabajo]);
+
+  useEffect(() => {
     if (isAuthenticated && user) {
       setUserData(user);
     }
@@ -82,6 +89,8 @@ export default function Permisos() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("Formulario enviado.");
+
     const solicitud = {
       nombre: nombre,
       areaTrabajo: areaTrabajo,
@@ -146,6 +155,17 @@ export default function Permisos() {
                 onChange={handleNombreChange}
               />
               <br />
+            </Col>
+          </Form.Group>
+          
+          <Form.Group as={Row} controlId="correo" style={{ padding: '1%' }}>
+            <Form.Label column sm={3}>Correo:</Form.Label>
+            <Col sm={9}>
+              <Form.Control
+                type="email"
+                value={userData.Correo}
+                readOnly // Hacer el campo de solo lectura
+              />
             </Col>
           </Form.Group>
   
