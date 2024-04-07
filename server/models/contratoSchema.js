@@ -1,26 +1,11 @@
 const mongoose = require("mongoose");
 
-const contratoSchema = new mongoose.Schema({
-  nombreContrato: {
-    type: String,
-    required: true,
-  },
-  fechaInicio: {
-    type: Date,
-    required: true,
-  },
-  fechaFin: {
-    type: Date,
-    required: true,
-  },
-  diasLaborales: {
-    type: Number,
-    required: true,
-  },
-  diasDescanso: {
-    type: Number,
-    required: true,
-  },
+const contractSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  startDate: { type: Date, required: true },
+  endDate: { type: Date, required: true },
+  status: { type: String, required: true },
+  turnos: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Turno' }]
 });
 
-module.exports = mongoose.model("Contrato", contratoSchema);
+module.exports = mongoose.model("Contract", contractSchema);

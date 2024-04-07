@@ -34,6 +34,7 @@ router.post("/", async (req, res) => {
     Area: req.body.Area,
     Cupo: req.body.Cupo,
     Estado: req.body.Estado,
+    Contrato: req.body.Contrato,
   });
 
   try {
@@ -75,6 +76,9 @@ router.patch("/:id", async (req, res) => {
     }
     if (req.body.Estado) {
       turno.Estado = req.body.Estado;
+    }
+    if (req.body.Contrato){
+      turno.Contrato = req.body.Contrato;
     }
 
     // Guarda los cambios en la base de datos

@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const cors = require("cors"); // Importa cors
-const Area = require("../models/areaschema"); // Importa el modelo de área de trabajo
+const Area = require("../models/areaSchema"); // Importa el modelo de área de trabajo
 
 router.use(cors()); // Configura cors
 
