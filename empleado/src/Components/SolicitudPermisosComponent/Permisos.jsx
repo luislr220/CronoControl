@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import "./css/permisos.css";
+import { useAuth } from "../../routes/AuthContext"; // Asegúrate de importar el contexto de autenticación
 import Navigation from "../NavigationConponent/Navigation";
 import { Form, Button, Row, Col, Alert, Spinner } from "react-bootstrap";
 
-
 export default function Permisos() {
+  const { isAuthenticated, isLoading, user } = useAuth();
+  const [userData, setUserData] = useState(null);
   const [nombre, setNombre] = useState("");
   const [sede, setSede] = useState("");
   const [areaTrabajo, setAreaTrabajo] = useState("");
@@ -15,7 +16,13 @@ export default function Permisos() {
   const [areasTrabajo, setAreasTrabajo] = useState([]);
   const [mensajeExito, setMensajeExito] = useState("");
   const [mensajeError, setMensajeError] = useState("");
-  const [isLoading, setIsLoading] = useState(false); // Nuevo estado para controlar la barra de carga
+  const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
+
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      setUserData(user);
+    }
+  }, [isAuthenticated, user]);
 
   useEffect(() => {
     const fetchAreasTrabajo = async () => {
@@ -83,7 +90,7 @@ export default function Permisos() {
       justificacion: justificacion
     };
 
-    setIsLoading(true); // Mostrar la barra de carga antes de enviar la solicitud
+    setIsLoadingSubmit(true);
 
     try {
       const response = await fetch("http://localhost:3002/permisos", {
@@ -104,11 +111,15 @@ export default function Permisos() {
       setMensajeError("Error al enviar la solicitud");
       setMensajeExito("");
     } finally {
-      setIsLoading(false); // Ocultar la barra de carga después de completar la solicitud
+      setIsLoadingSubmit(false);
     }
   };
 
   const filteredAreas = areasTrabajo.filter(area => area.sede === sede);
+
+  if (isLoading || !userData) {
+    return null; // No renderizar nada mientras se está autenticando o cargando datos del usuario
+  }
 
   return (
     <div className="">
@@ -130,7 +141,8 @@ export default function Permisos() {
               <Form.Control
                 type="text"
                 placeholder=""
-                value={nombre}
+                value={`${userData.Nombre} ${userData.AppE} ${userData.ApmE}`}
+                readOnly // Hacer el campo de solo lectura
                 onChange={handleNombreChange}
               />
               <br />
@@ -144,6 +156,7 @@ export default function Permisos() {
                 as="select"
                 value={sede}
                 onChange={handleSedeChange}
+                readOnly // Hacer el campo de solo lectura
               >
                 <br />
                 <option>Selecciona la sede</option>
@@ -163,6 +176,7 @@ export default function Permisos() {
                 as="select"
                 value={areaTrabajo}
                 onChange={handleAreaTrabajoChange}
+                readOnly // Hacer el campo de solo lectura
               >
                 <br />
                 <option>Selecciona tu área</option>
@@ -212,10 +226,10 @@ export default function Permisos() {
           <br />
   
           <div className="text-center">
-            <Button variant="primary" type="submit">
+            <Button variant="primary" type="submit" disabled={isLoadingSubmit}>
               Enviar Solicitud
             </Button>
-            {isLoading && <Spinner animation="border" variant="primary" />}
+            {isLoadingSubmit && <Spinner animation="border" variant="primary" />}
           </div>
         </Form>
       </div>
