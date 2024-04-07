@@ -4,76 +4,26 @@ import Navigation from "../NavigationConponent/Navigation";
 import { Form, Button, Row, Col, Alert, Spinner } from "react-bootstrap";
 
 export default function Permisos() {
-  const { isAuthenticated, isLoading, user } = useAuth();
-  const [userData, setUserData] = useState(null);
+  const { isAuthenticated, user } = useAuth();
   const [nombre, setNombre] = useState("");
+  const [correo, setCorreo] = useState("");
   const [sede, setSede] = useState("");
   const [areaTrabajo, setAreaTrabajo] = useState("");
   const [fechaInicio, setFechaInicio] = useState("");
   const [fechaFinal, setFechaFinal] = useState("");
   const [justificacion, setJustificacion] = useState("");
-  const [sedes, setSedes] = useState([]);
-  const [areasTrabajo, setAreasTrabajo] = useState([]);
   const [mensajeExito, setMensajeExito] = useState("");
   const [mensajeError, setMensajeError] = useState("");
   const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
 
   useEffect(() => {
-    console.log("isLoading:", isLoading);
-    console.log("userData:", userData);
-    console.log("sedes:", sedes);
-    console.log("areasTrabajo:", areasTrabajo);
-  }, [isLoading, userData, sedes, areasTrabajo]);
-
-  useEffect(() => {
     if (isAuthenticated && user) {
-      setUserData(user);
+      setNombre(`${user.Nombre} ${user.AppE} ${user.ApmE}`);
+      setCorreo(user.Correo);
+      setSede(user.Region); // Establecer la sede por defecto
+      setAreaTrabajo(user.AreaTrabajo); // Establecer el área de trabajo por defecto
     }
   }, [isAuthenticated, user]);
-
-  useEffect(() => {
-    const fetchAreasTrabajo = async () => {
-      try {
-        const response = await fetch("http://localhost:3002/areas");
-        if (!response.ok) {
-          throw new Error("No se pudo obtener la lista de áreas de trabajo");
-        }
-        const data = await response.json();
-        setAreasTrabajo(data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    const fetchSedes = async () => {
-      try {
-        const response = await fetch("http://localhost:3002/sedes");
-        if (!response.ok) {
-          throw new Error("No se pudo obtener la lista de sedes");
-        }
-        const data = await response.json();
-        setSedes(data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchAreasTrabajo();
-    fetchSedes();
-  }, []);
-
-  const handleNombreChange = (e) => {
-    setNombre(e.target.value);
-  };
-
-  const handleSedeChange = (e) => {
-    setSede(e.target.value);
-    setAreaTrabajo("");
-  };
-
-  const handleAreaTrabajoChange = (e) => {
-    setAreaTrabajo(e.target.value);
-  };
 
   const handleFechaInicioChange = (e) => {
     setFechaInicio(e.target.value);
@@ -93,6 +43,8 @@ export default function Permisos() {
 
     const solicitud = {
       nombre: nombre,
+      correo: correo,
+      sede: sede,
       areaTrabajo: areaTrabajo,
       fechaInicio: fechaInicio,
       fechaFinal: fechaFinal,
@@ -124,12 +76,6 @@ export default function Permisos() {
     }
   };
 
-  const filteredAreas = areasTrabajo.filter(area => area.sede === sede);
-
-  if (isLoading || !userData) {
-    return null; // No renderizar nada mientras se está autenticando o cargando datos del usuario
-  }
-
   return (
     <div className="">
       <Navigation />
@@ -149,22 +95,19 @@ export default function Permisos() {
             <Col sm={9}>
               <Form.Control
                 type="text"
-                placeholder=""
-                value={`${userData.Nombre} ${userData.AppE} ${userData.ApmE}`}
-                readOnly // Hacer el campo de solo lectura
-                onChange={handleNombreChange}
+                value={nombre}
+                readOnly
               />
-              <br />
             </Col>
           </Form.Group>
-          
+  
           <Form.Group as={Row} controlId="correo" style={{ padding: '1%' }}>
             <Form.Label column sm={3}>Correo:</Form.Label>
             <Col sm={9}>
               <Form.Control
                 type="email"
-                value={userData.Correo}
-                readOnly // Hacer el campo de solo lectura
+                value={correo}
+                readOnly
               />
             </Col>
           </Form.Group>
@@ -173,19 +116,10 @@ export default function Permisos() {
             <Form.Label column sm={3}>Sede:</Form.Label>
             <Col sm={9}>
               <Form.Control
-                as="select"
+                type="text"
                 value={sede}
-                onChange={handleSedeChange}
-                readOnly // Hacer el campo de solo lectura
-              >
-                <br />
-                <option>Selecciona la sede</option>
-                {sedes.map((sede) => (
-                  <option key={sede._id} value={sede.nombre}>
-                    {sede.nombre}
-                  </option>
-                ))}
-              </Form.Control>
+                readOnly
+              />
             </Col>
           </Form.Group>
 
@@ -193,19 +127,10 @@ export default function Permisos() {
             <Form.Label column sm={3}>Área de trabajo:</Form.Label>
             <Col sm={9}>
               <Form.Control
-                as="select"
+                type="text"
                 value={areaTrabajo}
-                onChange={handleAreaTrabajoChange}
-                readOnly // Hacer el campo de solo lectura
-              >
-                <br />
-                <option>Selecciona tu área</option>
-                {filteredAreas.map((area) => (
-                  <option key={area._id} value={area.nombre}>
-                    {area.nombre}
-                  </option>
-                ))}
-              </Form.Control>
+                readOnly
+              />
             </Col>
           </Form.Group>
           
