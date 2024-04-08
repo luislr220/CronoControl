@@ -1,0 +1,90 @@
+// Importar las librerías necesarias
+var fs = require('fs');
+var XLSX = require('xlsx');
+var json2csv = require('json2csv').parse;
+
+// Array de nombres posibles
+var nombres = ["Juan", "Maria", "Pedro", "Ana", "Luis", "Laura", "Carlos", "Isabel", "Miguel", "Sofia", "Jorge", "Carmen", "Ricardo", "Teresa", "Hugo", "Patricia", "Ernesto", "Rosa", "Raul", "Luz"];
+
+// Array de apellidos paternos posibles
+var apellidosPaternos = ["Gomez", "Rodriguez", "Lopez", "Perez", "Fernandez", "Martinez", "Gonzalez", "Diaz", "Hernandez", "Torres", "Sanchez", "Ramirez", "Castro", "Flores", "Ortiz", "Gutierrez", "Guerrero", "Mendoza", "Aguilar", "Romero"];
+
+// Array de apellidos maternos posibles
+var apellidosMaternos = ["Ruiz", "Castillo", "Mendoza", "Silva", "Soto", "Vargas", "Lara", "Ramos", "Santos", "Alvarez", "Paredes", "Cortez", "Rojas", "Reyes", "Cruz", "Morales", "Delgado", "Garcia", "Vega", "Fuentes"];
+
+// Función para generar un número aleatorio dentro de un rango (puede ser decimal)
+function getRandomNumber(min, max) {
+    return Math.random() * (max - min) + min;
+}
+
+// Función para generar un objeto de administrador con datos aleatorios
+function generarAdministrador() {
+    var nombre = nombres[Math.floor(Math.random() * nombres.length)];
+    var apaterno = apellidosPaternos[Math.floor(Math.random() * apellidosPaternos.length)];
+    var amaterno = apellidosMaternos[Math.floor(Math.random() * apellidosMaternos.length)];
+    var fechaNac = new Date(getRandomNumber(Date.parse("1960-01-01"), Date.now()));
+    var correo = nombre.toLowerCase() + apaterno.toLowerCase() + Math.floor(Math.random() * 10000) + "@example.com";
+    var region = "Alguna región";
+    var areaTrabajo = "Alguna área de trabajo"; 
+    var rol = Math.random() < 0.5 ? 'Empleado' : 'Administrador';
+    var contraseña = "";
+
+    if (rol === "Administrador") {
+        contraseña = generarContraseña(8);
+    }
+
+    return {
+        Nombre: nombre,
+        AppE: apaterno,
+        ApmE: amaterno,
+        FechaNac: fechaNac,
+        Correo: correo,
+        Region: region,
+        AreaTrabajo: areaTrabajo,
+        Rol: rol,
+        Contraseña: contraseña
+    };
+}
+
+// Función para generar una contraseña aleatoria de longitud especificada
+function generarContraseña(longitud) {
+    var caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    var contraseña = "";
+    for (var i = 0; i < longitud; i++) {
+        contraseña += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
+    }
+    return contraseña;
+}
+
+// Crear 10 objetos y agregarlos a un array
+var administradores = [];
+for (var i = 1; i <= 4000; i++) {
+    var administrador = generarAdministrador();
+    administradores.push(administrador);
+}
+
+// Convertir el array a formato JSON
+var json = JSON.stringify(administradores, null, 2);
+
+// Escribir el JSON en un archivo
+fs.writeFile('administradores.json', json, 'utf8', function(err) {
+    if (err) throw err;
+    console.log('Archivo JSON guardado exitosamente.');
+});
+
+// Escribir el JSON en un archivo .xlsx
+var wb = XLSX.utils.book_new();
+var ws = XLSX.utils.json_to_sheet(administradores);
+XLSX.utils.book_append_sheet(wb, ws, "Administradores");
+XLSX.writeFile(wb, 'administradores.xlsx');
+
+console.log('Archivo XLSX guardado exitosamente.');
+
+// Convertir el JSON a formato CSV
+var csv = json2csv(administradores);
+
+// Escribir el CSV en un archivo
+fs.writeFile('administradores.csv', csv, 'utf8', function(err) {
+    if (err) throw err;
+    console.log('Archivo CSV guardado exitosamente.');
+});

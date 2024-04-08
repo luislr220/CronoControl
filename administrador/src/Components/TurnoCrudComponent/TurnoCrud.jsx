@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button, Table, Modal, Form, Pagination } from 'react-bootstrap';
 import Navigation from '../NavigationComponent/Navigation';
@@ -7,6 +8,7 @@ import "./TurnoCrud.css";
 export default function TurnoCrud() {
   const [turnos, setTurnos] = useState([]);
   const [areas, setAreas] = useState([]);
+  const [contratos, setContratos] = useState([]);
   const [showAddTurnoModal, setShowAddTurnoModal] = useState(false);
   const [showUpdateTurnoModal, setShowUpdateTurnoModal] = useState(false);
   const [showViewTurnoModal, setShowViewTurnoModal] = useState(false);
@@ -16,16 +18,18 @@ export default function TurnoCrud() {
     HoraFinal: "",
     Area: "",
     Cupo: "",
-    Estado: "Activo"
+    Estado: "Activo",
+    Contrato: ""
   });
   const [selectedTurno, setSelectedTurno] = useState(null);
   const [valoresTurnoSeleccionado, setValoresTurnoSeleccionado] = useState({
     Nombre: "",
     HoraInicio: "",
     HoraFinal: "",
-    AreaTrabajo: "",
+    Area: "",
     Cupo: "",
-    Estado: "Activo"
+    Estado: "Activo",
+    Contrato: ""
   });
   const [turnoSeleccionado, setTurnoSeleccionado] = useState(null);
   const [turnoSeleccionadoVisualizar, setTurnoSeleccionadoVisualizar] = useState(null);
@@ -68,6 +72,24 @@ export default function TurnoCrud() {
     fetchTurnos();
   }, []);
 
+  // Obtener los contratos
+  useEffect(() => {
+    const fetchContratos = async () => {
+      try {
+        const response = await fetch("http://localhost:3002/contratos");
+        if (!response.ok) {
+          throw new Error("No se pudo obtener la lista de contratos");
+        }
+        const data = await response.json();
+        setContratos(data); // Almacenar los objetos completos de contrato en el estado 'contratos'
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchContratos();
+    fetchTurnos();
+  }, []);
+
   const handleCloseAddTurnoModal = () => {
     setShowAddTurnoModal(false);
     setNuevoTurno({
@@ -76,7 +98,8 @@ export default function TurnoCrud() {
       HoraFinal: "",
       Area: "",
       Cupo: "",
-      Estado: "Activo"
+      Estado: "Activo",
+      Contrato: ""
     });
     setSelectedTurno(null);
     setFiltroArea("");
@@ -100,7 +123,7 @@ export default function TurnoCrud() {
 
   const addTurno = async () => {
     try {
-      if (!nuevoTurno.Nombre || !nuevoTurno.HoraInicio || !nuevoTurno.HoraFinal || !nuevoTurno.Area || !nuevoTurno.Cupo || !nuevoTurno.Estado) {
+      if (!nuevoTurno.Nombre || !nuevoTurno.HoraInicio || !nuevoTurno.HoraFinal || !nuevoTurno.Area || !nuevoTurno.Cupo || !nuevoTurno.Estado || !nuevoTurno.Contrato) {
         throw new Error("Todos los campos son obligatorios");
       }
 
@@ -144,9 +167,10 @@ export default function TurnoCrud() {
       Nombre: turno.Nombre,
       HoraInicio: turno.HoraInicio,
       HoraFinal: turno.HoraFinal,
-      AreaTrabajo: turno.Area,
+      Area: turno.Area,
       Cupo: turno.Cupo,
-      Estado: turno.Estado
+      Estado: turno.Estado,
+      Contrato: turno.Contrato
     });
     handleShowUpdateTurnoModal();
   };
@@ -161,7 +185,7 @@ export default function TurnoCrud() {
 
   const updateTurno = async () => {
     try {
-      if (!valoresTurnoSeleccionado.Nombre || !valoresTurnoSeleccionado.HoraInicio || !valoresTurnoSeleccionado.HoraFinal || !valoresTurnoSeleccionado.AreaTrabajo || !valoresTurnoSeleccionado.Cupo || !valoresTurnoSeleccionado.Estado) {
+      if (!valoresTurnoSeleccionado.Nombre || !valoresTurnoSeleccionado.HoraInicio || !valoresTurnoSeleccionado.HoraFinal || !valoresTurnoSeleccionado.Area || !valoresTurnoSeleccionado.Cupo || !valoresTurnoSeleccionado.Estado) {
         throw new Error("Todos los campos son obligatorios");
       }
 
@@ -235,7 +259,7 @@ export default function TurnoCrud() {
       <Navigation />
       <h2 className="AGEMTitulo">Lista de Turnos</h2>
       <div className="AGEMcontenedor1">
-      <div className="AGEMBotonContainer custom-button-container">
+        <div className="AGEMBotonContainer custom-button-container">
           <Button variant="primary" className="custom-button" onClick={handleShowAddTurnoModal}>
             <span style={{ marginRight: '5px' }}>+</span> Nuevo Turno
           </Button>
@@ -271,6 +295,7 @@ export default function TurnoCrud() {
               <th>Área</th>
               <th>Cupo</th>
               <th>Estado</th>
+              <th>Contrato</th>
               <th>Acción</th>
             </tr>
           </thead>
@@ -285,6 +310,7 @@ export default function TurnoCrud() {
                 <td>{turno.Area}</td>
                 <td>{turno.Cupo}</td>
                 <td>{turno.Estado}</td>
+                <td>{turno.Contrato}</td>
                 <td>
                   <Button variant="warning" onClick={() => abrirModalActualizar(turno)} title="Actualizar">
                     <BsPencilSquare className="icono" size={20} /> {/* Icono de lápiz */}
@@ -362,6 +388,18 @@ export default function TurnoCrud() {
                 </Form.Control>
               </div>
             </Form.Group>
+            <Form.Group controlId="formContrato" className="d-flex align-items-center FormGroupMargin">
+              <Form.Label style={{ color: '#1C2B67', fontWeight: 'lighter' }} className="col-sm-4">Contrato</Form.Label>
+              <div className="col-sm-8">
+                <Form.Control as="select" value={nuevoTurno.Contrato} onChange={(e) => setNuevoTurno({ ...nuevoTurno, Contrato: e.target.value })}>
+                  <option>Selecciona un contrato...</option>
+                  {contratos.map((contrato, index) => (
+                    <option key={index} value={contrato.nombreContrato}>{contrato.nombreContrato}</option>
+                  ))}
+                </Form.Control>
+
+              </div>
+            </Form.Group>
           </Form>
         </Modal.Body>
         <Modal.Footer style={{ justifyContent: 'center' }}>
@@ -402,24 +440,24 @@ export default function TurnoCrud() {
             <Form.Group controlId="formAreaActualizar" className="row FormGroupMargin">
               <Form.Label style={{ color: '#1C2B67', fontWeight: 'lighter' }} className="col-sm-4">Área de Trabajo</Form.Label>
               <div className="col-sm-8">
-                <Form.Control
-                  as="select"
-                  name="AreaTrabajo"
-                  value={valoresTurnoSeleccionado.AreaTrabajo}
-                  onChange={(e) =>
-                    setValoresTurnoSeleccionado({
-                      ...valoresTurnoSeleccionado,
-                      AreaTrabajo: e.target.value,
-                    })
-                  }
-                >
-                  <option value="">Selecciona una área</option>
-                  {areas.map((area) => (
-                    <option key={area} value={area}>
-                      {area}
-                    </option>
-                  ))}
-                </Form.Control>
+              <Form.Control
+                as="select"
+                name="Area"
+                value={valoresTurnoSeleccionado.Area}
+                onChange={(e) =>
+                  setValoresTurnoSeleccionado({
+                    ...valoresTurnoSeleccionado,
+                    Area: e.target.value,
+                  })
+                }
+              >
+                <option value="">Selecciona una área</option>
+                {areas.map((area) => (
+                  <option key={area} value={area.nombre}>
+                    {area}
+                  </option>
+                ))}
+              </Form.Control>
               </div>
             </Form.Group>
             <Form.Group controlId='formCupoActualizar' className="row FormGroupMargin">
@@ -438,6 +476,27 @@ export default function TurnoCrud() {
                 </Form.Control>
               </div>
             </Form.Group>
+            <Form.Group controlId="formActualizarContrato" className="row FormGroupMargin">
+  <Form.Label style={{ color: '#1C2B67', fontWeight: 'lighter' }} className="col-sm-4">Contrato</Form.Label>
+  <div className="col-sm-8">
+    <Form.Control
+      as="select"
+      value={valoresTurnoSeleccionado.Contrato}  // Cambia esto
+      onChange={(e) =>
+        setValoresTurnoSeleccionado({
+          ...valoresTurnoSeleccionado,
+          Contrato: e.target.value,
+        })
+      }
+    >
+      <option>Selecciona un contrato...</option>
+      {contratos.map((contrato) => (
+        <option key={contrato._id} value={contrato.nombreContrato}>{contrato.nombreContrato}</option>
+      ))}
+    </Form.Control>
+  </div>
+</Form.Group>
+
           </Form>
         </Modal.Body>
         <Modal.Footer style={{ justifyContent: 'center' }}>
@@ -464,6 +523,7 @@ export default function TurnoCrud() {
             <p><strong>Área de Trabajo:</strong></p>
             <p><strong>Cupo:</strong></p>
             <p><strong>Estado:</strong></p>
+            <p><strong>Contrato:</strong></p>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginLeft: '10px' }}>
             <p>{turnoSeleccionadoVisualizar?.Nombre}</p>
@@ -472,6 +532,7 @@ export default function TurnoCrud() {
             <p>{turnoSeleccionadoVisualizar?.Area}</p>
             <p>{turnoSeleccionadoVisualizar?.Cupo}</p>
             <p>{turnoSeleccionadoVisualizar?.Estado}</p>
+            <p>{turnoSeleccionadoVisualizar?.Contrato}</p>
           </div>
         </Modal.Body>
 

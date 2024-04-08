@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+//ESTE DEBE DE SER EL DE VALIDAR TURNNO, PORFAVOR REVISAR
 const turnoSchema = new mongoose.Schema({
   nombre: { type: String, required: true },
   horaInicio: { type: String, required: true },

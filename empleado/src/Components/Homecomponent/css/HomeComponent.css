@@ -1,0 +1,32 @@
+.InicioBanner {
+    padding: 20px;
+    text-align: left;
+    margin-bottom: 20px;
+  }
+  
+  .UserDataContainer {
+    background-color: #f5f5f5; /* Fondo gris claro */
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+    padding: 10px;
+    display: flex; /* Establece un contenedor flexible */
+    flex-wrap: wrap; /* Permite la envoltura de elementos */
+    justify-content: space-around; /* Distribuye el espacio uniformemente */
+    align-items: center; /* Alinea los elementos verticalmente */
+  }
+  
+  .UserDataField {
+    margin: 5px 10px; /* Espaciado entre campos */
+    white-space: nowrap; /* Evita que el texto se envuelva */
+  }
+  
+  .UserDataTitle {
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .UserDataContent {
+    color: #333;
+    margin-left: 5px; /* Espaciado entre título y contenido */
+  }
+  

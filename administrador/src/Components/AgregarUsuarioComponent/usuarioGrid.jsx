@@ -1,7 +1,14 @@
 import React, { useState } from "react";
-import { Grid, Card, CardActionArea, CardContent, Typography, CardActions } from "@mui/material";
+import {
+  Grid,
+  Card,
+  CardActionArea,
+  CardContent,
+  Typography,
+  CardActions,
+} from "@mui/material";
 import { Button, Pagination } from "react-bootstrap";
-import { format } from "date-fns";
+//import { format } from "date-fns";
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
 
@@ -15,6 +22,12 @@ export default function UsuarioGrid({
   abrirModalActualizar,
   mostrarConfirmacion,
 }) {
+  function formatDate(date) {
+    console.log("Fecha de nacimiento obtenida de la base de datos:", date);
+    const formattedDate = new Date(date);
+    return formattedDate.toISOString().split("T")[0]; // Formato ISO sin la parte de la hora
+  }
+
   //FUNCIONES DEL AVATAR DEL USUARIO
   function stringToColor(string) {
     let hash = 0;
@@ -74,28 +87,30 @@ export default function UsuarioGrid({
     }
   }
 
+  // Filtrar los usuarios basado en los criterios de filtro
+  const filteredUsers = administrador
+    .filter((administrador) =>
+      administrador.Nombre.toLowerCase().includes(filtro.toLowerCase())
+    )
+    .filter((administrador) =>
+      administrador.Region.toLowerCase().includes(filtroRegion.toLowerCase())
+    )
+    .filter((administrador) =>
+      administrador.AreaTrabajo.toLowerCase().includes(filtroArea.toLowerCase())
+    )
+    .filter((administrador) =>
+      `${administrador.AppE} ${administrador.ApmE}`
+        .toLowerCase()
+        .includes(filtroApellidoModal.toLowerCase())
+    )
+    .filter(
+      (administrador) =>
+        filtroRol === "" ||
+        administrador.Rol.toLowerCase().includes(filtroRol.toLowerCase())
+    );
+
   const [currentPage, setCurrentPage] = useState(1);
   const usersPerPage = 12; // Número de usuarios por página
-
-  // Filtrar los usuarios basado en los criterios de filtro
-  const filteredUsers = administrador.filter((administrador) =>
-    administrador.Nombre.toLowerCase().includes(filtro.toLowerCase())
-  )
-  .filter((administrador) =>
-    administrador.Region.toLowerCase().includes(filtroRegion.toLowerCase())
-  )
-  .filter((administrador) =>
-    administrador.AreaTrabajo.toLowerCase().includes(filtroArea.toLowerCase())
-  )
-  .filter((administrador) =>
-    `${administrador.AppE} ${administrador.ApmE}`
-    .toLowerCase()
-    .includes(filtroApellidoModal.toLowerCase())
-  )
-  .filter((administrador) =>
-    filtroRol === "" ||
-    administrador.Rol.toLowerCase().includes(filtroRol.toLowerCase())
-  );
 
   // Calcular el número total de páginas basado en los usuarios filtrados y paginados
   const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
@@ -104,24 +119,22 @@ export default function UsuarioGrid({
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
   const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
+  const maxDisplayedPages = 10; // Limita el número de páginas mostradas en la barra de paginación
 
   // Función para generar los números de página a mostrar
   const generatePageNumbers = () => {
-    const pagesToShow = 30; // Número de páginas a mostrar
-    const midPoint = Math.ceil(pagesToShow / 2);
-    let startPage = 1;
-    let endPage = totalPages;
-
-    if (totalPages > pagesToShow) {
-      if (currentPage > midPoint) {
-        startPage = currentPage - midPoint + 1;
-        endPage = Math.min(currentPage + midPoint - 1, totalPages);
-      } else {
-        endPage = pagesToShow;
-      }
+    let startPage = Math.max(
+      1,
+      currentPage - Math.floor(maxDisplayedPages / 2)
+    );
+    let endPage = Math.min(totalPages, startPage + maxDisplayedPages - 1);
+    if (endPage - startPage + 1 < maxDisplayedPages) {
+      startPage = Math.max(1, endPage - maxDisplayedPages + 1);
     }
-
-    return Array.from({ length: endPage - startPage + 1 }, (_, index) => index + startPage);
+    return Array.from(
+      { length: endPage - startPage + 1 },
+      (_, index) => startPage + index
+    );
   };
 
   return (
@@ -177,8 +190,11 @@ export default function UsuarioGrid({
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
                     Fecha de nacimiento:{" "}
-                    {format(new Date(administrador.FechaNac), "yyyy-MM-dd")}
+                    {administrador.FechaNac
+                      ? formatDate(administrador.FechaNac)
+                      : "Fecha no disponible"}
                   </Typography>
+
                   <Typography variant="body2" color="text.secondary">
                     Sede: {administrador.Region}
                   </Typography>
@@ -208,6 +224,10 @@ export default function UsuarioGrid({
         ))}
       </Grid>
       <Pagination>
+        <Pagination.First
+          onClick={() => setCurrentPage(1)}
+          disabled={currentPage === 1}
+        />
         <Pagination.Prev
           onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
           disabled={currentPage === 1}
@@ -222,7 +242,13 @@ export default function UsuarioGrid({
           </Pagination.Item>
         ))}
         <Pagination.Next
-          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+          onClick={() =>
+            setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+          }
+          disabled={currentPage === totalPages}
+        />
+        <Pagination.Last
+          onClick={() => setCurrentPage(totalPages)}
           disabled={currentPage === totalPages}
         />
       </Pagination>
