@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const turnoSchema = new mongoose.Schema({
   Nombre: { type: String, required: false },
@@ -10,4 +10,4 @@ const turnoSchema = new mongoose.Schema({
   Contrato: {type: String, require: false}
 });
 
-module.exports = mongoose.model("Turno", turnoSchema);
+module.exports = mongoose.model('SolicitudTurno', solicitudTurnoSchema);

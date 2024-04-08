@@ -1,4 +1,5 @@
 import React from "react";
+import "./css/agregarHorario.css"
 import Navigation from "../NavigationConponent/Navigation";
 import SolicitarHorarioFor from "./SolicitarHorarioFor";
 
@@ -6,7 +7,9 @@ export default function agregarHorario() {
   return (
     <div>
       <Navigation />
-      <SolicitarHorarioFor/>
+      <div className="SolicitudHorarioContenedorComponentPrincipal">
+        <SolicitarHorarioFor />
+      </div>
     </div>
   );
 }
