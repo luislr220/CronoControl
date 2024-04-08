@@ -1,65 +1,29 @@
 import React, { useState, useEffect } from "react";
-import "./css/permisos.css";
+import { useAuth } from "../../routes/AuthContext"; // Asegúrate de importar el contexto de autenticación
 import Navigation from "../NavigationConponent/Navigation";
 import { Form, Button, Row, Col, Alert, Spinner } from "react-bootstrap";
 
-
 export default function Permisos() {
+  const { isAuthenticated, user } = useAuth();
   const [nombre, setNombre] = useState("");
+  const [correo, setCorreo] = useState("");
   const [sede, setSede] = useState("");
   const [areaTrabajo, setAreaTrabajo] = useState("");
   const [fechaInicio, setFechaInicio] = useState("");
   const [fechaFinal, setFechaFinal] = useState("");
   const [justificacion, setJustificacion] = useState("");
-  const [sedes, setSedes] = useState([]);
-  const [areasTrabajo, setAreasTrabajo] = useState([]);
   const [mensajeExito, setMensajeExito] = useState("");
   const [mensajeError, setMensajeError] = useState("");
-  const [isLoading, setIsLoading] = useState(false); // Nuevo estado para controlar la barra de carga
+  const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
 
   useEffect(() => {
-    const fetchAreasTrabajo = async () => {
-      try {
-        const response = await fetch("http://localhost:3002/areas");
-        if (!response.ok) {
-          throw new Error("No se pudo obtener la lista de áreas de trabajo");
-        }
-        const data = await response.json();
-        setAreasTrabajo(data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    const fetchSedes = async () => {
-      try {
-        const response = await fetch("http://localhost:3002/sedes");
-        if (!response.ok) {
-          throw new Error("No se pudo obtener la lista de sedes");
-        }
-        const data = await response.json();
-        setSedes(data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchAreasTrabajo();
-    fetchSedes();
-  }, []);
-
-  const handleNombreChange = (e) => {
-    setNombre(e.target.value);
-  };
-
-  const handleSedeChange = (e) => {
-    setSede(e.target.value);
-    setAreaTrabajo("");
-  };
-
-  const handleAreaTrabajoChange = (e) => {
-    setAreaTrabajo(e.target.value);
-  };
+    if (isAuthenticated && user) {
+      setNombre(`${user.Nombre} ${user.AppE} ${user.ApmE}`);
+      setCorreo(user.Correo);
+      setSede(user.Region); // Establecer la sede por defecto
+      setAreaTrabajo(user.AreaTrabajo); // Establecer el área de trabajo por defecto
+    }
+  }, [isAuthenticated, user]);
 
   const handleFechaInicioChange = (e) => {
     setFechaInicio(e.target.value);
@@ -75,15 +39,19 @@ export default function Permisos() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("Formulario enviado.");
+
     const solicitud = {
       nombre: nombre,
+      correo: correo,
+      sede: sede,
       areaTrabajo: areaTrabajo,
       fechaInicio: fechaInicio,
       fechaFinal: fechaFinal,
       justificacion: justificacion
     };
 
-    setIsLoading(true); // Mostrar la barra de carga antes de enviar la solicitud
+    setIsLoadingSubmit(true);
 
     try {
       const response = await fetch("http://localhost:3002/permisos", {
@@ -104,11 +72,9 @@ export default function Permisos() {
       setMensajeError("Error al enviar la solicitud");
       setMensajeExito("");
     } finally {
-      setIsLoading(false); // Ocultar la barra de carga después de completar la solicitud
+      setIsLoadingSubmit(false);
     }
   };
-
-  const filteredAreas = areasTrabajo.filter(area => area.sede === sede);
 
   return (
     <div className="">
@@ -129,11 +95,20 @@ export default function Permisos() {
             <Col sm={9}>
               <Form.Control
                 type="text"
-                placeholder=""
                 value={nombre}
-                onChange={handleNombreChange}
+                readOnly
               />
-              <br />
+            </Col>
+          </Form.Group>
+  
+          <Form.Group as={Row} controlId="correo" style={{ padding: '1%' }}>
+            <Form.Label column sm={3}>Correo:</Form.Label>
+            <Col sm={9}>
+              <Form.Control
+                type="email"
+                value={correo}
+                readOnly
+              />
             </Col>
           </Form.Group>
   
@@ -141,18 +116,10 @@ export default function Permisos() {
             <Form.Label column sm={3}>Sede:</Form.Label>
             <Col sm={9}>
               <Form.Control
-                as="select"
+                type="text"
                 value={sede}
-                onChange={handleSedeChange}
-              >
-                <br />
-                <option>Selecciona la sede</option>
-                {sedes.map((sede) => (
-                  <option key={sede._id} value={sede.nombre}>
-                    {sede.nombre}
-                  </option>
-                ))}
-              </Form.Control>
+                readOnly
+              />
             </Col>
           </Form.Group>
 
@@ -160,18 +127,10 @@ export default function Permisos() {
             <Form.Label column sm={3}>Área de trabajo:</Form.Label>
             <Col sm={9}>
               <Form.Control
-                as="select"
+                type="text"
                 value={areaTrabajo}
-                onChange={handleAreaTrabajoChange}
-              >
-                <br />
-                <option>Selecciona tu área</option>
-                {filteredAreas.map((area) => (
-                  <option key={area._id} value={area.nombre}>
-                    {area.nombre}
-                  </option>
-                ))}
-              </Form.Control>
+                readOnly
+              />
             </Col>
           </Form.Group>
           
@@ -212,10 +171,10 @@ export default function Permisos() {
           <br />
   
           <div className="text-center">
-            <Button variant="primary" type="submit">
+            <Button variant="primary" type="submit" disabled={isLoadingSubmit}>
               Enviar Solicitud
             </Button>
-            {isLoading && <Spinner animation="border" variant="primary" />}
+            {isLoadingSubmit && <Spinner animation="border" variant="primary" />}
           </div>
         </Form>
       </div>

@@ -101,6 +101,8 @@ export default function AgregarUsuario() {
   const [alertVariant, setAlertVariant] = useState("info"); // Estado para controlar el color de la alerta
   const [mostrarContraseña, setMostrarContraseña] = useState(true); // Estado para controlar la visibilidad del input de contraseña
 
+
+
   // Función para mostrar la alerta de confirmación
   const mostrarAlerta = (mensaje, tipoAccion) => {
     let variant;
