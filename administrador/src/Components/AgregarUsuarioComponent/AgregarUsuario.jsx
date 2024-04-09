@@ -20,7 +20,6 @@ import ActualizarUsuarioModal from "./ActualizarUsuarioModal";
 import ConfirmarEliminacionModal from "./ConfirmarEliminacionModal";
 
 export default function AgregarUsuario() {
-
   //Estado para saber los datos del usuario autenticado
   const { user } = useAuth();
   //Estado para almecenar el rol edl usuario autenticado
@@ -152,7 +151,6 @@ export default function AgregarUsuario() {
       setRolUsuarioActual(user.Rol);
     }
   }, [user]);
-
 
   useEffect(() => {
     // Función para obtener la lista de administradores, las áreas y sedes desde el backend
@@ -521,24 +519,30 @@ export default function AgregarUsuario() {
               )
             )}
           </Form.Control>
-          <Form.Control
-            as="select"
-            className="AGEMBuscador"
-            value={filtroRol}
-            onChange={(e) => setFiltroRol(e.target.value)}
-          >
-            <option value="">Todos los roles</option>
-            {loading ? (
-              <option disabled>Cargando roles...</option>
-            ) : (
-              Array.isArray(roles) &&
-              roles.map((rol, index) => (
-                <option key={index} value={rol}>
-                  {rol}
-                </option>
-              ))
-            )}
-          </Form.Control>
+          {rolUsuarioActual !== "Administrador" && (
+            <Form.Control
+              as="select"
+              className="AGEMBuscador"
+              value={filtroRol}
+              onChange={(e) => setFiltroRol(e.target.value)}
+            >
+              <option value="">Todos los roles</option>
+              {loading ? (
+                <option disabled>Cargando roles...</option>
+              ) : (
+                Array.isArray(roles) &&
+                roles.map(
+                  (rol, index) =>
+                    // No mostrar la opción 'root' si el usuario actual es un administrador
+                    (rolUsuarioActual !== "root" || rol !== "root") && (
+                      <option key={index} value={rol}>
+                        {rol}
+                      </option>
+                    )
+                )
+              )}
+            </Form.Control>
+          )}
         </div>
 
         {/*MODAL PARA AGREGAR UN Administrador */}
@@ -555,6 +559,7 @@ export default function AgregarUsuario() {
           errorCorreoDuplicado={errorCorreoDuplicado}
           handleRolChange={handleRolChange} // Pasar handleRolChange como prop
           mostrarContraseña={mostrarContraseña}
+          rolUsuarioActual={rolUsuarioActual}
         />
 
         {/* Modal para actualizar */}
@@ -576,6 +581,7 @@ export default function AgregarUsuario() {
           setValoresAdministradorSeleccionado={
             setValoresAdministradorSeleccionado
           }
+          rolUsuarioActual={rolUsuarioActual}
         />
 
         {/* MODAL PARA CONFIRMAR SI DESEA ELIMINAR*/}

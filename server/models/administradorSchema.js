@@ -7,14 +7,14 @@ const administradorSchema = new mongoose.Schema({
   ApmE: { type: String, required: true },
   FechaNac: { type: Date, required: true },
   Correo: { type: String, required: true },
-  Contraseña:{type:String, required:false},
+  Contraseña: { type: String, required: false },
   Region: { type: String, required: true },
   AreaTrabajo: { type: String, required: true },
   Entrenamiento: { type: String, required: false },
-  Actividades:{type:[]},
-  Contrato:{type:String, required:false},
-  TurnoActual:{type:String, required:false},
-  Rol:{type:String, require:true},
+  Actividades: { type: [] },
+  Contrato: { type: String, required: false },
+  TurnoActual: { type: String, required: false },
+  Rol: { type: String, require: true },
   loginToken: { type: String }
 });
 

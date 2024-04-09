@@ -21,7 +21,7 @@ export default function UsuarioGrid({
   filtroRol,
   abrirModalActualizar,
   mostrarConfirmacion,
-  rolUsuarioActual
+  rolUsuarioActual,
 }) {
   function formatDate(date) {
     console.log("Fecha de nacimiento obtenida de la base de datos:", date);
@@ -90,31 +90,44 @@ export default function UsuarioGrid({
 
   // Filtrar los usuarios basado en los criterios de filtro
   const filteredUsers = administrador
-  .filter((administrador) =>
-    administrador.Nombre && administrador.Nombre.toLowerCase().includes(filtro.toLowerCase())
-  )
-  .filter((administrador) =>
-    administrador.Region && administrador.Region.toLowerCase().includes(filtroRegion.toLowerCase())
-  )
-  .filter((administrador) =>
-    administrador.AreaTrabajo && administrador.AreaTrabajo.toLowerCase().includes(filtroArea.toLowerCase())
-  )
-  .filter((administrador) =>
-    `${administrador.AppE} ${administrador.ApmE}`
-      .toLowerCase()
-      .includes(filtroApellidoModal.toLowerCase())
-  )
-  .filter(
-    (administrador) =>
-      filtroRol === "" ||
-      (administrador.Rol && administrador.Rol.toLowerCase().includes(filtroRol.toLowerCase()))
-  )
-  .filter(
-    (administrador) =>
-      (filtroRol === "" || administrador.Rol.toLowerCase().includes(filtroRol.toLowerCase())) &&
-      !(rolUsuarioActual === "Administrador" && administrador.Rol === "Administrador")
-  );
-  
+    .filter(
+      (administrador) =>
+        administrador.Nombre &&
+        administrador.Nombre.toLowerCase().includes(filtro.toLowerCase())
+    )
+    .filter(
+      (administrador) =>
+        administrador.Region &&
+        administrador.Region.toLowerCase().includes(filtroRegion.toLowerCase())
+    )
+    .filter(
+      (administrador) =>
+        administrador.AreaTrabajo &&
+        administrador.AreaTrabajo.toLowerCase().includes(
+          filtroArea.toLowerCase()
+        )
+    )
+    .filter((administrador) =>
+      `${administrador.AppE} ${administrador.ApmE}`
+        .toLowerCase()
+        .includes(filtroApellidoModal.toLowerCase())
+    )
+    .filter(
+      (administrador) =>
+        filtroRol === "" ||
+        (administrador.Rol &&
+          administrador.Rol.toLowerCase().includes(filtroRol.toLowerCase()))
+    )
+    .filter(
+      (administrador) =>
+        (filtroRol === "" || administrador.Rol.toLowerCase().includes(filtroRol.toLowerCase())) &&
+        !(
+          (rolUsuarioActual === "Administrador" && administrador.Rol === "root") ||
+          (rolUsuarioActual === "Administrador" && administrador.Rol === "Administrador") ||
+          (rolUsuarioActual === "root" && administrador.Rol === "root")
+        )
+    );
+    
 
 
   const [currentPage, setCurrentPage] = useState(1);

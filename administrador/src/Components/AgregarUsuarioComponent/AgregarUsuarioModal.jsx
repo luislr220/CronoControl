@@ -14,6 +14,7 @@ export default function AgregarUsuarioModal({
   errorCorreoDuplicado,
   handleRolChange, // Recibir handleRolChange como prop
   mostrarContraseña, // Recibir mostrarContraseña como prop
+  rolUsuarioActual
 }) {
   return (
     <Modal show={mostrar} onHide={onClose}>
@@ -95,7 +96,10 @@ export default function AgregarUsuarioModal({
               }}
             >
               <option value="">Selecciona un rol</option>
-              <option value="Administrador">Administrador</option>
+              {/* Solo muestra la opción de administrador si el usuario actual no es un administrador */}
+              {rolUsuarioActual !== "Administrador" && (
+                <option value="Administrador">Administrador</option>
+              )}
               <option value="Empleado">Empleado</option>
             </Form.Control>
           </Form.Group>

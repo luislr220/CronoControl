@@ -16,7 +16,8 @@ export default function ActualizarUsuarioModal({
   setMostrarContraseña, // Definir setMostrarContraseña como prop
   areas, // Definir areas como prop
   setAreasPorRegionActualizar, // Definir setAreasPorRegionActualizar como prop
-  setValoresAdministradorSeleccionado
+  setValoresAdministradorSeleccionado,
+  rolUsuarioActual
 }) {
   return (
     <Modal show={mostrar} onHide={onClose}>
@@ -127,7 +128,10 @@ export default function ActualizarUsuarioModal({
               }}
             >
               <option value="">Selecciona un rol</option>
-              <option value="Administrador">Administrador</option>
+              {/* Solo muestra la opción de administrador si el usuario actual no es un administrador */}
+              {rolUsuarioActual !== "Administrador" && (
+                <option value="Administrador">Administrador</option>
+              )}
               <option value="Empleado">Empleado</option>
             </Form.Control>
           </Form.Group>
