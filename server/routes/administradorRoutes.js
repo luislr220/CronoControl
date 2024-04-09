@@ -7,6 +7,8 @@ const Administrador = require("../models/administradorSchema");
 const { enviarCorreo } = require("../controllers/authController");
 const jwt = require("jsonwebtoken");
 const fs = require("fs");
+const XLSX = require('xlsx');
+const csv = require('csv-parser');
 const multer = require("multer");
 const upload = multer({ dest: "uploads/" });
 
@@ -15,8 +17,36 @@ router.use(cors());
 
 router.post('/cargar', upload.single('file'), async (req, res) => {
   try {
-    console.log('Recibiendo datos del archivo JSON:', req.file);
-    const usuarios = JSON.parse(fs.readFileSync(req.file.path, 'utf8'));
+    console.log('Recibiendo datos del archivo:', req.file);
+
+    let usuarios = [];
+
+    // Manejar archivo JSON
+    if (req.file.mimetype === 'application/json') {
+      // Leer el archivo JSON cargado
+      usuarios = JSON.parse(fs.readFileSync(req.file.path, 'utf-8'));
+    }
+    // Manejar archivo XLSX
+    else if (req.file.mimetype === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+      // Leer el archivo XLSX
+      const workbook = XLSX.readFile(req.file.path);
+      const sheetName = workbook.SheetNames[0]; // asumimos que solo hay una hoja en el archivo
+      usuarios = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+    }
+    // Manejar archivo CSV
+    else if (req.file.mimetype === 'text/csv') {
+      // Leer el archivo CSV cargado
+      usuarios = await new Promise((resolve, reject) => {
+        const results = [];
+        fs.createReadStream(req.file.path)
+          .pipe(csv())
+          .on('data', (data) => results.push(data))
+          .on('end', () => resolve(results))
+          .on('error', (error) => reject(error));
+      });
+    } else {
+      throw new Error('Formato de archivo no compatible');
+    }
 
     // Buscar el último administrador para obtener su ID
     const ultimoAdministrador = await Administrador.findOne().sort({
@@ -50,7 +80,39 @@ router.post('/cargar', upload.single('file'), async (req, res) => {
   }
 });
 
+// Ruta para crear un nuevo Administrador
+router.post(
+  "/",
+  administradorController.validarCorreoUnico,
+  async (req, res) => {
+    try {
+      // Buscar el último administrador para obtener su ID
+      const ultimoAdministrador = await Administrador.findOne().sort({
+        id: -1,
+      });
 
+      let nuevoID = 1; // Valor predeterminado si no hay administradores existentes
+
+      if (ultimoAdministrador) {
+        // Si hay administradores existentes, incrementar el ID
+        nuevoID = ultimoAdministrador.id + 1;
+      }
+
+      // Crear un nuevo administrador con el ID generado
+      const nuevoAdministrador = new Administrador({
+        ...req.body,
+        id: nuevoID,
+      });
+
+      // Guardar el administrador en la base de datos
+      await nuevoAdministrador.save();
+
+      res.status(201).send(nuevoAdministrador);
+    } catch (error) {
+      res.status(400).json({ error: "Error al crear un nuevo administrador" });
+    }
+  }
+);
 
 
 // Ruta para enviar el token de inicio de sesión por correo electrónico
@@ -104,8 +166,48 @@ router.post("/login", async (req, res) => {
 });
 
 
-// Ruta para cerrar sesión
+// Ruta para cerrar sesión (Empleado)
 router.post("/logout", async (req, res) => {
+  try {
+    // Devuelve una respuesta indicando que la sesión se ha cerrado exitosamente
+    res.json({ message: "Sesión cerrada exitosamente" });
+  } catch (error) {
+    console.error("Error al cerrar sesión:", error);
+    res.status(500).json({ error: "Error en el servidor" });
+  }
+});
+
+// Ruta para que el administrador inicie sesión con la contraseña
+router.post("/administrador/login", async (req, res) => {
+  const { correo, contraseña } = req.body;
+  try {
+    // Buscar al administrador por su correo electrónico
+    const administrador = await Administrador.findOne({ Correo: correo });
+
+    // Verificar si el administrador existe
+    if (!administrador) {
+      return res.status(401).json({ error: "Correo electrónico incorrecto" });
+    }
+
+    // Verificar la contraseña
+    const contraseñaValida = await bcrypt.compare(
+      contraseña,
+      administrador.Contraseña
+    );
+    if (!contraseñaValida) {
+      return res.status(401).json({ error: "Contraseña incorrecta" });
+    }
+
+    // Si la contraseña es válida, enviar mensaje de inicio de sesión exitoso junto con los datos del administrador
+    res.json({ message: "Inicio de sesión exitoso", user: administrador });
+  } catch (error) {
+    console.error("Error al iniciar sesión:", error);
+    res.status(500).json({ error: "Error en el servidor" });
+  }
+});
+
+// Ruta para cerrar sesión del administrador
+router.post("/administrador/logout", async (req, res) => {
   try {
     // Devuelve una respuesta indicando que la sesión se ha cerrado exitosamente
     res.json({ message: "Sesión cerrada exitosamente" });
@@ -130,40 +232,6 @@ router.get("/", async (req, res) => {
     res.status(500).json({ error: "Error al obtener los administradores" });
   }
 });
-
-// Ruta para crear un nuevo Administrador
-router.post(
-  "/",
-  administradorController.validarCorreoUnico,
-  async (req, res) => {
-    try {
-      // Buscar el último administrador para obtener su ID
-      const ultimoAdministrador = await Administrador.findOne().sort({
-        id: -1,
-      });
-
-      let nuevoID = 1; // Valor predeterminado si no hay administradores existentes
-
-      if (ultimoAdministrador) {
-        // Si hay administradores existentes, incrementar el ID
-        nuevoID = ultimoAdministrador.id + 1;
-      }
-
-      // Crear un nuevo administrador con el ID generado
-      const nuevoAdministrador = new Administrador({
-        ...req.body,
-        id: nuevoID,
-      });
-
-      // Guardar el administrador en la base de datos
-      await nuevoAdministrador.save();
-
-      res.status(201).send(nuevoAdministrador);
-    } catch (error) {
-      res.status(400).json({ error: "Error al crear un nuevo administrador" });
-    }
-  }
-);
 
 // Ruta para actualizar un administrador existente
 router.patch(

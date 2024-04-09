@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./css/Navigation.css";
+import LogoutButton from "../LoginFormComponent/LogoutButton"
 import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
 import Box from "@mui/material/Box";
@@ -13,7 +14,6 @@ import ListItemText from "@mui/material/ListItemText";
 import { BsCheckCircle, BsClockHistory, BsPeople, BsBuilding, BsCalendar, BsFilePost } from "react-icons/bs"; // Íconos de react-icons/bs
 import logoEmpresa from "../../assets/logo/LogoPNG.png";
 import Dropdown from 'react-bootstrap/Dropdown';
-
 export default function Navigation() {
   const [open, setOpen] = useState(false);
 
@@ -31,6 +31,7 @@ export default function Navigation() {
           <Drawer open={open} onClose={toggleDrawer(false)}>
             <DrawerList />
           </Drawer>
+          
         </Container>
       </Navbar>
     </div>
@@ -40,7 +41,7 @@ export default function Navigation() {
 function DrawerList() {
   const drawerItems = [
     { text: "Validar solicitud", icon: <BsCheckCircle />, subItems: [
-      { text: "Turno", href: "/ValidarSolis" },
+      { text: "Turno", href: "/validarHorario" },
       { text: "Vacaciones", href: "/validarVaca" }
     ] },
     { text: "Agregar Turno", href: "/turnoCrud", icon: <BsClockHistory /> },
@@ -86,6 +87,7 @@ function DrawerList() {
           </div>
         ))}
       </List>
+      <LogoutButton />
     </Box>
   );
 }

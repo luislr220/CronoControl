@@ -14,7 +14,7 @@ export default function ValidarVacaciones() {
   useEffect(() => {
     const fetchPermisos = async () => {
       try {
-        const response = await fetch("http://localhost:3002/permisos");
+        const response = await fetch("http://localhost:3002/permiso");
         if (!response.ok) {
           throw new Error("No se pudo obtener la lista de permisos");
         }
@@ -38,7 +38,7 @@ export default function ValidarVacaciones() {
 
   const handleAprobarSolicitudes = async () => {
     try {
-      await fetch("http://localhost:3002/permisos/aprobar", {
+      await fetch("http://localhost:3002/permiso/aprobar", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -62,7 +62,7 @@ export default function ValidarVacaciones() {
 
   const handleDenegarSolicitudes = async () => {
     try {
-      await fetch("http://localhost:3002/permisos/denegar", {
+      await fetch("http://localhost:3002/permiso/denegar", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -124,7 +124,6 @@ export default function ValidarVacaciones() {
             <tr>
               <th></th>
               <th>Nombre</th>
-              <th>Área de Trabajo</th>
               <th>Fecha de Inicio</th>
               <th>Fecha de Finalización</th>
               <th>Justificación</th>
@@ -141,10 +140,9 @@ export default function ValidarVacaciones() {
                     onChange={() => handleSelectItem(permiso._id)}
                   />
                 </td>
-                <td>{permiso.nombre}</td>
-                <td>{permiso.areaTrabajo}</td>
-                <td>{permiso.fechaInicio}</td>
-                <td>{permiso.fechaFinal}</td>
+                <td>{permiso.nombreCompleto}</td>
+                <td>{permiso.fechaInicioVacaciones}</td>
+                <td>{permiso.fechaFinVacaciones}</td>
                 <td>{permiso.justificacion}</td>
                 <td>{permiso.estado}</td>
               </tr>

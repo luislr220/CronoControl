@@ -2,12 +2,16 @@ import './App.css';
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./routes/AuthContext";
-import Permisos from "./Components/SolicitudPermisosComponent/Permisos";
-import AgregarHorario from "./Components/agregarHorario/agregarHorario";
+import HomeComponent from './Components/Homecomponent/HomeComponent';
 import Login from "./Components/LoginFormComponent/LoginForm";
 import ProtectedRoute from "./routes/ProtectedRoute";
+<<<<<<< HEAD
 import Gantt from './Components/gantt/gantt';
 
+=======
+import Permiso from "./Components/SolicitudPermisosComponent/Permiso"
+import SolicitarHorario from './Components/agregarHorario/SolicitarHorario';
+>>>>>>> main
 
 function App() {
   return (
@@ -19,12 +23,16 @@ function App() {
             <Route path="/gantt" element={<Gantt />} />
             
             <Route
-              path="/Permisos"
-              element={<ProtectedRoute element={Permisos} />}
+              path="/Inicio"
+              element={<ProtectedRoute element={HomeComponent} />}
+            />
+            <Route
+              path="/permiso"
+              element={<ProtectedRoute element={Permiso} />}
             />
             <Route
               path="/agregarHorario"
-              element={<ProtectedRoute element={AgregarHorario} />}
+              element={<ProtectedRoute element={SolicitarHorario} />}
             />
           </Routes>
         </Router>

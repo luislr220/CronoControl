@@ -21,6 +21,7 @@ export default function Navigation() {
     setOpen(newOpen);
   };
 
+<<<<<<< HEAD
   return (
     <div style={{ backgroundColor: '#1C2B67' }}>
       <Navbar className="navbar-custom">
@@ -36,6 +37,12 @@ export default function Navigation() {
     </div>
   );
 }
+=======
+  const drawerItems = [
+    { text: "Inicio", href: "/Inicio", icon: <BsClockHistory /> },
+    { text: "Solicitar vacaciones", href: "/permiso", icon: <BsClockHistory /> },
+    { text: "Solicitar horario", href: "/agregarHorario", icon: <BsClockHistory /> },
+>>>>>>> main
 
 function DrawerList() {
   const drawerItems = [

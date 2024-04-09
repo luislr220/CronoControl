@@ -12,9 +12,11 @@ var sedeRoutes = require('./routes/sedeRoutes'); // Rutas para sedes
 var areaRoutes = require('./routes/areaRoutes'); // Importa las rutas de áreas
 var administradorRoutes = require('./routes/administradorRoutes'); // Importa las rutas de administrador
 var contratoRoutes = require('./routes/contratoRoutes');
-var permisosRoutes = require('./routes/permisosRouter');
 var actividadRoutes = require('./routes/actividadRoutes'); // Importa las rutas de actividades
 var horarioRoutes = require('./routes/horarioRoutes');
+var permisoRoutes = require('./routes/permisoRoutes');
+var permisoHorarioRoutes = require('./routes/permisoHorarioRoutes');
+
 var app = express();
 
 let dotenv = require('dotenv');
@@ -44,9 +46,10 @@ app.use('/sedes', sedeRoutes); // Usa las rutas para sedes
 app.use('/areas', areaRoutes);
 app.use('/administrador', administradorRoutes);
 app.use('/contratos', contratoRoutes);
-app.use('/permisos',permisosRoutes)
 app.use('/actividades', actividadRoutes); // Usa las rutas de actividades
 app.use('/horario', horarioRoutes);
+app.use('/permiso', permisoRoutes);
+app.use('/permisoHorario', permisoHorarioRoutes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
