@@ -12,14 +12,9 @@ async function initializeDB() {
     if (!rootAdmin) {
       await Administrador.create({
         Nombre: 'root',
-        AppE: 'admin',
-        ApmE: 'root',
-        FechaNac: new Date(),
-        Correo: 'root@root.com',
+        Correo: 'root@root',
         Contraseña: 'root321',
-        Region: 'Optimen UTNG',
-        AreaTrabajo: 'Administración',
-        Rol: 'Administrador'
+        Rol: 'Rol'
       });
       console.log('Usuario administrador (root) creado exitosamente.');
     } else {
