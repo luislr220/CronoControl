@@ -10,6 +10,7 @@ const administradorSchema = new mongoose.Schema({
   Contraseña:{type:String, required:false},
   Region: { type: String, required: true },
   AreaTrabajo: { type: String, required: true },
+  Entrenamiento: { type: String, required: false },
   Contrato:{type:String, required:false},
   TurnoActual:{type:String, required:false},
   Rol:{type:String, require:true},

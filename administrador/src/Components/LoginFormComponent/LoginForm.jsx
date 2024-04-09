@@ -16,7 +16,7 @@ export default function LoginForm() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate(location.state?.from || "/validarSolis"); // Navega a la ruta anterior o a '/Turnos' por defecto
+      navigate(location.state?.from || "/agregarUsuario"); // Navega a la ruta anterior o a '/Turnos' por defecto
     }
   }, [isAuthenticated, navigate, location.state?.from]);
 
@@ -33,7 +33,7 @@ export default function LoginForm() {
       if (response.data.message === "Inicio de sesión exitoso") {
         login(response.data.user);
         console.log(response.data.user); // Agrega esta línea para verificar los datos del usuario
-        navigate("/validarSolis");
+        navigate("/agregarUsuario");
       }
     } catch (error) {
       setMessage("Error al enviar la solicitud de inicio de sesión.");

@@ -25,7 +25,7 @@ function App() {
             <Route path="/agregarArea" element={<AgregarArea />} />
             <Route path="/agregarContrato" element={<AgregarContrato />} />
             <Route path="/agregarHorario" element={<AgregarHorario />} />
-            <Route path="validarVaca" element={<ValidarVacaciones />} />
+            <Route path="/validarVaca" element={<ValidarVacaciones />} />
             <Route
               key="asignar-actividades"
               path="/AsignarActividades"
