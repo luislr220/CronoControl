@@ -89,25 +89,26 @@ export default function UsuarioGrid({
 
   // Filtrar los usuarios basado en los criterios de filtro
   const filteredUsers = administrador
-    .filter((administrador) =>
-      administrador.Nombre.toLowerCase().includes(filtro.toLowerCase())
-    )
-    .filter((administrador) =>
-      administrador.Region.toLowerCase().includes(filtroRegion.toLowerCase())
-    )
-    .filter((administrador) =>
-      administrador.AreaTrabajo.toLowerCase().includes(filtroArea.toLowerCase())
-    )
-    .filter((administrador) =>
-      `${administrador.AppE} ${administrador.ApmE}`
-        .toLowerCase()
-        .includes(filtroApellidoModal.toLowerCase())
-    )
-    .filter(
-      (administrador) =>
-        filtroRol === "" ||
-        administrador.Rol.toLowerCase().includes(filtroRol.toLowerCase())
-    );
+  .filter((administrador) =>
+    administrador.Nombre && administrador.Nombre.toLowerCase().includes(filtro.toLowerCase())
+  )
+  .filter((administrador) =>
+    administrador.Region && administrador.Region.toLowerCase().includes(filtroRegion.toLowerCase())
+  )
+  .filter((administrador) =>
+    administrador.AreaTrabajo && administrador.AreaTrabajo.toLowerCase().includes(filtroArea.toLowerCase())
+  )
+  .filter((administrador) =>
+    `${administrador.AppE} ${administrador.ApmE}`
+      .toLowerCase()
+      .includes(filtroApellidoModal.toLowerCase())
+  )
+  .filter(
+    (administrador) =>
+      filtroRol === "" ||
+      (administrador.Rol && administrador.Rol.toLowerCase().includes(filtroRol.toLowerCase()))
+  );
+
 
   const [currentPage, setCurrentPage] = useState(1);
   const usersPerPage = 12; // Número de usuarios por página

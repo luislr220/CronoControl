@@ -166,8 +166,48 @@ router.post("/login", async (req, res) => {
 });
 
 
-// Ruta para cerrar sesión
+// Ruta para cerrar sesión (Empleado)
 router.post("/logout", async (req, res) => {
+  try {
+    // Devuelve una respuesta indicando que la sesión se ha cerrado exitosamente
+    res.json({ message: "Sesión cerrada exitosamente" });
+  } catch (error) {
+    console.error("Error al cerrar sesión:", error);
+    res.status(500).json({ error: "Error en el servidor" });
+  }
+});
+
+// Ruta para que el administrador inicie sesión con la contraseña
+router.post("/administrador/login", async (req, res) => {
+  const { correo, contraseña } = req.body;
+  try {
+    // Buscar al administrador por su correo electrónico
+    const administrador = await Administrador.findOne({ Correo: correo });
+
+    // Verificar si el administrador existe
+    if (!administrador) {
+      return res.status(401).json({ error: "Correo electrónico incorrecto" });
+    }
+
+    // Verificar la contraseña
+    const contraseñaValida = await bcrypt.compare(
+      contraseña,
+      administrador.Contraseña
+    );
+    if (!contraseñaValida) {
+      return res.status(401).json({ error: "Contraseña incorrecta" });
+    }
+
+    // Si la contraseña es válida, enviar mensaje de inicio de sesión exitoso junto con los datos del administrador
+    res.json({ message: "Inicio de sesión exitoso", user: administrador });
+  } catch (error) {
+    console.error("Error al iniciar sesión:", error);
+    res.status(500).json({ error: "Error en el servidor" });
+  }
+});
+
+// Ruta para cerrar sesión del administrador
+router.post("/administrador/logout", async (req, res) => {
   try {
     // Devuelve una respuesta indicando que la sesión se ha cerrado exitosamente
     res.json({ message: "Sesión cerrada exitosamente" });
