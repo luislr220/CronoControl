@@ -3,7 +3,7 @@ import { useAuth } from "../../routes/AuthContext"; // Asegúrate de importar el
 import Navigation from "../NavigationConponent/Navigation";
 import { Form, Button, Row, Col, Alert, Spinner } from "react-bootstrap";
 
-export default function Permisos() {
+const Permisos = () => {
   const { isAuthenticated, user } = useAuth();
   const [nombre, setNombre] = useState("");
   const [correo, setCorreo] = useState("");
@@ -37,6 +37,7 @@ export default function Permisos() {
     setJustificacion(e.target.value);
   };
 
+  // Implementa la función handleSubmit para enviar la solicitud y enviar la información al componente de Gantt
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Formulario enviado.");
@@ -68,12 +69,22 @@ export default function Permisos() {
 
       setMensajeExito("Solicitud enviada exitosamente");
       setMensajeError("");
+
+      // Después de enviar la solicitud con éxito, envía la información al componente de Gantt
+      enviarSolicitudGantt(solicitud);
     } catch (error) {
       setMensajeError("Error al enviar la solicitud");
       setMensajeExito("");
     } finally {
       setIsLoadingSubmit(false);
     }
+  };
+
+  // Implementa la función enviarSolicitudGantt para enviar la información al componente de Gantt
+  const enviarSolicitudGantt = (solicitud) => {
+    // Lógica para enviar la información al componente de Gantt
+    // Por ejemplo, podrías usar un método o un evento para enviar la solicitud al componente de Gantt
+    // Pero esta implementación depende de cómo esté diseñado y estructurado tu código del componente de Gantt
   };
 
   return (
@@ -181,3 +192,5 @@ export default function Permisos() {
     </div>
   );
 }
+
+export default Permisos;
