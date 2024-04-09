@@ -1,50 +1,18 @@
-// server.js
-
 const express = require('express');
-const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
+const path = require('path');
 
 const app = express();
-const PORT = 3003;
+const PORT = process.env.PORT || 3002;
 
-// Middleware
-app.use(bodyParser.json());
+// Servir archivos estáticos desde la carpeta dist
+app.use(express.static(path.join(__dirname, 'dist')));
 
-// MongoDB setup
-mongoose.connect('http://localhost:3002/permisos', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
-const turnoSchema = new mongoose.Schema({
-  Nombre: String,
-  HoraInicio: String,
-  HoraFinal: String,
-  Area: String,
-  Cupo: Number,
-  Estado: String,
-});
-const Turno = mongoose.model('Turno', turnoSchema);
-
-// Routes
-app.get('/turnos', async (req, res) => {
-  try {
-    const turnos = await Turno.find();
-    res.json(turnos);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+// Ruta de inicio
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
-app.post('/turnos', async (req, res) => {
-  const nuevoTurno = new Turno(req.body);
-  try {
-    const turnoGuardado = await nuevoTurno.save();
-    res.status(201).json(turnoGuardado);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-});
-
+// Iniciar el servidor
 app.listen(PORT, () => {
-  console.log(`Servidor corriendo en el puerto ${PORT}`);
+  console.log(`Servidor escuchando en el puerto ${PORT}`);
 });

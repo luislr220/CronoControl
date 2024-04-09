@@ -1,0 +1,11 @@
+[build]
+  command = "npm run build"
+  publish = "administrador/build"
+
+[[build]]
+  command = "npm run build"
+  publish = "empleado/build"
+
+[[build]]
+  command = "npm run build"
+  publish = "server/build"

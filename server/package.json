@@ -3,7 +3,10 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "build": "npm run build:webpack && npm run build:copy",
+    "build:webpack": "webpack --config webpack.config.js",
+    "build:copy": "cp -r src public dist"
   },
   "dependencies": {
     "@types/node": "^20.12.3",
@@ -26,5 +29,10 @@
     "nodemailer": "^6.9.13",
     "uuid": "^9.0.1",
     "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "html-webpack-plugin": "^5.6.0",
+    "webpack": "^5.91.0",
+    "webpack-cli": "^5.1.4"
   }
 }
