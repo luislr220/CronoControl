@@ -21,6 +21,7 @@ export default function UsuarioGrid({
   filtroRol,
   abrirModalActualizar,
   mostrarConfirmacion,
+  rolUsuarioActual
 }) {
   function formatDate(date) {
     console.log("Fecha de nacimiento obtenida de la base de datos:", date);
@@ -107,7 +108,13 @@ export default function UsuarioGrid({
     (administrador) =>
       filtroRol === "" ||
       (administrador.Rol && administrador.Rol.toLowerCase().includes(filtroRol.toLowerCase()))
+  )
+  .filter(
+    (administrador) =>
+      (filtroRol === "" || administrador.Rol.toLowerCase().includes(filtroRol.toLowerCase())) &&
+      !(rolUsuarioActual === "Administrador" && administrador.Rol === "Administrador")
   );
+  
 
 
   const [currentPage, setCurrentPage] = useState(1);

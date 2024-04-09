@@ -11,6 +11,7 @@ const administradorSchema = new mongoose.Schema({
   Region: { type: String, required: true },
   AreaTrabajo: { type: String, required: true },
   Entrenamiento: { type: String, required: false },
+  Actividades:{type:[]},
   Contrato:{type:String, required:false},
   TurnoActual:{type:String, required:false},
   Rol:{type:String, require:true},

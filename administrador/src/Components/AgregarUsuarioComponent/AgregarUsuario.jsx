@@ -11,6 +11,7 @@
 import React, { useState, useEffect } from "react";
 import "../AgregarUsuarioComponent/css/agregarEmpleado.css";
 import { FormControl, Form, Alert, ProgressBar, Button } from "react-bootstrap";
+import { useAuth } from "../../routes/AuthContext";
 import Navigation from "../NavigationComponent/Navigation";
 import BTNSobrecarga from "./btnSobrecarga";
 import UsuarioGrid from "./usuarioGrid";
@@ -19,6 +20,11 @@ import ActualizarUsuarioModal from "./ActualizarUsuarioModal";
 import ConfirmarEliminacionModal from "./ConfirmarEliminacionModal";
 
 export default function AgregarUsuario() {
+
+  //Estado para saber los datos del usuario autenticado
+  const { user } = useAuth();
+  //Estado para almecenar el rol edl usuario autenticado
+  const [rolUsuarioActual, setRolUsuarioActual] = useState("");
   // Estado para los datos del administrador
   const [administrador, setAdministrador] = useState([]);
   // Estado para filtrar al usuario
@@ -139,6 +145,14 @@ export default function AgregarUsuario() {
     setShowAlert(false);
     setProgress(0); // Reiniciar el progreso de la barra al ocultar la alerta
   };
+
+  useEffect(() => {
+    // Verifica si hay un usuario autenticado y establece el rol del usuario actual
+    if (user) {
+      setRolUsuarioActual(user.Rol);
+    }
+  }, [user]);
+
 
   useEffect(() => {
     // Función para obtener la lista de administradores, las áreas y sedes desde el backend
@@ -593,6 +607,7 @@ export default function AgregarUsuario() {
           filtroRol={filtroRol}
           abrirModalActualizar={abrirModalActualizar}
           mostrarConfirmacion={mostrarConfirmacion}
+          rolUsuarioActual={rolUsuarioActual}
         />
       </div>
     </div>
