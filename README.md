@@ -26,7 +26,12 @@ https://www.notion.so/b138f0ff058b43ea974fd6f7b38d7e77?v=a1429c2273734f29a8e202e
 
 A continuación dejo el link para los casos de uso  
 https://docs.google.com/document/d/1JP2wNQj9LVauds86YOE0RU78C0Z8hsEz/edit?usp=drive_link&ouid=115296563385887021168&rtpof=true&sd=true  
-![image](https://github.com/luislr220/CronoControl/assets/144934868/0cca45db-6c1a-40f5-9bf7-0a5f218d6cc8)
+![image](https://github.com/luislr220/CronoControl/assets/144934868/0cca45db-6c1a-40f5-9bf7-0a5f218d6cc8)  
+
+# Diagrama de actividades
+
+A continuación se deja el link de la carpeta con todos los diagramas de actividades  
+https://drive.google.com/drive/folders/1iXZO7VEFJUQKgKp-_bKxE6BFKiHRGE5w?usp=drive_link
 
 
 # Modelo de base de datos  
