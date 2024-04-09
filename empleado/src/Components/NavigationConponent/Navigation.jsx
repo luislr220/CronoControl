@@ -41,6 +41,7 @@ function DrawerList() {
   const drawerItems = [
     { text: "Turnos", href: "/Turnos", icon: null },
     { text: "Solicitar vacaciones", href: "/Permisos", icon: null },
+    { text: "Gantt", href: "/gantt", icon: null },
   ];
 
   return (

@@ -77,7 +77,7 @@ export default function Permisos() {
   };
 
   return (
-    <div className="">
+    <div className="col">
       <Navigation />
       <br />
       <br />
