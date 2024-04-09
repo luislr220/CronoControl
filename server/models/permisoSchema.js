@@ -1,34 +1,12 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-// Definir el esquema del permiso
 const permisoSchema = new mongoose.Schema({
-  nombre: {
-    type: String,
-    required: true
-  },
-  areaTrabajo: {
-    type: String,
-    required: true
-  },
-  fechaInicio: {
-    type: Date,
-    required: true
-  },
-  fechaFinal: {
-    type: Date,
-    required: true
-  },
-  justificacion: {
-    type: String,
-    required: true
-  },
-  estado: {
-    type: String,
-    default: 'Pendiente'
-  }
+  nombreCompleto: { type: String, required: true },
+  correo: { type: String, required: true },
+  fechaInicioVacaciones: { type: Date, required: true },
+  fechaFinVacaciones: { type: Date, required: true },
+  justificacion: { type: String, required: true },
+  estado: { type: String, required: true, default: "Pendiente" } // Nuevo campo estado
 });
 
-// Crear un modelo a partir del esquema
-const Permiso = mongoose.model('Permiso', permisoSchema);
-
-module.exports = Permiso;
+module.exports = mongoose.model("Permiso", permisoSchema);

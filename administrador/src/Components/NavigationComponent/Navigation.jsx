@@ -40,7 +40,7 @@ export default function Navigation() {
 function DrawerList() {
   const drawerItems = [
     { text: "Validar solicitud", icon: <BsCheckCircle />, subItems: [
-      { text: "Turno", href: "/ValidarSolis" },
+      { text: "Turno", href: "/validarHorario" },
       { text: "Vacaciones", href: "/validarVaca" }
     ] },
     { text: "Agregar Turno", href: "/turnoCrud", icon: <BsClockHistory /> },

@@ -1,0 +1,46 @@
+/* Estilo para el contenedor principal */
+.ValidarVacaciones {
+    background-color: #afcdea;
+    font-family: XD;
+    padding: 20px; /* Agregado para dar espacio alrededor del contenido */
+}
+
+/* Estilo para la cabecera de la tabla */
+.AGEMTable thead th {
+    background-color: #1C2B67;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    letter-spacing: 1px;
+    font-size: 16px;
+    font-weight: normal;
+}
+
+/* Estilo para el cuerpo de la tabla */
+.AGEMTable tbody td {
+    text-align: center;
+}
+
+/* Estilo para los botones */
+.validar-buttons {
+    margin-top: 20px; /* Separación del contenido superior */
+    display: flex;
+    justify-content: flex-end;
+}
+
+.validar-buttons .btn {
+    margin-left: 10px; /* Separación entre los botones */
+}
+
+/* Estilo para centrar el título */
+.AGEMTitulo {
+    text-align: center;
+    font-size: 26px;
+    margin-bottom: 20px; /* Espacio inferior */
+}
+
+/* Estilo para el contenedor cuerpo1 */
+.cuerpo1 {
+    margin: 0 20px; /* Agregar un margen horizontal de 20px */
+    padding: 20px; /* Agregar un padding alrededor del contenido */
+}

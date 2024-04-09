@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../routes/AuthContext";
-import { Form } from "react-bootstrap";
+import { Form, Button } from "react-bootstrap";
 import axios from "axios";
-import BtnSolicitarHorario from "./BtnSolicitarHorario";
+import Navigation from "../NavigationConponent/Navigation";
 
-export default function SolicitarHorarioForm() {
+export default function SolicitarHorario() {
   const { isAuthenticated, isLoading, user } = useAuth();
   const [userData, setUserData] = useState(null);
   const [turnos, setTurnos] = useState([]);
@@ -42,6 +42,39 @@ export default function SolicitarHorarioForm() {
     fetchTurnos();
   }, []);
 
+  const enviarSolicitud = async () => {
+    try {
+      // Obtener el nombre del turno seleccionado
+      const selectedTurnoObject = turnos.find(turno => turno._id === selectedTurno);
+      const selectedTurnoName = selectedTurnoObject ? selectedTurnoObject.Nombre : '';
+
+      // Realizar la solicitud POST a la ruta de permisoHorario
+      const response = await axios.post(
+        "http://localhost:3002/permisoHorario",
+        {
+          nombreCompleto: userData.Nombre + " " + userData.AppE + " " + userData.ApmE,
+          correo: userData.Correo,
+          sede: userData.Region,
+          area: userData.AreaTrabajo,
+          turno: selectedTurnoName, // Enviar el nombre del turno en lugar del ID
+          justificacion: justificacion,
+        }
+      );
+  
+      // Restablecer los estados del formulario
+      setSelectedTurno("");
+      setJustificacion("");
+
+      // Manejar la respuesta, por ejemplo, mostrar un mensaje de éxito
+      console.log("Respuesta del servidor:", response.data);
+      alert("Solicitud de horario enviada correctamente");
+    } catch (error) {
+      // Manejar cualquier error que pueda ocurrir durante la solicitud
+      console.error("Error al enviar la solicitud:", error);
+      alert("Ocurrió un error al enviar la solicitud");
+    }
+  };
+  
   if (isLoading || !userData) {
     return <div>Cargando...</div>;
   }
@@ -51,7 +84,8 @@ export default function SolicitarHorarioForm() {
     : "";
 
   return (
-    <div className="SolicitarHorarioForm">
+    <div className="SolicitarHorario">
+        <Navigation />
       <div className="container mt-4 p-2">
         <Form>
           <Form.Group className="mb-3">
@@ -94,12 +128,14 @@ export default function SolicitarHorarioForm() {
               onChange={(e) => setJustificacion(e.target.value)}
             />
           </Form.Group>
-
-          <BtnSolicitarHorario
-            selectedTurno={selectedTurno}
-            justificacion={justificacion}
-            userData={userData}
-          />
+          <Button
+            variant="primary"
+            type="button"
+            onClick={enviarSolicitud}
+            disabled={!selectedTurno || !justificacion}
+          >
+            Enviar Solicitud
+          </Button>
         </Form>
       </div>
     </div>

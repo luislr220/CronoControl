@@ -3,10 +3,10 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./routes/AuthContext";
 import HomeComponent from './Components/Homecomponent/HomeComponent';
-import Permisos from "./Components/SolicitudPermisosComponent/Permisos";
-import AgregarHorario from "./Components/agregarHorario/agregarHorario";
 import Login from "./Components/LoginFormComponent/LoginForm";
 import ProtectedRoute from "./routes/ProtectedRoute";
+import Permiso from "./Components/SolicitudPermisosComponent/Permiso"
+import SolicitarHorario from './Components/agregarHorario/SolicitarHorario';
 
 function App() {
   return (
@@ -20,12 +20,12 @@ function App() {
               element={<ProtectedRoute element={HomeComponent} />}
             />
             <Route
-              path="/Permisos"
-              element={<ProtectedRoute element={Permisos} />}
+              path="/permiso"
+              element={<ProtectedRoute element={Permiso} />}
             />
             <Route
               path="/agregarHorario"
-              element={<ProtectedRoute element={AgregarHorario} />}
+              element={<ProtectedRoute element={SolicitarHorario} />}
             />
           </Routes>
         </Router>

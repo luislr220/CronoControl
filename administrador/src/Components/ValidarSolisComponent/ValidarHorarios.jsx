@@ -1,20 +1,19 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button, Table, Pagination } from 'react-bootstrap';
 import Navigation from '../NavigationComponent/Navigation';
-import "./ValidarVacaciones.css"; // Importar el archivo de estilos
+import "./ValidarHorario.css";
 
 export default function ValidarVacaciones() {
   const [permisos, setPermisos] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5); // Número de elementos por página
-  const [filtroEstado, setFiltroEstado] = useState('todos'); // Estado inicial: mostrar todos los permisos
+  const [itemsPerPage] = useState(5);
+  const [filtroEstado, setFiltroEstado] = useState('todos');
 
   useEffect(() => {
     const fetchPermisos = async () => {
       try {
-        const response = await fetch("http://localhost:3002/permiso");
+        const response = await fetch("http://localhost:3002/permisoHorario");
         if (!response.ok) {
           throw new Error("No se pudo obtener la lista de permisos");
         }
@@ -38,7 +37,7 @@ export default function ValidarVacaciones() {
 
   const handleAprobarSolicitudes = async () => {
     try {
-      await fetch("http://localhost:3002/permiso/aprobar", {
+      await fetch("http://localhost:3002/permisoHorario/aprobar", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -62,7 +61,7 @@ export default function ValidarVacaciones() {
 
   const handleDenegarSolicitudes = async () => {
     try {
-      await fetch("http://localhost:3002/permiso/denegar", {
+      await fetch("http://localhost:3002/permisoHorario/denegar", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -109,8 +108,7 @@ export default function ValidarVacaciones() {
     <div className='cuerpo'>
       <Navigation />
       <div className='cuerpo1'>
-        <h2 className="AGEMTitulo">Validación Vacaciones</h2>
-        {/* Menú desplegable para seleccionar el estado del filtro */}
+        <h2 className="AGEMTitulo">Validación Horarios</h2>
         <div className="filtro-container">
           <select className="custom-filter-group" value={filtroEstado} onChange={handleFiltroEstadoChange}>
             <option value="todos">Todos</option>
@@ -124,8 +122,9 @@ export default function ValidarVacaciones() {
             <tr>
               <th></th>
               <th>Nombre</th>
-              <th>Fecha de Inicio</th>
-              <th>Fecha de Finalización</th>
+              <th>Sede</th>
+              <th>Área</th>
+              <th>Turno</th>
               <th>Justificación</th>
               <th>Estado de Solicitud</th>
             </tr>
@@ -141,8 +140,9 @@ export default function ValidarVacaciones() {
                   />
                 </td>
                 <td>{permiso.nombreCompleto}</td>
-                <td>{permiso.fechaInicioVacaciones}</td>
-                <td>{permiso.fechaFinVacaciones}</td>
+                <td>{permiso.sede}</td>
+                <td>{permiso.area}</td>
+                <td>{permiso.turno}</td>
                 <td>{permiso.justificacion}</td>
                 <td>{permiso.estado}</td>
               </tr>

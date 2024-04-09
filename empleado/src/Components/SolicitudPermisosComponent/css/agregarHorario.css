@@ -1,0 +1,10 @@
+.SolicitarHorarioForm{
+  width: 50%;
+  text-align: left;
+  background-color: aliceblue;
+  border-radius: 2%;
+}
+
+.SolicitudHorarioContenedorComponentPrincipal{
+  padding: 2%;
+}
