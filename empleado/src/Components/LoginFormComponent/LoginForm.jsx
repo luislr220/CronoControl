@@ -43,7 +43,7 @@ export default function LoginForm() {
     try {
       // Enviar solicitud al servidor para enviar el token al correo electrónico ingresado
       const response = await axios.post(
-        "http://localhost:3002/administrador/login/token",
+        `${process.env.REACT_APP_BACKEND_URL}/administrador/login/token`,
         { Correo: email }
       );
       setMessage(response.data.message);
@@ -63,7 +63,7 @@ export default function LoginForm() {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:3002/administrador/login",
+        `${process.env.REACT_APP_BACKEND_URL}/administrador/login`,
         { correo: email, token: token }
       );
       setMessage(response.data.message);

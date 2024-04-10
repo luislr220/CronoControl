@@ -35,7 +35,7 @@ export default function Permiso() {
     e.preventDefault(); // Evitar que el formulario haga un envío por defecto
     try {
       const response = await axios.post(
-        "http://localhost:3002/permiso",
+        `${process.env.REACT_APP_BACKEND_URL}/permiso`,
         {
           nombreCompleto: userData.Nombre + " " + userData.AppE + " " + userData.ApmE,
           correo: userData.Correo,

@@ -42,7 +42,7 @@ export default function TurnoCrud() {
 
   const fetchTurnos = async () => {
     try {
-      const response = await fetch("http://localhost:3002/turnos");
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/turnos`);
       if (!response.ok) {
         throw new Error("No se pudo obtener la lista de turnos");
       }
@@ -56,7 +56,7 @@ export default function TurnoCrud() {
   useEffect(() => {
     const fetchAreas = async () => {
       try {
-        const response = await fetch("http://localhost:3002/areas");
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/areas`);
         if (!response.ok) {
           throw new Error("No se pudo obtener la lista de areas");
         }
@@ -76,7 +76,7 @@ export default function TurnoCrud() {
   useEffect(() => {
     const fetchContratos = async () => {
       try {
-        const response = await fetch("http://localhost:3002/contratos");
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/contratos`);
         if (!response.ok) {
           throw new Error("No se pudo obtener la lista de contratos");
         }

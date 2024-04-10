@@ -13,7 +13,7 @@ export default function ValidarVacaciones() {
   useEffect(() => {
     const fetchPermisos = async () => {
       try {
-        const response = await fetch("http://localhost:3002/permisoHorario");
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/permisoHorario`);
         if (!response.ok) {
           throw new Error("No se pudo obtener la lista de permisos");
         }
@@ -37,7 +37,7 @@ export default function ValidarVacaciones() {
 
   const handleAprobarSolicitudes = async () => {
     try {
-      await fetch("http://localhost:3002/permisoHorario/aprobar", {
+      await fetch(`${process.env.REACT_APP_BACKEND_URL}/permisoHorario/aprobar`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -61,7 +61,7 @@ export default function ValidarVacaciones() {
 
   const handleDenegarSolicitudes = async () => {
     try {
-      await fetch("http://localhost:3002/permisoHorario/denegar", {
+      await fetch(`${process.env.REACT_APP_BACKEND_URL}/permisoHorario/denegar`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
