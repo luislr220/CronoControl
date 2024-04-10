@@ -17,7 +17,7 @@ export default function LogoutButton() {
   const handleLogout = async () => {
     try {
       // Enviar solicitud al servidor para cerrar sesión
-      const response = await axios.post("http://localhost:3002/administrador/logout");
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/administrador/logout`);
       if (response.data.message === "Sesión cerrada exitosamente") {
         // Limpiar el token almacenado en el cliente
         localStorage.removeItem("sessionToken"); // O cualquier otra forma de almacenamiento utilizada

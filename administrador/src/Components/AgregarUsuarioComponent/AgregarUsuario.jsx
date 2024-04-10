@@ -158,7 +158,7 @@ export default function AgregarUsuario() {
   useEffect(() => {
     const fetchAdministrador = async () => {
       try {
-        const response = await fetch("http://localhost:3002/administrador");
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/administrador`);
         if (!response.ok) {
           throw new Error("No se pudo obtener la lista de los administradores");
         }
@@ -180,7 +180,7 @@ export default function AgregarUsuario() {
     //Estado para obtener las sedes
     const fetchSedes = async () => {
       try {
-        const response = await fetch("http://localhost:3002/sedes");
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/sedes`);
         if (!response.ok) {
           throw new Error("No se pudo obtener la lista de sedes");
         }
@@ -196,7 +196,7 @@ export default function AgregarUsuario() {
     //Obtener las areas
     const fetchAreas = async () => {
       try {
-        const response = await fetch("http://localhost:3002/areas");
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/areas`);
         if (!response.ok) {
           throw new Error("No se pudo obtener la lista de areas");
         }
@@ -322,7 +322,7 @@ export default function AgregarUsuario() {
 
     //Manjear la solicitud post para nuevo administrador
     try {
-      const response = await fetch("http://localhost:3002/administrador", {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/administrador`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -363,7 +363,7 @@ export default function AgregarUsuario() {
   const eliminarAdministrador = async (id) => {
     try {
       const response = await fetch(
-        `http://localhost:3002/administrador/${id}`,
+        `${process.env.REACT_APP_BACKEND_URL}/administrador/${id}`,
         {
           method: "DELETE",
         }
@@ -381,6 +381,7 @@ export default function AgregarUsuario() {
       mostrarAlerta("El usuario se ha Eliminado correctamente.", "eliminar");
     } catch (error) {
       console.error(error);
+      console.log(process.env.REACT_APP_BACKEND_URL);
     }
   };
 
@@ -426,7 +427,7 @@ export default function AgregarUsuario() {
       }
 
       const response = await fetch(
-        `http://localhost:3002/administrador/${administradorSeleccionado._id}`,
+        `${process.env.REACT_APP_BACKEND_URL}/administrador/${administradorSeleccionado._id}`,
         {
           method: "PATCH",
           headers: {
