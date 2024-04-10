@@ -187,7 +187,7 @@ router.post("/login/admin", async (req, res) => {
 
     // Verificar si el administrador existe y tiene el rol adecuado
     if (!administrador || (administrador.Rol !== "Administrador" && administrador.Rol !== "root")) {
-      return res.status(401).json({ error: "Correo electrónico incorrecto" });
+      return res.status(401).json({ error: "Correo electrónico incorrecto " });
     }
 
     // Verificar si la contraseña coincide
