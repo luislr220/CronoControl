@@ -127,7 +127,7 @@ export default function TurnoCrud() {
         throw new Error("Todos los campos son obligatorios");
       }
 
-      const response = await fetch("http://localhost:3002/turnos", {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/turnos`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -146,7 +146,7 @@ export default function TurnoCrud() {
 
   const deleteTurno = async (id) => {
     try {
-      const response = await fetch(`http://localhost:3002/turnos/${id}`, {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/turnos/${id}`, {
         method: "DELETE",
       });
       if (!response.ok) {
@@ -189,7 +189,7 @@ export default function TurnoCrud() {
         throw new Error("Todos los campos son obligatorios");
       }
 
-      const response = await fetch(`http://localhost:3002/turnos/${turnoSeleccionado._id}`, {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/turnos/${turnoSeleccionado._id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
