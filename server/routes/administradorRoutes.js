@@ -7,11 +7,11 @@
 
 const express = require("express");
 const router = express.Router();
-const mongoose = require('mongoose');
 const administradorController = require("../controllers/administradorController");
 const cors = require("cors");
 const Administrador = require("../models/administradorSchema");
 const { enviarCorreo } = require("../controllers/authController");
+const adminAuthController = require('../controllers/adminAuthController')
 const jwt = require("jsonwebtoken");
 const fs = require("fs");
 const XLSX = require('xlsx');
@@ -149,7 +149,7 @@ router.post("/login/token", async (req, res) => {
 });
 
 //Ruta para que el usuario (Empleado) inicie sesión con el token
-router.post("/login", async (req, res) => {
+router.post("/login/empleado", async (req, res) => {
   const { correo, token } = req.body;
   try {
     const empleado = await Administrador.findOne({
@@ -179,23 +179,19 @@ router.post("/logout", async (req, res) => {
 });
 
 // Ruta para que el administrador inicie sesión con la contraseña
-router.post("/administrador/login", async (req, res) => {
+router.post("/login/admin", async (req, res) => {
   const { correo, contraseña } = req.body;
   try {
     // Buscar al administrador por su correo electrónico
     const administrador = await Administrador.findOne({ Correo: correo });
 
-    // Verificar si el administrador existe
-    if (!administrador) {
+    // Verificar si el administrador existe y tiene el rol adecuado
+    if (!administrador || (administrador.Rol !== "Administrador" && administrador.Rol !== "root")) {
       return res.status(401).json({ error: "Correo electrónico incorrecto" });
     }
 
-    // Verificar la contraseña
-    const contraseñaValida = await bcrypt.compare(
-      contraseña,
-      administrador.Contraseña
-    );
-    if (!contraseñaValida) {
+    // Verificar si la contraseña coincide
+    if (administrador.Contraseña !== contraseña) {
       return res.status(401).json({ error: "Contraseña incorrecta" });
     }
 
@@ -207,16 +203,7 @@ router.post("/administrador/login", async (req, res) => {
   }
 });
 
-// Ruta para cerrar sesión del administrador
-router.post("/administrador/logout", async (req, res) => {
-  try {
-    // Devuelve una respuesta indicando que la sesión se ha cerrado exitosamente
-    res.json({ message: "Sesión cerrada exitosamente" });
-  } catch (error) {
-    console.error("Error al cerrar sesión:", error);
-    res.status(500).json({ error: "Error en el servidor" });
-  }
-});
+
 
 // Ruta para obtener todos los administradores, con opción de seleccionar campos específicos
 router.get("/", async (req, res) => {

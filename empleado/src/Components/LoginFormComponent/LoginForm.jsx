@@ -63,7 +63,7 @@ export default function LoginForm() {
     e.preventDefault();
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_BACKEND_URL}/administrador/login`,
+        `${process.env.REACT_APP_BACKEND_URL}/administrador/login/empleado`,
         { correo: email, token: token }
       );
       setMessage(response.data.message);

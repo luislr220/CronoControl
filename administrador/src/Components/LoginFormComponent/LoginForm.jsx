@@ -38,7 +38,7 @@ export default function LoginForm() {
     try {
       // Enviar solicitud al servidor para iniciar sesión con correo y contraseña
       const response = await axios.post(
-        `${process.env.REACT_APP_BACKEND_URL}/administrador/login`,
+        `${process.env.REACT_APP_BACKEND_URL}/administrador/login/admin`,
         { correo: email, contraseña: password }
       );
       setMessage(response.data.message);
