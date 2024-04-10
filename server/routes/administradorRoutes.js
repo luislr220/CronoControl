@@ -90,38 +90,30 @@ router.post('/cargar', upload.single('file'), async (req, res) => {
 });
 
 // Ruta para crear un nuevo Administrador
-router.post(
-  "/",
-  administradorController.validarCorreoUnico,
-  async (req, res) => {
-    try {
-      // Buscar el último administrador para obtener su ID
-      const ultimoAdministrador = await Administrador.findOne().sort({
-        id: -1,
-      });
+router.post("/", administradorController.validarCorreoUnico, async (req, res) => {
+  try {
+    // Obtener el ID del último administrador
+    const ultimoAdministrador = await Administrador.findOne().sort({ id: -1 });
+    let nuevoID = 1; // Valor predeterminado si no hay administradores existentes
 
-      let nuevoID = 1; // Valor predeterminado si no hay administradores existentes
-
-      if (ultimoAdministrador) {
-        // Si hay administradores existentes, incrementar el ID
-        nuevoID = ultimoAdministrador.id + 1;
-      }
-
-      // Crear un nuevo administrador con el ID generado
-      const nuevoAdministrador = new Administrador({
-        ...req.body,
-        id: nuevoID,
-      });
-
-      // Guardar el administrador en la base de datos
-      await nuevoAdministrador.save();
-
-      res.status(201).send(nuevoAdministrador);
-    } catch (error) {
-      res.status(400).json({ error: "Error al crear un nuevo administrador" });
+    // Si hay administradores existentes y su ID es un número, incrementar el ID
+    if (ultimoAdministrador && !isNaN(ultimoAdministrador.id)) {
+      nuevoID = ultimoAdministrador.id + 1;
     }
-  }
-);
+
+    // Crear un nuevo administrador con los datos recibidos en la solicitud
+    const nuevoAdministrador = new Administrador({ ...req.body, id: nuevoID });
+
+    // Guardar el nuevo administrador en la base de datos
+    const administradorGuardado = await nuevoAdministrador.save();
+
+    // Enviar una respuesta con el administrador guardado
+    res.status(201).json(administradorGuardado);
+  } catch (error) {
+    console.error(error);
+    res.status(400).json({ error: "Error al crear un nuevo administrador" });
+  }
+});
 
 
 // Ruta para enviar el token de inicio de sesión por correo electrónico
