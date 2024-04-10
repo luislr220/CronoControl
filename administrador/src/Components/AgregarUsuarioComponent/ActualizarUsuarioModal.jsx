@@ -1,9 +1,18 @@
+/**
+ * Nombre del Autor: Luis Armando Largo Ramirez
+ *
+ * Funcionalidad:
+ * Componente para actualizar el usuario, el formulario esta dentro de un modal
+ * y se manda manda llamar dando clic al boton "Actualizar"
+ */
+
 import React from 'react';
 import { Modal, Button, Form, FormControl, Alert, InputGroup } from "react-bootstrap";
 
 
 
 export default function ActualizarUsuarioModal({
+  //props para la funcionalidad de ActualizarUsuarioModal
   mostrar,
   onClose,
   valoresAdministradorSeleccionado,
@@ -12,10 +21,10 @@ export default function ActualizarUsuarioModal({
   sedes,
   areasPorRegionActualizar,
   errorCorreoDuplicadoActualizar,
-  mostrarContraseña, // Definir mostrarContraseña como prop
-  setMostrarContraseña, // Definir setMostrarContraseña como prop
-  areas, // Definir areas como prop
-  setAreasPorRegionActualizar, // Definir setAreasPorRegionActualizar como prop
+  mostrarContraseña,
+  setMostrarContraseña,
+  areas,
+  setAreasPorRegionActualizar,
   setValoresAdministradorSeleccionado,
   rolUsuarioActual
 }) {
@@ -102,6 +111,7 @@ export default function ActualizarUsuarioModal({
               value={valoresAdministradorSeleccionado.Correo}
               onChange={handleInputChange}
             />
+            {/**MANEJAR ALERTA SI EL CORREO YA LO TIENE OTRO USUARIO */}
             {errorCorreoDuplicadoActualizar && (
               <Alert variant="danger">{errorCorreoDuplicadoActualizar}</Alert>
             )}

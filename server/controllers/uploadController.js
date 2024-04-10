@@ -1,3 +1,10 @@
+/**
+ * Nombre del Autor: Luis Armando Largo Ramirez
+ *
+ * Funcionalidad:
+ * Controlador para manejar la carga de usuarios mediante archivos
+ */
+
 const fs = require('fs');
 const XLSX = require('xlsx');
 const csv = require('csv-parser');
@@ -18,7 +25,7 @@ exports.uploadUsers = async (req, res) => {
     else if (req.file.mimetype === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
       // Leer el archivo XLSX
       const workbook = XLSX.readFile(req.file.path);
-      const sheetName = workbook.SheetNames[0]; // asumimos que solo hay una hoja en el archivo
+      const sheetName = workbook.SheetNames[0];
       usuarios = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
     }
     // Manejar archivo CSV

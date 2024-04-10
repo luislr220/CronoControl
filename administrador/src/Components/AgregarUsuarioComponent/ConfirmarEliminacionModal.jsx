@@ -1,7 +1,17 @@
+/**
+ * Nombre del Autor: Luis Armando Largo Ramirez
+ *
+ * Funcionalidad:
+ * Componente para eliminar un usuario, cuando se da clic en el boton "Eliminar"
+ * le muestra un modal donde le pregunta si esta seguro de elimnar, puede cancelar o
+ * confirmar que quiere eliminar al usuario
+ */
+
 import React from "react";
 import { Modal, Button } from "react-bootstrap";
 
 export default function ConfirmarEliminacionModal({
+  //props para el funcionamiento de ConfirmarEliminacionModal
   mostrarModalConfirmacion,
   ocultarConfirmacion,
   eliminarAdministrador,

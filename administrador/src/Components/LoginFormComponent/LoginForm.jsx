@@ -1,3 +1,12 @@
+/**
+ * Nombre del Autor: Luis Armando Largo Ramirez
+ *
+ * Funcionalidad:
+ * Componente para login, este componte es el login y usa la ruta del servidor /administrador/login
+ * para validar si el correo del usuario esta dado de alta y si esta dado de alta valida si le pertenece
+ * a un usuario con rol administrador y asi pueda ingresar con la contraseña que tiene 
+ */
+
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
@@ -11,15 +20,18 @@ export default function LoginForm() {
   const [message, setMessage] = useState(""); // Estado para mostrar el mensaje
   const navigate = useNavigate(); // Hook de navegación
   const location = useLocation(); // Hook de ubicación
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false); //hook para el spinner
   const { login, isAuthenticated } = useAuth(); // Hook para acceder a la función de login y al estado de autenticación del contexto de autenticación
 
+  //useEffect para verificar si el usuario se autentica correctamente y mandarlo
+  //a la página principal
   useEffect(() => {
     if (isAuthenticated) {
-      navigate(location.state?.from || "/agregarUsuario"); // Navega a la ruta anterior o a '/Turnos' por defecto
+      navigate(location.state?.from || "/agregarUsuario");
     }
   }, [isAuthenticated, navigate, location.state?.from]);
 
+  //Estado para mandar la información de los datos del form a el servidor
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     setLoading(true); // Mostrar el spinner de carga
@@ -32,7 +44,7 @@ export default function LoginForm() {
       setMessage(response.data.message);
       if (response.data.message === "Inicio de sesión exitoso") {
         login(response.data.user);
-        console.log(response.data.user); // Agrega esta línea para verificar los datos del usuario
+        //console.log(response.data.user);
         navigate("/agregarUsuario");
       }
     } catch (error) {

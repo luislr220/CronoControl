@@ -1,3 +1,10 @@
+/**
+ * Nombre del Autor: Luis Armando Largo Ramirez
+ *
+ * Funcionalidad:
+ * Componente para mostrar a los usuarios
+ */
+
 import React, { useState } from "react";
 import {
   Grid,
@@ -8,11 +15,11 @@ import {
   CardActions,
 } from "@mui/material";
 import { Button, Pagination } from "react-bootstrap";
-//import { format } from "date-fns";
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
 
 export default function UsuarioGrid({
+  //props para el funcionamiento de UsuarioGrid
   administrador,
   filtro,
   filtroRegion,
@@ -23,8 +30,9 @@ export default function UsuarioGrid({
   mostrarConfirmacion,
   rolUsuarioActual,
 }) {
+  //Función para formatear la fecha
   function formatDate(date) {
-    console.log("Fecha de nacimiento obtenida de la base de datos:", date);
+    //console.log("Fecha de nacimiento obtenida de la base de datos:", date);
     const formattedDate = new Date(date);
     return formattedDate.toISOString().split("T")[0]; // Formato ISO sin la parte de la hora
   }
@@ -120,16 +128,18 @@ export default function UsuarioGrid({
     )
     .filter(
       (administrador) =>
-        (filtroRol === "" || administrador.Rol.toLowerCase().includes(filtroRol.toLowerCase())) &&
+        (filtroRol === "" ||
+          administrador.Rol.toLowerCase().includes(filtroRol.toLowerCase())) &&
         !(
-          (rolUsuarioActual === "Administrador" && administrador.Rol === "root") ||
-          (rolUsuarioActual === "Administrador" && administrador.Rol === "Administrador") ||
-          (rolUsuarioActual === "root" && administrador.Rol === "root")
+          (rolUsuarioActual === "Administrador" &&
+            administrador.Rol === "root") ||
+            (rolUsuarioActual === "Administrador" &&
+              administrador.Rol === "Administrador") ||
+            (rolUsuarioActual === "root" && administrador.Rol === "root")
         )
     );
-    
 
-
+  //Estado para manejar las páginas de la navegación
   const [currentPage, setCurrentPage] = useState(1);
   const usersPerPage = 12; // Número de usuarios por página
 

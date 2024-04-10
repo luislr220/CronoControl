@@ -1,9 +1,16 @@
+/**
+ * Nombre del Autor: Luis Armando Largo Ramirez
+ *
+ * Funcionalidad:
+ * Controller para manejar la validación del correo
+ */
+
 const Administrador = require('../models/administradorSchema');
 
 // Middleware para validar correo electrónico único
 exports.validarCorreoUnico = async (req, res, next) => {
   const { Correo } = req.body;
-  const administradorId = req.params.id; // Suponiendo que el ID del empleado se pasa en los parámetros de la ruta
+  const administradorId = req.params.id;
   try {
     const administradorExistente = await Administrador.findOne({ Correo });
     if (administradorExistente && administradorExistente._id.toString() !== administradorId) {
@@ -40,7 +47,7 @@ exports.actualizarAdministrador = async (req, res) => {
     // Guardar los cambios en la base de datos
     const administradorActualizado = await administrador.save();
     // Responder con el empleado actualizado
-    res.json(administradorActualizado); // Aquí estaba el error
+    res.json(administradorActualizado);
   } catch (error) {
     // Si ocurre un error, responder con un código de estado 400 y un mensaje de error
     console.error(error);

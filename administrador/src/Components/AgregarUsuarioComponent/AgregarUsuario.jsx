@@ -106,18 +106,18 @@ export default function AgregarUsuario() {
   const [alertVariant, setAlertVariant] = useState("info"); // Estado para controlar el color de la alerta
   const [mostrarContraseña, setMostrarContraseña] = useState(true); // Estado para controlar la visibilidad del input de contraseña
 
-  // Función para mostrar la alerta de confirmación
+  // Estado para mostrar la alerta de confirmación
   const mostrarAlerta = (mensaje, tipoAccion) => {
     let variant;
     switch (tipoAccion) {
       case "eliminar":
-        variant = "danger"; // Rojo
+        variant = "danger"; // Eliminado
         break;
       case "agregar":
-        variant = "success"; // Verde
+        variant = "success"; // agregado
         break;
       case "actualizar":
-        variant = "primary"; // Azul
+        variant = "primary"; // Actualizado
         break;
       default:
         variant = "info"; // Color por defecto si no se especifica un tipo de acción válido
@@ -139,12 +139,13 @@ export default function AgregarUsuario() {
     }, 30); // Actualizar la barra de progreso cada 30 milisegundos
   };
 
-  // Función para ocultar la alerta de confirmación
+  // Estado para ocultar la alerta de confirmación
   const ocultarAlerta = () => {
     setShowAlert(false);
     setProgress(0); // Reiniciar el progreso de la barra al ocultar la alerta
   };
 
+  //useEffect para usuarios autenticados
   useEffect(() => {
     // Verifica si hay un usuario autenticado y establece el rol del usuario actual
     if (user) {
@@ -152,8 +153,9 @@ export default function AgregarUsuario() {
     }
   }, [user]);
 
+
+// useEffect para obtener la lista de administradores, las áreas y sedes desde el backend
   useEffect(() => {
-    // Función para obtener la lista de administradores, las áreas y sedes desde el backend
     const fetchAdministrador = async () => {
       try {
         const response = await fetch("http://localhost:3002/administrador");
@@ -163,7 +165,7 @@ export default function AgregarUsuario() {
         const data = await response.json();
         setAdministrador(data);
 
-        // Obtener roles únicos de los datos de administrador
+        // Estado para obtener roles únicos de los datos de administrador
         const rolesUnicos = [
           ...new Set(data.map((administrador) => administrador.Rol)),
         ];
@@ -175,6 +177,7 @@ export default function AgregarUsuario() {
       }
     };
 
+    //Estado para obtener las sedes
     const fetchSedes = async () => {
       try {
         const response = await fetch("http://localhost:3002/sedes");
@@ -190,6 +193,7 @@ export default function AgregarUsuario() {
       }
     };
 
+    //Obtener las areas
     const fetchAreas = async () => {
       try {
         const response = await fetch("http://localhost:3002/areas");
@@ -221,18 +225,18 @@ export default function AgregarUsuario() {
     }
   }, [valoresAdministradorSeleccionado.Rol]);
 
-  // Función para mostrar el modal de confirmación
+  //Estado para mostrar el modal de confirmación
   const mostrarConfirmacion = (usuario) => {
     setUsuarioAEliminar(usuario);
     setMostrarModalConfirmacion(true);
   };
 
-  // Función para ocultar el modal de confirmación
+  //Estado para ocultar el modal de confirmación
   const ocultarConfirmacion = () => {
     setMostrarModalConfirmacion(false);
   };
 
-  // Evento para manejar el cambio en el selector de roles
+  //Estado para manejar el cambio en el selector de roles
   const handleRolChange = (e) => {
     const rolSeleccionado = e.target.value;
     // Actualizar el estado para mostrar o ocultar el input de contraseña
@@ -243,7 +247,7 @@ export default function AgregarUsuario() {
     }
   };
 
-  //CONSTANTE PARA ACTUALIZAR Y LIMPIAR EL FORMULARIO
+  //ESTADO PARA ACTUALIZAR Y LIMPIAR EL FORMULARIO
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     if (name === "filtroApellidoModal") {
@@ -267,12 +271,12 @@ export default function AgregarUsuario() {
     }
   };
 
-  //CONSTANTE PARA LOS FILTRO
+  //ESTADO PARA LOS FILTROS
   const handleFiltroChange = (event) => {
     setFiltro(event.target.value);
   };
 
-  // Función para filtrar las áreas de trabajo disponibles basadas en la región seleccionada
+  //Estado para filtrar las áreas de trabajo disponibles basadas en la región seleccionada
   const filtrarAreasPorRegion = (regionSeleccionada) => {
     const areasFiltradas = areas.filter(
       (area) => area.sede === regionSeleccionada
@@ -280,24 +284,23 @@ export default function AgregarUsuario() {
     setAreasPorRegion(areasFiltradas);
   };
 
-  // Función para manejar el cambio en la región seleccionada
+  //Estado para manejar el cambio en la región seleccionada
   const handleRegionChange = (event) => {
     const regionSeleccionada = event.target.value;
     setNuevoAdministrador((prevState) => ({
       ...prevState,
       Region: regionSeleccionada,
     }));
-    filtrarAreasPorRegion(regionSeleccionada); // Añadimos esta línea para actualizar las áreas disponibles
+    filtrarAreasPorRegion(regionSeleccionada);
     setFiltroArea(""); // Limpiamos el filtro de área al cambiar la región seleccionada
   };
 
-  //CONSTANTE DE AGREGAR USUARIO
-
+  //ESTADO DE AGREGAR USUARIO
   const agregarAdministrador = async () => {
-    // Validar que los campos requeridos estén llenos
+    // Validar que los campos requeridos estén llenos (solo se agregan estos porque eran los unicos que no se 
+  //agregaban a la base de datos aunque fueran requeridos)
     if (!nuevoAdministrador.Region || !nuevoAdministrador.AreaTrabajo) {
       console.error("Error: Todos los campos son requeridos.");
-      // Aquí puedes manejar el error, por ejemplo, mostrando un mensaje al usuario.
       return;
     }
 
@@ -306,6 +309,7 @@ export default function AgregarUsuario() {
       (administrador) => administrador.Correo === nuevoAdministrador.Correo
     );
 
+    //Verificar si el correo es existente y manejar el error
     if (correoExistente) {
       setErrorCorreoDuplicado("Este correo electrónico ya está en uso");
       return;
@@ -316,17 +320,18 @@ export default function AgregarUsuario() {
       ...nuevoAdministrador,
     };
 
+    //Manjear la solicitud post para nuevo administrador
     try {
       const response = await fetch("http://localhost:3002/administrador", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(nuevoAdministradorConRol), // Enviar el nuevo objeto con el rol
+        body: JSON.stringify(nuevoAdministradorConRol)
       });
 
       if (!response.ok) {
-        const errorData = await response.text(); // Intenta capturar cualquier respuesta no JSON
+        const errorData = await response.text();
         console.error("Error en la respuesta:", errorData);
         throw new Error(`Error al agregar empleado: ${errorData}`);
       }
@@ -342,7 +347,7 @@ export default function AgregarUsuario() {
         Contraseña: "",
         Region: "",
         AreaTrabajo: "",
-        Rol: "", // Limpiar el campo Rol después de agregar un empleado
+        Rol: "",
       });
       setMostrarFormulario(false);
 
@@ -354,7 +359,7 @@ export default function AgregarUsuario() {
     }
   };
 
-  //CONSTANTE PARA ELIMINAR A UN USUARIO
+  //ESTADO PARA ELIMINAR A UN USUARIO
   const eliminarAdministrador = async (id) => {
     try {
       const response = await fetch(
@@ -370,7 +375,7 @@ export default function AgregarUsuario() {
         (administrador) => administrador._id !== id
       );
       setAdministrador(nuevosAdministradores);
-      ocultarConfirmacion(); // Aquí cierras el modal de confirmación después de eliminar al usuario
+      ocultarConfirmacion();
 
       // Mostrar la alerta de confirmación
       mostrarAlerta("El usuario se ha Eliminado correctamente.", "eliminar");
@@ -379,14 +384,14 @@ export default function AgregarUsuario() {
     }
   };
 
-  //CONSTANTES PARA EL MODAL DE ACTUALIZAR
+  //ESTADO PARA EL MODAL DE ACTUALIZAR Y NOSTRAR LOS DATOS EN EL FORMULARIO EL USUARIO SELECCIONADO
   const abrirModalActualizar = (administrador) => {
     setAdministradorSeleccionado(administrador);
     const fechaFormateada = new Date(administrador.FechaNac)
       .toISOString()
       .split("T")[0]; //Convierte la fecha ISO8601 en un formato leible
     setValoresAdministradorSeleccionado({
-      ...administrador, // Usa directamente el objeto 'empleado' en lugar de asignar campo por campo
+      ...administrador, // Usa directamente el objeto en lugar de asignar campo por campo
       FechaNac: fechaFormateada,
     });
     setMostrarModalActualizar(true);
@@ -403,7 +408,7 @@ export default function AgregarUsuario() {
     setMostrarModalActualizar(false);
   };
 
-  //CONSTANTE PARA ACTUALIZAR AL USUARIO
+  //ESTADO PARA ACTUALIZAR AL USUARIO
   const actualizarAdministrador = async () => {
     try {
       // Verificar si el correo electrónico ya está en uso
@@ -455,6 +460,7 @@ export default function AgregarUsuario() {
     <div>
       <Navigation />
       <div className="AGEMcontenedorUsuario">
+        {/**Componente que contiene el boton y logica para la carga de archivos */}
         <BTNSobrecarga />
         <br />
         {/*SECCIÓN DE BOTON AGREGAR Y FILTROS*/}
@@ -510,7 +516,7 @@ export default function AgregarUsuario() {
             ) : (
               areasFiltradas.map(
                 (
-                  area // Utilizamos areasFiltradas aquí
+                  area
                 ) => (
                   <option key={area._id} value={area.nombre}>
                     {area.nombre}
@@ -533,7 +539,7 @@ export default function AgregarUsuario() {
                 Array.isArray(roles) &&
                 roles.map(
                   (rol, index) =>
-                    // No mostrar la opción 'root' si el usuario actual es un administrador
+                    // No mostrar la opción 'root' si el usuario actual es un root
                     (rolUsuarioActual !== "root" || rol !== "root") && (
                       <option key={index} value={rol}>
                         {rol}
@@ -557,7 +563,7 @@ export default function AgregarUsuario() {
           sedes={sedes}
           areasPorRegion={areasPorRegion}
           errorCorreoDuplicado={errorCorreoDuplicado}
-          handleRolChange={handleRolChange} // Pasar handleRolChange como prop
+          handleRolChange={handleRolChange}
           mostrarContraseña={mostrarContraseña}
           rolUsuarioActual={rolUsuarioActual}
         />
@@ -574,9 +580,8 @@ export default function AgregarUsuario() {
           sedes={sedes}
           areasPorRegionActualizar={areasPorRegionActualizar}
           errorCorreoDuplicadoActualizar={errorCorreoDuplicadoActualizar}
-          mostrarContraseña={mostrarContraseña} // Asegúrate de pasar mostrarContraseña como prop
-          setMostrarContraseña={setMostrarContraseña} // Asegúrate de pasar setMostrarContraseña como prop
-          areas={areas} // Asegúrate de pasar areas como prop
+          setMostrarContraseña={setMostrarContraseña}
+          areas={areas}
           setAreasPorRegionActualizar={setAreasPorRegionActualizar}
           setValoresAdministradorSeleccionado={
             setValoresAdministradorSeleccionado
@@ -595,7 +600,7 @@ export default function AgregarUsuario() {
         {/*ALERTA QUE SE MUESTRA CUANDO SE AGREGA, ACTUALIZA Y ELIMINA A UN USUARIO */}
         <Alert
           show={showAlert}
-          variant={alertVariant} // Usar alertVariant para establecer el color de la alerta
+          variant={alertVariant}
           onClose={ocultarAlerta}
           dismissible
         >

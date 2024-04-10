@@ -1,3 +1,12 @@
+/**
+ * Nombre del Autor: Luis Armando Largo Ramirez
+ *
+ * Funcionalidad:
+ * Componente que funciona como login, verifica el correo, si el correo es de un usuario
+ * que esta en la base de datos y tiene el rol empleado, le manda un correo a su correo
+ * con el token de inicio de sesión
+ */
+
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
@@ -12,12 +21,13 @@ export default function LoginForm() {
   const [tokenSent, setTokenSent] = useState(false); // Estado para controlar si se envió el token
   const navigate = useNavigate(); // Hook de navegación
   const location = useLocation(); // Hook de ubicación
-  const [loading, setLoading] = useState()
+  const [loading, setLoading] = useState() //Estado para el Spinner
   const { login, isAuthenticated } = useAuth(); // Hook para acceder a la función de login y al estado de autenticación del contexto de autenticación
 
+  //useEffect para verifivar si el usuario esta autenticado
   useEffect(() => {
     if (isAuthenticated) {
-      navigate(location.state?.from || "/Inicio"); // Navega a la ruta anterior o a '/Turnos' por defecto
+      navigate(location.state?.from || "/Inicio");
     }
   }, [isAuthenticated, navigate, location.state?.from]);
 
@@ -26,6 +36,7 @@ export default function LoginForm() {
     console.log("Usuario autenticado:", isAuthenticated);
   }, [isAuthenticated]); */
 
+  //Estado para mandar la información del form a el servidor
   const handleEmailSubmit = async (e) => {
     e.preventDefault();
     setLoading(true); // Mostrar el spinner de carga
@@ -47,6 +58,7 @@ export default function LoginForm() {
     }
   };
 
+  //Estado para validar el token e ingresar a la aplicación
   const handleTokenSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -57,7 +69,7 @@ export default function LoginForm() {
       setMessage(response.data.message);
       if (response.data.message === "Inicio de sesión exitoso") {
         login(response.data.user);
-        console.log(response.data.user); // Agrega esta línea para verificar los datos del usuario
+        //console.log(response.data.user);
         navigate("/Inicio");
       }
     } catch (error) {

@@ -1,7 +1,17 @@
+/**
+ * Nombre del Autor: Luis Armando Largo Ramirez
+ *
+ * Funcionalidad:
+ * Componente para agregar un usuario, el formulario esta dentro de un modal
+ * y se manda manda llamar dando clic al boton "Agregar"
+ */
+
+
 import React from "react";
 import { Modal, Button, Form, FormControl, Alert } from "react-bootstrap";
 
 export default function AgregarUsuarioModal({
+  //props para la funcionalidad de AgregarUsuarioModal
   mostrar,
   onClose,
   nuevoAdministrador,
@@ -12,8 +22,8 @@ export default function AgregarUsuarioModal({
   sedes,
   areasPorRegion,
   errorCorreoDuplicado,
-  handleRolChange, // Recibir handleRolChange como prop
-  mostrarContraseña, // Recibir mostrarContraseña como prop
+  handleRolChange,
+  mostrarContraseña,
   rolUsuarioActual
 }) {
   return (
@@ -91,8 +101,8 @@ export default function AgregarUsuarioModal({
               name="Rol"
               value={nuevoAdministrador.Rol}
               onChange={(e) => {
-                handleInputChange(e); // Manejar el cambio de forma común
-                handleRolChange(e); // Llamar al manejador de cambio de rol
+                handleInputChange(e);
+                handleRolChange(e);
               }}
             >
               <option value="">Selecciona un rol</option>

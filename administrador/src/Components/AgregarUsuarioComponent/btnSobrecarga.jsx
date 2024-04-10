@@ -1,12 +1,26 @@
+/**
+ * Nombre del Autor: Luis Armando Largo Ramirez
+ *
+ * Funcionalidad:
+ * Componente principal de la sobrecarga de usuarios, este componente actua como
+ * boton, cuando da clic le sale un modal donde puede subir archivos
+ * .json,.xlsx, y .csv para agregar usuarios por medio de estos archivos
+ */
+
 import React, { useState } from "react";
 import { Button, Modal, Alert, Spinner } from "react-bootstrap";
 import axios from "axios";
 
 export default function BtnSobrecarga() {
+  //Estado para mostrar el modal de cargar archivos
   const [showModal, setShowModal] = useState(false);
+  //Estado para manejar alertas
   const [alert, setAlert] = useState(null);
-  const [loading, setLoading] = useState(false); // Nuevo estado para controlar la carga
+  //Estado para controlar la carga
+  const [loading, setLoading] = useState(false);
 
+
+  //Estado para manejar la carga de archivos
   const handleFileUpload = async (event) => {
     const file = event.target.files[0];
     const formData = new FormData();
@@ -43,7 +57,7 @@ export default function BtnSobrecarga() {
     } catch (error) {
       console.error("Error al cargar el archivo:", error);
       if (error.response && error.response.status === 400) {
-        // El servidor respondió con error 400, lo que indica un problema en el formato del archivo
+        // Si el servidor responde con error 400,indica un problema en el formato del archivo
         setAlert({
           variant: "danger",
           message: "La estructura del archivo no es la esperada. Asegúrate de que esté en el formato correcto (JSON, XLSX o CSV) y con los campos necesarios.",

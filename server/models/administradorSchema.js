@@ -1,3 +1,10 @@
+/**
+ * Nombre del Autor:  Integrantes del equipo
+ *
+ * Funcionalidad:
+ * Esquema para manejar el guardado de datos del usuario (tanto empleado como de administrador)
+ */
+
 const mongoose = require("mongoose");
 
 const administradorSchema = new mongoose.Schema({

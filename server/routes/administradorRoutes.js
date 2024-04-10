@@ -1,3 +1,10 @@
+/**
+ * Nombre del Autor: Integrantes del equipo
+ *
+ * Funcionalidad:
+ * Manejo de rutas para las operaciones POST,DELATE,PATCH Y UPDATE DE LOS USUARIOS
+ */
+
 const express = require("express");
 const router = express.Router();
 const mongoose = require('mongoose');
@@ -15,6 +22,8 @@ const upload = multer({ dest: "uploads/" });
 // Middleware para permitir CORS
 router.use(cors());
 
+//ruta para manejar la carga de archivos y agregarle un id unico a cada usuario ingresado
+//de esa forma
 router.post('/cargar', upload.single('file'), async (req, res) => {
   try {
     console.log('Recibiendo datos del archivo:', req.file);
@@ -30,7 +39,7 @@ router.post('/cargar', upload.single('file'), async (req, res) => {
     else if (req.file.mimetype === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
       // Leer el archivo XLSX
       const workbook = XLSX.readFile(req.file.path);
-      const sheetName = workbook.SheetNames[0]; // asumimos que solo hay una hoja en el archivo
+      const sheetName = workbook.SheetNames[0];
       usuarios = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
     }
     // Manejar archivo CSV
