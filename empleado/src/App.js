@@ -5,13 +5,9 @@ import { AuthProvider } from "./routes/AuthContext";
 import HomeComponent from './Components/Homecomponent/HomeComponent';
 import Login from "./Components/LoginFormComponent/LoginForm";
 import ProtectedRoute from "./routes/ProtectedRoute";
-<<<<<<< HEAD
-import Gantt from './Components/gantt/gantt';
-
-=======
 import Permiso from "./Components/SolicitudPermisosComponent/Permiso"
 import SolicitarHorario from './Components/agregarHorario/SolicitarHorario';
->>>>>>> main
+import Gantt from './Components/gantt/gantt'
 
 function App() {
   return (
