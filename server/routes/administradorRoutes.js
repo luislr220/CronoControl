@@ -11,7 +11,6 @@ const administradorController = require("../controllers/administradorController"
 const cors = require("cors");
 const Administrador = require("../models/administradorSchema");
 const { enviarCorreo } = require("../controllers/authController");
-const adminAuthController = require('../controllers/adminAuthController')
 const jwt = require("jsonwebtoken");
 const fs = require("fs");
 const XLSX = require('xlsx');
