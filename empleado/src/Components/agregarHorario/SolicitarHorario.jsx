@@ -1,3 +1,8 @@
+//Lucía Cristel Ramírez Romero
+
+// Este componente representa un formulario para solicitar un horario específico.
+
+//Importaciones
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../routes/AuthContext";
 import { Form, Button } from "react-bootstrap";
@@ -5,50 +10,55 @@ import axios from "axios";
 import Navigation from "../NavigationConponent/Navigation";
 
 export default function SolicitarHorario() {
+  // Extrae el estado de autenticación y usuario del contexto de autenticación
   const { isAuthenticated, isLoading, user } = useAuth();
+  // Define estados para almacenar datos del usuario, turnos disponibles y detalles de la solicitud
   const [userData, setUserData] = useState(null);
   const [turnos, setTurnos] = useState([]);
   const [selectedTurno, setSelectedTurno] = useState("");
   const [justificacion, setJustificacion] = useState("");
 
+  // Efecto para cargar los datos del usuario cuando se complete la autenticación
   useEffect(() => {
     if (isLoading) {
-      console.log("Autenticación en progreso...");
+      console.log("Autenticación en progreso...");   // Registra en la consola si la autenticación está en curso
     } else if (isAuthenticated) {
       if (user) {
-        console.log("Usuario autenticado:", user);
+        console.log("Usuario autenticado:", user);  // Registra en la consola los detalles del usuario autenticado
         if (!userData) {
-          setUserData(user);
+          setUserData(user);  // Establece los datos del usuario una vez que estén disponibles
         }
       } else {
         console.error(
           'Error: El usuario está autenticado, pero el objeto "user" es undefined.'
-        );
+        );  // Registra en la consola si hay un error con el objeto de usuario
       }
     } else {
-      console.log("El usuario no está autenticado.");
+      console.log("El usuario no está autenticado."); // Registra en la consola si el usuario no está autenticado
     }
   }, [isLoading, isAuthenticated, user, userData]);
 
+  // Efecto para obtener los turnos disponibles cuando se monta el componente
   useEffect(() => {
     const fetchTurnos = async () => {
       try {
-        const response = await axios.get("http://localhost:3002/turnos");
-        setTurnos(response.data);
+        const response = await axios.get("http://localhost:3002/turnos"); // Realiza una solicitud GET para obtener los turnos
+        setTurnos(response.data);  // Almacena los turnos obtenidos en el estado
       } catch (error) {
-        console.error("Error al obtener los turnos:", error);
+        console.error("Error al obtener los turnos:", error); // Registra en la consola si hay un error al obtener los turnos
       }
     };
     fetchTurnos();
   }, []);
 
+  // Función para enviar la solicitud de horario al servidor
   const enviarSolicitud = async () => {
     try {
       // Obtener el nombre del turno seleccionado
       const selectedTurnoObject = turnos.find(turno => turno._id === selectedTurno);
       const selectedTurnoName = selectedTurnoObject ? selectedTurnoObject.Nombre : '';
 
-      // Realizar la solicitud POST a la ruta de permisoHorario
+      // Realiza una solicitud POST a la ruta de permisoHorario con los detalles de la solicitud
       const response = await axios.post(
         "http://localhost:3002/permisoHorario",
         {
@@ -75,19 +85,22 @@ export default function SolicitarHorario() {
     }
   };
   
+  // Si la autenticación está en curso o los datos del usuario aún no están disponibles, muestra un mensaje de carga
   if (isLoading || !userData) {
     return <div>Cargando...</div>;
   }
 
+  // Concatena el nombre completo del usuario
   const nombreCompleto = userData
     ? `${userData.Nombre} ${userData.AppE} ${userData.ApmE}`
     : "";
 
   return (
+    // Renderiza el formulario de solicitud de horario
     <div className="SolicitarHorario">
-        <Navigation />
+        <Navigation />  {/* Renderiza el componente de navegación */}
       <div className="container mt-4 p-2">
-        <Form>
+        <Form>{/* Formulario de solicitud */}
           <Form.Group className="mb-3">
             <Form.Label>Nombre Completo:</Form.Label>
             <Form.Control type="text" value={nombreCompleto} readOnly />
@@ -106,12 +119,14 @@ export default function SolicitarHorario() {
           </Form.Group>
           <Form.Group className="mb-3">
             <Form.Label>Turno:</Form.Label>
+             {/* Selector de turno con opciones obtenidas dinámicamente */}
             <Form.Select
               aria-label="Turno"
               value={selectedTurno}
               onChange={(e) => setSelectedTurno(e.target.value)}
             >
               <option value="">Selecciona un turno</option>
+              {/* Mapea los turnos disponibles como opciones en el selector */}
               {turnos.map((turno) => (
                 <option key={turno._id} value={turno._id}>
                   {turno.Nombre}
@@ -128,6 +143,7 @@ export default function SolicitarHorario() {
               onChange={(e) => setJustificacion(e.target.value)}
             />
           </Form.Group>
+           {/* Botón para enviar la solicitud, deshabilitado si no se ha seleccionado un turno o no hay justificación */}
           <Button
             variant="primary"
             type="button"

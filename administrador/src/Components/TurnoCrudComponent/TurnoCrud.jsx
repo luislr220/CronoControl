@@ -1,17 +1,21 @@
+//Lucía Cristel Ramírez Romero
 
+// Importar los módulos y componentes necesarios de React y React Bootstrap
 import React, { useState, useEffect } from 'react';
 import { Button, Table, Modal, Form, Pagination } from 'react-bootstrap';
 import Navigation from '../NavigationComponent/Navigation';
 import { BsPencilSquare, BsTrash, BsEye } from 'react-icons/bs'; // Importar los iconos necesarios
 import "./TurnoCrud.css";
 
+// Función principal del componente
 export default function TurnoCrud() {
-  const [turnos, setTurnos] = useState([]);
-  const [areas, setAreas] = useState([]);
-  const [contratos, setContratos] = useState([]);
-  const [showAddTurnoModal, setShowAddTurnoModal] = useState(false);
-  const [showUpdateTurnoModal, setShowUpdateTurnoModal] = useState(false);
-  const [showViewTurnoModal, setShowViewTurnoModal] = useState(false);
+  // Definición de estados utilizando el hook useState
+  const [turnos, setTurnos] = useState([]); // Lista de turnos
+  const [areas, setAreas] = useState([]); // Lista de áreas
+  const [contratos, setContratos] = useState([]); // Lista de contratos
+  const [showAddTurnoModal, setShowAddTurnoModal] = useState(false);  // Estado para mostrar/ocultar modal de agregar turno
+  const [showUpdateTurnoModal, setShowUpdateTurnoModal] = useState(false);  // Estado para mostrar/ocultar modal de actualizar turno
+  const [showViewTurnoModal, setShowViewTurnoModal] = useState(false);  // Estado para almacenar los datos del nuevo turno
   const [nuevoTurno, setNuevoTurno] = useState({
     Nombre: "",
     HoraInicio: "",
@@ -21,8 +25,8 @@ export default function TurnoCrud() {
     Estado: "Activo",
     Contrato: ""
   });
-  const [selectedTurno, setSelectedTurno] = useState(null);
-  const [valoresTurnoSeleccionado, setValoresTurnoSeleccionado] = useState({
+  const [selectedTurno, setSelectedTurno] = useState(null); // Estado para almacenar el turno seleccionado para actualizar
+  const [valoresTurnoSeleccionado, setValoresTurnoSeleccionado] = useState({  // Estado para almacenar los valores del turno seleccionado para actualizar
     Nombre: "",
     HoraInicio: "",
     HoraFinal: "",
@@ -31,15 +35,16 @@ export default function TurnoCrud() {
     Estado: "Activo",
     Contrato: ""
   });
-  const [turnoSeleccionado, setTurnoSeleccionado] = useState(null);
-  const [turnoSeleccionadoVisualizar, setTurnoSeleccionadoVisualizar] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [turnoSeleccionado, setTurnoSeleccionado] = useState(null); // Estado para almacenar el turno seleccionado para actualizar
+  const [turnoSeleccionadoVisualizar, setTurnoSeleccionadoVisualizar] = useState(null); // Estado para almacenar el turno seleccionado para visualizar
+  const [currentPage, setCurrentPage] = useState(1);  // Estado para almacenar el número de página actual
   const [itemsPerPage] = useState(5); // Número de elementos por página
   const [filtroArea, setFiltroArea] = useState(""); // Estado para almacenar el área seleccionada para filtrar
   const [filtroEstado, setFiltroEstado] = useState(""); // Estado para almacenar el filtro de estado
   const [filtroCupo, setFiltroCupo] = useState(""); // Estado para almacenar el filtro de cupo
 
 
+  // Función para obtener la lista de turnos desde el servidor
   const fetchTurnos = async () => {
     try {
       const response = await fetch("http://localhost:3002/turnos");
@@ -53,6 +58,7 @@ export default function TurnoCrud() {
     }
   };
 
+  // Función para obtener la lista de áreas desde el servidor
   useEffect(() => {
     const fetchAreas = async () => {
       try {
@@ -80,16 +86,17 @@ export default function TurnoCrud() {
         if (!response.ok) {
           throw new Error("No se pudo obtener la lista de contratos");
         }
-        const data = await response.json();
+        const data = await response.json(); // Obtener solo los nombres
         setContratos(data); // Almacenar los objetos completos de contrato en el estado 'contratos'
       } catch (error) {
         console.error(error);
       }
     };
-    fetchContratos();
-    fetchTurnos();
+    fetchContratos(); // Llamar a la función para obtener las áreas
+    fetchTurnos();  // Llamar a la función para obtener los turnos
   }, []);
 
+  // Función para obtener la lista de contratos desde el servidor
   const handleCloseAddTurnoModal = () => {
     setShowAddTurnoModal(false);
     setNuevoTurno({
@@ -105,28 +112,35 @@ export default function TurnoCrud() {
     setFiltroArea("");
   };
 
+  // Función para cerrar el modal de actualizar turno
   const handleCloseUpdateTurnoModal = () => {
     setShowUpdateTurnoModal(false);
     setTurnoSeleccionado(null);
   };
 
+  // Función para cerrar el modal de visualizar turno
   const handleCloseViewTurnoModal = () => {
     setShowViewTurnoModal(false);
     setTurnoSeleccionadoVisualizar(null);
   };
 
+  // Función para mostrar el modal de agregar turno
   const handleShowAddTurnoModal = () => setShowAddTurnoModal(true);
 
+  // Función para mostrar el modal de actualizar turno
   const handleShowUpdateTurnoModal = () => setShowUpdateTurnoModal(true);
 
+  // Función para mostrar el modal de visualizar turno
   const handleShowViewTurnoModal = () => setShowViewTurnoModal(true);
 
+  // Función para agregar un nuevo turno
   const addTurno = async () => {
     try {
+      // Validar que todos los campos estén completos
       if (!nuevoTurno.Nombre || !nuevoTurno.HoraInicio || !nuevoTurno.HoraFinal || !nuevoTurno.Area || !nuevoTurno.Cupo || !nuevoTurno.Estado || !nuevoTurno.Contrato) {
         throw new Error("Todos los campos son obligatorios");
       }
-
+      // Enviar la solicitud POST al servidor para agregar el turno
       const response = await fetch("http://localhost:3002/turnos", {
         method: "POST",
         headers: {
@@ -137,13 +151,16 @@ export default function TurnoCrud() {
       if (!response.ok) {
         throw new Error("No se pudo agregar el turno");
       }
+      // Actualizar la lista de turnos llamando a la función fetchTurnos
       await fetchTurnos();
+      // Cerrar el modal de agregar turno
       handleCloseAddTurnoModal();
     } catch (error) {
       console.error(error);
     }
   };
 
+  // Función para eliminar un turno
   const deleteTurno = async (id) => {
     try {
       const response = await fetch(`http://localhost:3002/turnos/${id}`, {
@@ -161,6 +178,7 @@ export default function TurnoCrud() {
     }
   };
 
+  // Función para abrir el modal de actualizar turno
   const abrirModalActualizar = (turno) => {
     setTurnoSeleccionado(turno);
     setValoresTurnoSeleccionado({
@@ -175,14 +193,17 @@ export default function TurnoCrud() {
     handleShowUpdateTurnoModal();
   };
 
+  // Función para cerrar el modal de actualizar turno
   const cerrarModalActualizar = () => {
     handleCloseUpdateTurnoModal();
   };
 
+  // Función para cerrar el modal de visualizar turno
   const cerrarModalVizualizar = () => {
     handleCloseViewTurnoModal();
   };
 
+  // Función para actualizar un turno existente
   const updateTurno = async () => {
     try {
       if (!valoresTurnoSeleccionado.Nombre || !valoresTurnoSeleccionado.HoraInicio || !valoresTurnoSeleccionado.HoraFinal || !valoresTurnoSeleccionado.Area || !valoresTurnoSeleccionado.Cupo || !valoresTurnoSeleccionado.Estado) {
@@ -212,6 +233,7 @@ export default function TurnoCrud() {
     }
   };
 
+  // Función para visualizar un turno
   const visualizarTurno = (turno) => {
     setTurnoSeleccionadoVisualizar(turno);
     handleShowViewTurnoModal();
@@ -221,6 +243,7 @@ export default function TurnoCrud() {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
+  // Función para filtrar los turnos según los criterios seleccionados
   const filteredTurnos = turnos.filter(turno => {
     if (filtroArea && filtroEstado && filtroCupo) {
       return turno.Area === filtroArea && turno.Estado === filtroEstado && parseInt(turno.Cupo) >= parseInt(filtroCupo);
@@ -256,15 +279,18 @@ export default function TurnoCrud() {
 
   return (
     <div className='cuerpo'>
-      <Navigation />
+      <Navigation /> {/* Componente de navegación */}
       <h2 className="AGEMTitulo">Lista de Turnos</h2>
       <div className="AGEMcontenedor1">
+        {/* Botones de agregar turno y filtros */}
         <div className="AGEMBotonContainer custom-button-container">
+          {/* Botones de agregar turno y filtros */}
           <Button variant="primary" className="custom-button" onClick={handleShowAddTurnoModal}>
             <span style={{ marginRight: '5px' }}>+</span> Nuevo Turno
           </Button>
-          {/* Filtrar por área */}
+          {/* Filtros por área, estado y cupo */}
           <Form.Group controlId="formAreaFiltro" className="custom-filter-group">
+            {/* Selección de área */}
             <Form.Control as="select" value={filtroArea} onChange={(e) => setFiltroArea(e.target.value)}>
               <option value="">Todas las áreas</option>
               {areas.map((area, index) => (
@@ -274,6 +300,7 @@ export default function TurnoCrud() {
           </Form.Group>
           {/* Filtrar por estado */}
           <Form.Group controlId="formEstadoFiltro" className="custom-filter-group">
+            {/* Selección de estado */}
             <Form.Control as="select" value={filtroEstado} onChange={(e) => setFiltroEstado(e.target.value)}>
               <option value="">Todos los estados</option>
               <option value="Activo">Activo</option>
@@ -285,7 +312,9 @@ export default function TurnoCrud() {
             <Form.Control type="number" placeholder="Filtrar por cupo" value={filtroCupo} onChange={(e) => setFiltroCupo(e.target.value)} />
           </Form.Group>
         </div>
+        {/* Tabla de turnos */}
         <Table className="AGEMTable">
+          {/* Encabezados de la tabla */}
           <thead style={{ backgroundColor: '#1C2B67', color: 'white' }}>
             <tr>
               <th>No.</th>
@@ -299,7 +328,7 @@ export default function TurnoCrud() {
               <th>Acción</th>
             </tr>
           </thead>
-
+          {/* Filas de la tabla */}
           <tbody>
             {currentItems.map((turno, index) => (
               <tr key={index}>
@@ -336,7 +365,8 @@ export default function TurnoCrud() {
         </Pagination>
       </div>
 
-      {/** AGREGAR TURNO */}
+      {/* Modales para agregar, actualizar y visualizar turnos */}
+      {/* Modal para agregar turno */}
       <Modal show={showAddTurnoModal} onHide={handleCloseAddTurnoModal} className='todo'>
         <Modal.Header closeButton style={{ backgroundColor: '#1C2B67' }}>
           <Modal.Title style={{ fontFamily: 'Coolvetica', color: '#FFFFFF', fontSize: '22px', textAlign: 'center' }}>{selectedTurno ? "Actualizar Turno" : "Agregar Turno"}</Modal.Title>
@@ -412,7 +442,7 @@ export default function TurnoCrud() {
         </Modal.Footer>
       </Modal>
 
-      {/* MODAL ACTUALIZAR TURNO */}
+      {/* Modal para actualizar turno */}
       <Modal show={showUpdateTurnoModal} onHide={handleCloseUpdateTurnoModal} className='todo'>
         <Modal.Header closeButton style={{ backgroundColor: '#1C2B67' }}>
           <Modal.Title style={{ fontFamily: 'Coolvetica', color: '#FFFFFF', fontSize: '22px', textAlign: 'center' }}>Actualizar Turno</Modal.Title>
@@ -440,24 +470,24 @@ export default function TurnoCrud() {
             <Form.Group controlId="formAreaActualizar" className="row FormGroupMargin">
               <Form.Label style={{ color: '#1C2B67', fontWeight: 'lighter' }} className="col-sm-4">Área de Trabajo</Form.Label>
               <div className="col-sm-8">
-              <Form.Control
-                as="select"
-                name="Area"
-                value={valoresTurnoSeleccionado.Area}
-                onChange={(e) =>
-                  setValoresTurnoSeleccionado({
-                    ...valoresTurnoSeleccionado,
-                    Area: e.target.value,
-                  })
-                }
-              >
-                <option value="">Selecciona una área</option>
-                {areas.map((area) => (
-                  <option key={area} value={area.nombre}>
-                    {area}
-                  </option>
-                ))}
-              </Form.Control>
+                <Form.Control
+                  as="select"
+                  name="Area"
+                  value={valoresTurnoSeleccionado.Area}
+                  onChange={(e) =>
+                    setValoresTurnoSeleccionado({
+                      ...valoresTurnoSeleccionado,
+                      Area: e.target.value,
+                    })
+                  }
+                >
+                  <option value="">Selecciona una área</option>
+                  {areas.map((area) => (
+                    <option key={area} value={area.nombre}>
+                      {area}
+                    </option>
+                  ))}
+                </Form.Control>
               </div>
             </Form.Group>
             <Form.Group controlId='formCupoActualizar' className="row FormGroupMargin">
@@ -477,25 +507,25 @@ export default function TurnoCrud() {
               </div>
             </Form.Group>
             <Form.Group controlId="formActualizarContrato" className="row FormGroupMargin">
-  <Form.Label style={{ color: '#1C2B67', fontWeight: 'lighter' }} className="col-sm-4">Contrato</Form.Label>
-  <div className="col-sm-8">
-    <Form.Control
-      as="select"
-      value={valoresTurnoSeleccionado.Contrato}  // Cambia esto
-      onChange={(e) =>
-        setValoresTurnoSeleccionado({
-          ...valoresTurnoSeleccionado,
-          Contrato: e.target.value,
-        })
-      }
-    >
-      <option>Selecciona un contrato...</option>
-      {contratos.map((contrato) => (
-        <option key={contrato._id} value={contrato.nombreContrato}>{contrato.nombreContrato}</option>
-      ))}
-    </Form.Control>
-  </div>
-</Form.Group>
+              <Form.Label style={{ color: '#1C2B67', fontWeight: 'lighter' }} className="col-sm-4">Contrato</Form.Label>
+              <div className="col-sm-8">
+                <Form.Control
+                  as="select"
+                  value={valoresTurnoSeleccionado.Contrato}  // Cambia esto
+                  onChange={(e) =>
+                    setValoresTurnoSeleccionado({
+                      ...valoresTurnoSeleccionado,
+                      Contrato: e.target.value,
+                    })
+                  }
+                >
+                  <option>Selecciona un contrato...</option>
+                  {contratos.map((contrato) => (
+                    <option key={contrato._id} value={contrato.nombreContrato}>{contrato.nombreContrato}</option>
+                  ))}
+                </Form.Control>
+              </div>
+            </Form.Group>
 
           </Form>
         </Modal.Body>
@@ -510,7 +540,7 @@ export default function TurnoCrud() {
         </Modal.Footer>
       </Modal>
 
-      {/* MODAL VISUALIZAR TURNO */}
+      {/* Modal para visualizar turno */}
       <Modal show={showViewTurnoModal} onHide={handleCloseViewTurnoModal} className='todo'>
         <Modal.Header closeButton style={{ backgroundColor: '#1C2B67', textAlign: 'center', border: 'none' }}>
           <Modal.Title style={{ fontFamily: 'Coolvetica', color: '#FFFFFF', fontSize: '22px' }}>Visualizar Turno</Modal.Title>
