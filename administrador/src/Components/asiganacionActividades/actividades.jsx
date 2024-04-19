@@ -18,7 +18,7 @@ const AsignarActividades = () => {
   useEffect(() => {
     const fetchActividades = async () => {
       try {
-        const response = await fetch("http://localhost:3002/actividades");
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/actividades`);
         if (!response.ok) {
           throw new Error("No se pudo obtener la lista de actividades");
         }
@@ -31,7 +31,7 @@ const AsignarActividades = () => {
 
     const fetchAdministradores = async () => {
         try {
-          const response = await fetch('http://localhost:3002/administrador');
+          const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/administrador`);
           if (response.ok) {
             const data = await response.json();
             setAdministradores(data);
@@ -57,7 +57,7 @@ const AsignarActividades = () => {
 
   const asignarActividad = async () => {
     try {
-      const response = await fetch("http://localhost:3002/actividades", {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/actividades`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

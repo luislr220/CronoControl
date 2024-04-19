@@ -22,7 +22,7 @@ export default function GestionarSedes() {
   useEffect(() => {
     const fetchSedes = async () => {
       try {
-        const response = await fetch("http://localhost:3002/sedes");
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/sedes`);
         if (!response.ok) {
           throw new Error("No se pudo obtener la lista de sedes");
         }
@@ -55,7 +55,7 @@ export default function GestionarSedes() {
 
   const agregarSede = async () => {
     try {
-      const response = await fetch("http://localhost:3002/sedes", {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/sedes`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -78,7 +78,7 @@ export default function GestionarSedes() {
 
   const editarSede = async () => {
     try {
-      const response = await fetch(`http://localhost:3002/sedes/${sedeEditando._id}`, {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/sedes/${sedeEditando._id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -104,7 +104,7 @@ export default function GestionarSedes() {
 
   const eliminarSede = async (id) => {
     try {
-      const response = await fetch(`http://localhost:3002/sedes/${id}`, {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/sedes/${id}`, {
         method: "DELETE",
       });
       if (!response.ok) {
@@ -139,7 +139,7 @@ export default function GestionarSedes() {
 
   const agregarArea = async () => {
     try {
-      const response = await fetch("http://localhost:3002/areas", {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/areas`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -57,7 +57,7 @@ const AreasTrabajo = () => {
   useEffect(() => {
     const fetchAreas = async () => {
       try {
-        const response = await fetch("http://localhost:3002/areas");
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/areas`);
         if (!response.ok) {
           throw new Error("No se pudo obtener la lista de áreas");
         }
@@ -70,7 +70,7 @@ const AreasTrabajo = () => {
 
     const fetchSedes = async () => {
       try {
-        const response = await fetch("http://localhost:3002/sedes");
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/sedes`);
         if (!response.ok) {
           throw new Error("No se pudo obtener la lista de sedes");
         }
@@ -103,7 +103,7 @@ const AreasTrabajo = () => {
 
   const agregarArea = async () => {
     try {
-      const response = await fetch("http://localhost:3002/areas", {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/areas`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -125,7 +125,7 @@ const AreasTrabajo = () => {
   };
   const agregarSede = async () => { // Función para agregar una nueva sede
     try {
-      const response = await fetch("http://localhost:3002/sedes", {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/sedes`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -148,7 +148,7 @@ const AreasTrabajo = () => {
 
   const eliminarSede = async () => {
     try {
-      const response = await fetch(`http://localhost:3002/sedes/${sedeAEliminar}`, {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/sedes/${sedeAEliminar}`, {
         method: "DELETE",
       });
       if (!response.ok) {
@@ -160,7 +160,7 @@ const AreasTrabajo = () => {
         areas
           .filter((area) => area.sedeId === sedeAEliminar)
           .map(async (area) => {
-            const areaResponse = await fetch(`http://localhost:3002/areas/${area._id}`, {
+            const areaResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/areas/${area._id}`, {
               method: "DELETE",
             });
             if (!areaResponse.ok) {
@@ -184,7 +184,7 @@ const AreasTrabajo = () => {
   
   const eliminarArea = async (areaId) => {
     try {
-      const response = await fetch(`http://localhost:3002/areas/${areaId}`, {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/areas/${areaId}`, {
         method: "DELETE",
       });
       if (!response.ok) {
@@ -211,7 +211,7 @@ const AreasTrabajo = () => {
   const actualizarArea = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3002/areas/${areaSeleccionadaId}`,
+        `${process.env.REACT_APP_BACKEND_URL}/areas/${areaSeleccionadaId}`,
         {
           method: "PATCH",
           headers: {

@@ -1,3 +1,11 @@
+/**
+ * Nombre del Autor: Luis Armando Largo Ramirez
+ *
+ * Funcionalidad:
+ * Controlador para manejar el envio de correo electronico del token
+ */
+
+
 const nodemailer = require("nodemailer");
 
 // Credenciales y configuración de transporte

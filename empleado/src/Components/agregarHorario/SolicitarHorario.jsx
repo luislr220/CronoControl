@@ -42,8 +42,13 @@ export default function SolicitarHorario() {
   useEffect(() => {
     const fetchTurnos = async () => {
       try {
+<<<<<<< HEAD
         const response = await axios.get("http://localhost:3002/turnos"); // Realiza una solicitud GET para obtener los turnos
         setTurnos(response.data);  // Almacena los turnos obtenidos en el estado
+=======
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/turnos`);
+        setTurnos(response.data);
+>>>>>>> 493201dd4af993c60a91baf419c1ad2a3e0dc0eb
       } catch (error) {
         console.error("Error al obtener los turnos:", error); // Registra en la consola si hay un error al obtener los turnos
       }
@@ -60,7 +65,7 @@ export default function SolicitarHorario() {
 
       // Realiza una solicitud POST a la ruta de permisoHorario con los detalles de la solicitud
       const response = await axios.post(
-        "http://localhost:3002/permisoHorario",
+        `${process.env.REACT_APP_BACKEND_URL}/permisoHorario`,
         {
           nombreCompleto: userData.Nombre + " " + userData.AppE + " " + userData.ApmE,
           correo: userData.Correo,

@@ -3,6 +3,12 @@
   src: url("../src/fonts/coolvetica\ rg.otf");
 }
 
-.App{
+.App {
   font-family: XD;
+  background-image: linear-gradient(to bottom right, #21769a, #91c3db);
+  min-height: 100vh; /* Asegura que el elemento tenga al menos la altura de la ventana del navegador */
+  min-width: 100vw; /* Asegura que el elemento tenga al menos la anchura de la ventana del navegador */
+  display: flex; /* Establece el elemento como un contenedor flex */
+  flex-direction: column; /* Los elementos hijos se apilan verticalmente */
 }
+

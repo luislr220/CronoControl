@@ -47,7 +47,7 @@ export default function TurnoCrud() {
   // Función para obtener la lista de turnos desde el servidor
   const fetchTurnos = async () => {
     try {
-      const response = await fetch("http://localhost:3002/turnos");
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/turnos`);
       if (!response.ok) {
         throw new Error("No se pudo obtener la lista de turnos");
       }
@@ -62,7 +62,7 @@ export default function TurnoCrud() {
   useEffect(() => {
     const fetchAreas = async () => {
       try {
-        const response = await fetch("http://localhost:3002/areas");
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/areas`);
         if (!response.ok) {
           throw new Error("No se pudo obtener la lista de areas");
         }
@@ -82,7 +82,7 @@ export default function TurnoCrud() {
   useEffect(() => {
     const fetchContratos = async () => {
       try {
-        const response = await fetch("http://localhost:3002/contratos");
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/contratos`);
         if (!response.ok) {
           throw new Error("No se pudo obtener la lista de contratos");
         }
@@ -140,8 +140,13 @@ export default function TurnoCrud() {
       if (!nuevoTurno.Nombre || !nuevoTurno.HoraInicio || !nuevoTurno.HoraFinal || !nuevoTurno.Area || !nuevoTurno.Cupo || !nuevoTurno.Estado || !nuevoTurno.Contrato) {
         throw new Error("Todos los campos son obligatorios");
       }
+<<<<<<< HEAD
       // Enviar la solicitud POST al servidor para agregar el turno
       const response = await fetch("http://localhost:3002/turnos", {
+=======
+
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/turnos`, {
+>>>>>>> 493201dd4af993c60a91baf419c1ad2a3e0dc0eb
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -163,7 +168,7 @@ export default function TurnoCrud() {
   // Función para eliminar un turno
   const deleteTurno = async (id) => {
     try {
-      const response = await fetch(`http://localhost:3002/turnos/${id}`, {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/turnos/${id}`, {
         method: "DELETE",
       });
       if (!response.ok) {
@@ -210,7 +215,7 @@ export default function TurnoCrud() {
         throw new Error("Todos los campos son obligatorios");
       }
 
-      const response = await fetch(`http://localhost:3002/turnos/${turnoSeleccionado._id}`, {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/turnos/${turnoSeleccionado._id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

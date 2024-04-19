@@ -21,9 +21,13 @@ export default function ValidarVacaciones() {
     // Función asíncrona para obtener los permisos de horarios desde el servidor
     const fetchPermisos = async () => {
       try {
+<<<<<<< HEAD
         // Solicitud GET para obtener los permisos
         const response = await fetch("http://localhost:3002/permisoHorario");
         // Manejo de errores si la solicitud no es exitosa
+=======
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/permisoHorario`);
+>>>>>>> 493201dd4af993c60a91baf419c1ad2a3e0dc0eb
         if (!response.ok) {
           throw new Error("No se pudo obtener la lista de permisos");
         }
@@ -54,8 +58,12 @@ export default function ValidarVacaciones() {
   // Función para aprobar las solicitudes seleccionadas
   const handleAprobarSolicitudes = async () => {
     try {
+<<<<<<< HEAD
       // Solicitud POST para aprobar los permisos seleccionados
       await fetch("http://localhost:3002/permisoHorario/aprobar", {
+=======
+      await fetch(`${process.env.REACT_APP_BACKEND_URL}/permisoHorario/aprobar`, {
+>>>>>>> 493201dd4af993c60a91baf419c1ad2a3e0dc0eb
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -83,8 +91,12 @@ export default function ValidarVacaciones() {
   // Función para denegar las solicitudes seleccionadas
   const handleDenegarSolicitudes = async () => {
     try {
+<<<<<<< HEAD
       // Solicitud POST para denegar los permisos seleccionados
       await fetch("http://localhost:3002/permisoHorario/denegar", {
+=======
+      await fetch(`${process.env.REACT_APP_BACKEND_URL}/permisoHorario/denegar`, {
+>>>>>>> 493201dd4af993c60a91baf419c1ad2a3e0dc0eb
         method: "POST",
         headers: {
           "Content-Type": "application/json"

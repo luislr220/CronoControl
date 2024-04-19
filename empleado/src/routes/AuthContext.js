@@ -1,3 +1,10 @@
+/**
+ * Nombre del Autor: Luis Armando Largo Ramirez
+ *
+ * Funcionalidad:
+ * Contexto para manejar la autenticación del usuario y sus datos
+ */
+
 import React, { createContext, useContext, useState, useEffect } from "react";
 
 // Creamos el contexto de autenticación
@@ -49,7 +56,7 @@ export const AuthProvider = ({ children }) => {
     setUser(userData);
     localStorage.setItem("isAuthenticated", true);
     localStorage.setItem("user", JSON.stringify(userData));
-    console.log(localStorage.getItem("user")); // Agrega esta línea para verificar los datos del usuario en localStorage
+    //console.log(localStorage.getItem("user"));
   };
 
   // Función para realizar el cierre de sesión

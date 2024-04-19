@@ -48,7 +48,6 @@ function DrawerList() {
     { text: "Agregar usuario", href: "/agregarUsuario", icon: <BsPeople /> },
     { text: "Gestion de área y sede", href: "/agregarArea", icon: <BsCalendar /> },
     { text: "Agregar Contrato", href: "/agregarContrato", icon: <BsFilePost /> },
-    { text: "Agregar Horario", href: "/agregarHorario", icon: <BsFilePost /> },
     { text: "Asignar Actividades", href: "/asignarActividades", icon: <BsBuilding /> },
   ];
 

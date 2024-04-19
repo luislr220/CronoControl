@@ -23,9 +23,13 @@ export default function ValidarVacaciones() {
   useEffect(() => {
     const fetchPermisos = async () => {
       try {
+<<<<<<< HEAD
         // Solicitud GET para obtener la lista de permisos desde el servidor
         const response = await fetch("http://localhost:3002/permiso");
         // Verificación de si la respuesta es exitosa
+=======
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/permiso`);
+>>>>>>> 493201dd4af993c60a91baf419c1ad2a3e0dc0eb
         if (!response.ok) {
           throw new Error("No se pudo obtener la lista de permisos");
         }
@@ -57,8 +61,12 @@ export default function ValidarVacaciones() {
   // Función para aprobar las solicitudes seleccionadas
   const handleAprobarSolicitudes = async () => {
     try {
+<<<<<<< HEAD
       // Solicitud POST para aprobar los permisos seleccionados
       await fetch("http://localhost:3002/permiso/aprobar", {
+=======
+      await fetch(`${process.env.REACT_APP_BACKEND_URL}/permiso/aprobar`, {
+>>>>>>> 493201dd4af993c60a91baf419c1ad2a3e0dc0eb
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -87,8 +95,12 @@ export default function ValidarVacaciones() {
   // Función para denegar las solicitudes seleccionadas
   const handleDenegarSolicitudes = async () => {
     try {
+<<<<<<< HEAD
       // Solicitud POST para denegar los permisos seleccionados
       await fetch("http://localhost:3002/permiso/denegar", {
+=======
+      await fetch(`${process.env.REACT_APP_BACKEND_URL}/permiso/denegar`, {
+>>>>>>> 493201dd4af993c60a91baf419c1ad2a3e0dc0eb
         method: "POST",
         headers: {
           "Content-Type": "application/json"

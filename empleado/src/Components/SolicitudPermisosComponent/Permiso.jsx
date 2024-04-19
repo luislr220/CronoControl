@@ -45,7 +45,7 @@ export default function Permiso() {
     try {
       // Realiza una solicitud POST al servidor con los datos de la solicitud
       const response = await axios.post(
-        "http://localhost:3002/permiso",
+        `${process.env.REACT_APP_BACKEND_URL}/permiso`,
         {
           nombreCompleto: userData.Nombre + " " + userData.AppE + " " + userData.ApmE,
           correo: userData.Correo,

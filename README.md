@@ -68,7 +68,9 @@ https://trello.com/b/DbH4mzUo/daylis
 
 Despues el de la planificación de las historias y vistas  
 https://trello.com/b/vvPKtM6q/control-de-horarios  
-![image](https://github.com/luislr220/CronoControl/assets/144934868/f84c9539-ee7f-4391-bc71-9d9e0eaf767b)
+![image](https://github.com/luislr220/CronoControl/assets/144934868/f84c9539-ee7f-4391-bc71-9d9e0eaf767b)  
+
+# Código Fuente documentado y pruebas de caja negra.
 
 
 # Notion

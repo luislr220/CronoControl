@@ -1,3 +1,10 @@
+/**
+ * Nombre del Autor: Luis Armando Largo Ramirez
+ *
+ * Funcionalidad:
+ * Componente para mostrar datos del usuario autenticado como página de inicio
+ */
+
 import React, { useState, useEffect } from "react";
 import Navigation from "../NavigationConponent/Navigation";
 import { useAuth } from "../../routes/AuthContext";
@@ -13,13 +20,13 @@ export default function HomeComponent() {
   useEffect(() => {
     // Si está cargando, se muestra un mensaje de autenticación en progreso
     if (isLoading) {
-      console.log("Autenticación en progreso...");
+      //console.log("Autenticación en progreso...");
     }
     // Si está autenticado
     else if (isAuthenticated) {
       // Si el usuario existe
       if (user) {
-        console.log("Usuario autenticado:", user);
+        //console.log("Usuario autenticado:", user);
         // Si userData no existe, se establece con el usuario
         if (!userData) {
           setUserData(user);
@@ -34,7 +41,7 @@ export default function HomeComponent() {
     }
     // Si no está autenticado, se muestra un mensaje de que el usuario no está autenticado
     else {
-      console.log("El usuario no está autenticado.");
+      //console.log("El usuario no está autenticado.");
     }
   }, [isLoading, isAuthenticated, user, userData]);
 

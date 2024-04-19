@@ -1,9 +1,18 @@
+/**
+ * Nombre del Autor: Luis Armando Largo Ramirez
+ *
+ * Funcionalidad:
+ * Componente para actualizar el usuario, el formulario esta dentro de un modal
+ * y se manda manda llamar dando clic al boton "Actualizar"
+ */
+
 import React from 'react';
 import { Modal, Button, Form, FormControl, Alert, InputGroup } from "react-bootstrap";
 
 
 
 export default function ActualizarUsuarioModal({
+  //props para la funcionalidad de ActualizarUsuarioModal
   mostrar,
   onClose,
   valoresAdministradorSeleccionado,
@@ -12,11 +21,12 @@ export default function ActualizarUsuarioModal({
   sedes,
   areasPorRegionActualizar,
   errorCorreoDuplicadoActualizar,
-  mostrarContraseña, // Definir mostrarContraseña como prop
-  setMostrarContraseña, // Definir setMostrarContraseña como prop
-  areas, // Definir areas como prop
-  setAreasPorRegionActualizar, // Definir setAreasPorRegionActualizar como prop
-  setValoresAdministradorSeleccionado
+  mostrarContraseña,
+  setMostrarContraseña,
+  areas,
+  setAreasPorRegionActualizar,
+  setValoresAdministradorSeleccionado,
+  rolUsuarioActual
 }) {
   return (
     <Modal show={mostrar} onHide={onClose}>
@@ -101,6 +111,7 @@ export default function ActualizarUsuarioModal({
               value={valoresAdministradorSeleccionado.Correo}
               onChange={handleInputChange}
             />
+            {/**MANEJAR ALERTA SI EL CORREO YA LO TIENE OTRO USUARIO */}
             {errorCorreoDuplicadoActualizar && (
               <Alert variant="danger">{errorCorreoDuplicadoActualizar}</Alert>
             )}
@@ -127,7 +138,10 @@ export default function ActualizarUsuarioModal({
               }}
             >
               <option value="">Selecciona un rol</option>
-              <option value="Administrador">Administrador</option>
+              {/* Solo muestra la opción de administrador si el usuario actual no es un administrador */}
+              {rolUsuarioActual !== "Administrador" && (
+                <option value="Administrador">Administrador</option>
+              )}
               <option value="Empleado">Empleado</option>
             </Form.Control>
           </Form.Group>

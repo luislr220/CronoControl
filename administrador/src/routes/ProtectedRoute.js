@@ -13,7 +13,7 @@ const ProtectedRoute = ({ element: Element, ...rest }) => {
     const { isAuthenticated, isLoading } = useAuth();
   
     if (isLoading) {
-      return <Spinner animation="border" />; // carga un spinner si tarda en renderizar la página
+      return <Spinner animation="border" />; // muestra el spinner si tarda en renderizar
     }
   
     return isAuthenticated ? <Element {...rest} /> : <Navigate to="/" replace />;

@@ -40,7 +40,7 @@ export default function Contratos() {
   useEffect(() => {
     const fetchContratos = async () => {
       try {
-        const response = await fetch("http://localhost:3002/contratos");
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/contratos`);
         if (!response.ok) {
           throw new Error("No se pudo obtener la lista de contratos");
         }
@@ -64,7 +64,7 @@ export default function Contratos() {
 
   const agregarContrato = async () => {
     try {
-      const response = await fetch("http://localhost:3002/contratos", {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/contratos`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -87,7 +87,7 @@ export default function Contratos() {
 
   const eliminarContrato = async (id) => {
     try {
-      const response = await fetch(`http://localhost:3002/contratos/${id}`, {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/contratos/${id}`, {
         method: "DELETE",
       });
       if (!response.ok) {
@@ -114,7 +114,7 @@ export default function Contratos() {
   const actualizarContrato = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3002/contratos/${contratoSeleccionado._id}`,
+        `${process.env.REACT_APP_BACKEND_URL}/contratos/${contratoSeleccionado._id}`,
         {
           method: "PATCH",
           headers: {
