@@ -18,6 +18,16 @@ function App() {
       <AuthProvider>
         <Router>
           <Routes>
+<<<<<<< HEAD
+            <Route path="/" element={<Login />} />
+            <Route path="/agregarUsuario" element={<AgregarUsuario />} />
+            <Route path="/turnoCrud" element={<TurnoCrud />} />
+            <Route path="/agregarSede" element={<AgregarSede />} />
+            <Route path="/agregarArea" element={<AgregarArea />} />
+            <Route path="/agregarContrato" element={<AgregarContrato />} />
+            <Route path="/agregarHorario" element={<AgregarHorario />} />
+            <Route path="validarVaca" element={<ValidarVacaciones />} />
+=======
           <Route path="/" element={<Login />} />
             <Route path="/agregarUsuario" element={<ProtectedRoute element={AgregarUsuario}/>} />
             <Route path="/turnoCrud" element={<ProtectedRoute element={TurnoCrud} />} />
@@ -25,6 +35,7 @@ function App() {
             <Route path="/agregarArea" element={<ProtectedRoute element={AgregarArea} />} />
             <Route path="/agregarContrato" element={<ProtectedRoute element={AgregarContrato} />} />
             <Route path="/validarVaca" element={<ProtectedRoute element={ValidarVacaciones} />} />
+>>>>>>> 493201dd4af993c60a91baf419c1ad2a3e0dc0eb
             <Route
               key="asignar-actividades"
               path="/AsignarActividades"
