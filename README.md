@@ -49,6 +49,7 @@ https://drive.google.com/drive/folders/1Nv_AF-x10P9LZguG8e3vkTzGBoggA4bN?usp=dri
 5. **Estilos Bootstrap:** Usar estilos de Bootstrap para reducir la cantidad de líneas de código necesarias.
 6. **Manejo de Errores:** Mostrar mensajes de error al usuario cuando sea necesario.
 7. **Documentación del Código:** Documentar el código de manera adecuada.
+8. **Nomenclatura de variables:** utilizar camelCase para definir variables, estados y funciones
 
 # Estándar de Base de Datos
 
