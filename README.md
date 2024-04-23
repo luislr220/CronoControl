@@ -40,6 +40,25 @@ https://drive.google.com/drive/folders/1Nv_AF-x10P9LZguG8e3vkTzGBoggA4bN?usp=dri
 ![image](https://github.com/luislr220/CronoControl/assets/144934868/2a3374b2-c3f5-4088-bd6d-5a011211b2c5)  
 ![image](https://github.com/luislr220/CronoControl/assets/144934868/6cc45676-df92-4f78-9f1d-d57123494975)
 
+# Estándar de Programación
+
+1. **Componentización:** Separar las funcionalidades y vistas en componentes.
+2. **Uso de Props:** Emplear props cuando el código es extenso.
+3. **Manejo de Eventos:** Utilizar funciones para gestionar eventos.
+4. **Componentes React en .JSX:** Definir los componentes de React con extensión .JSX para distinguirlos de los archivos JavaScript normales.
+5. **Estilos Bootstrap:** Usar estilos de Bootstrap para reducir la cantidad de líneas de código necesarias.
+6. **Manejo de Errores:** Mostrar mensajes de error al usuario cuando sea necesario.
+7. **Documentación del Código:** Documentar el código de manera adecuada.
+
+# Estándar de Base de Datos
+
+1. **Nombres de Campos Descriptivos:** Utilizar nombres descriptivos para los campos.
+2. **Tipo de Dato Correcto:** Seleccionar el tipo de dato apropiado para cada campo.
+3. **Anidamiento de Documentos:** Anidar documentos según sea necesario.
+4. **Evitar Arrays Extensos:** Evitar la creación de arrays grandes.
+5. **Campos Obligatorios:** Hacer obligatorios los campos importantes que no dependan de otras colecciones.
+
+
 
 
 # MVC Y Diagrama de componentes  
