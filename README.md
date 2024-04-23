@@ -46,18 +46,22 @@ https://drive.google.com/drive/folders/1Nv_AF-x10P9LZguG8e3vkTzGBoggA4bN?usp=dri
 2. **Uso de Props:** Emplear props cuando el código es extenso.
 3. **Manejo de Eventos:** Utilizar funciones para gestionar eventos.
 4. **Componentes React en .JSX:** Definir los componentes de React con extensión .JSX para distinguirlos de los archivos JavaScript normales.
-5. **Estilos Bootstrap:** Usar estilos de Bootstrap para reducir la cantidad de líneas de código necesarias.
-6. **Manejo de Errores:** Mostrar mensajes de error al usuario cuando sea necesario.
-7. **Documentación del Código:** Documentar el código de manera adecuada.
-8. **Nomenclatura de variables:** utilizar camelCase para definir variables, estados y funciones
+5. **Terminar de nombrar los compoenten es "Component"**: Los componentes .JSX deben de terminar en component, por ejmplo: HomeComponent.
+6. **Los componentes deben de empezar en mayusculas**: Los componentes siempre deben de empezar en mayusculas para que a la hora de importarlos en otro componente como etiqute html, react no lo interprete como HTML si no como componente de React.
+7. **Estilos Bootstrap:** Usar estilos de Bootstrap para reducir la cantidad de líneas de código necesarias.
+8. **Manejo de Errores:** Mostrar mensajes de error al usuario cuando sea necesario.
+9. **Documentación del Código:** Documentar el código de manera adecuada.
+10. **Nomenclatura de variables:** utilizar camelCase para definir variables, estados y funciones
 
 # Estándar de Base de Datos
 
 1. **Nombres de Campos Descriptivos:** Utilizar nombres descriptivos para los campos.
-2. **Tipo de Dato Correcto:** Seleccionar el tipo de dato apropiado para cada campo.
-3. **Anidamiento de Documentos:** Anidar documentos según sea necesario.
-4. **Evitar Arrays Extensos:** Evitar la creación de arrays grandes.
-5. **Campos Obligatorios:** Hacer obligatorios los campos importantes que no dependan de otras colecciones.
+2. **Esquemas de colecciones con terminación "Schema"**: Los modelos para la base de datos deben de terminar en "Schema", por ejemplo: administradorSchema.
+3. **Las rutas deben de terminar en terminación "Routes"**: Los archivos de rutas deben de terminar en "Routes", por ejemplo: administradorRoutes
+4. **Tipo de Dato Correcto:** Seleccionar el tipo de dato apropiado para cada campo.
+5. **Anidamiento de Documentos:** Anidar documentos según sea necesario.
+6. **Evitar Arrays Extensos:** Evitar la creación de arrays grandes.
+7. **Campos Obligatorios:** Hacer obligatorios los campos importantes que no dependan de otras colecciones.
 
 
 
