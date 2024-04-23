@@ -64,7 +64,8 @@ https://drive.google.com/drive/folders/1Nv_AF-x10P9LZguG8e3vkTzGBoggA4bN?usp=dri
 
 # MVC Y Diagrama de componentes  
 
-![image](https://github.com/luislr220/CronoControl/assets/144934868/4b7cdab3-59e2-40f8-973a-dc61f17eba63)  
+![Diagrama de componentes](https://github.com/luislr220/CronoControl/assets/114530204/3051ee83-4d52-49b8-a847-641d1d6faf9b)
+
 ![image](https://github.com/luislr220/CronoControl/assets/144934868/55dda5c8-cdc7-4267-bcb9-448f9520b28d)
 
 
