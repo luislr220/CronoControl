@@ -6,6 +6,23 @@ Uno de los aspectos clave de nuestro proyecto es la centralización de todas las
 La automatización también desempeñará un papel fundamental en nuestro sistema, ya que permitirá la ejecución de tareas rutinarias de manera eficiente y precisa. Esto no solo ahorrará tiempo y recursos, sino que también garantizará una mayor consistencia en la aplicación de políticas y procedimientos de recursos humanos en toda la organización.
 Además de mejorar la eficiencia operativa, nuestro sistema también se centrará en mejorar la experiencia del empleado y fomentar una cultura organizacional sólida. Para lograr esto, proporcionaremos una interfaz intuitiva y fácil de usar, así como herramientas de comunicación efectivas que promuevan la colaboración y el intercambio de conocimientos entre los equipos y departamentos.
 
+Características Clave del Proyecto:
+
+Registro de Empleados: La aplicación permitirá a los administradores registrar nuevos empleados, así como también realizar modificaciones en la información de los existentes, como datos personales, contrato laboral, y documentos asociados.  12 febrero al 20 de febrero
+
+Gestión de Horarios: Los empleados podrán solicitar el horario de trabajo deseado para el próximo mes(habilitandose una semana antes), tomando en cuenta los turnos disponibles según su contrato. El sistema generará automáticamente el horario mensual basándose en las preferencias del empleado y evitando conflictos con periodos de vacaciones o training.  20 de febrero al 1 de abril
+
+Visualización de Horarios en formato Gantt: La aplicación utilizará una librería de Gantt para mostrar de manera visual y estructurada los horarios de trabajo de los empleados, facilitando así la comprensión y planificación de las asignaciones, esta se podra visualizar por medio de el envio de un correo.  1 de abril al 10 de abril
+
+Gestión de Vacaciones: Los empleados podrán solicitar vacaciones a través de la aplicación, y los administradores podrán aprobar o rechazar dichas solicitudes, manteniendo un control centralizado de los periodos de ausencia, se les mandara un correo con el estatus de su peticion.  1 de abril al 10 de abril
+
+Gestión de Training: Los administradores podrán programar periodos de training para los empleados, los cuales serán integrados automáticamente en el calendario de trabajo, evitando asignaciones conflictivas.
+Roles de Usuario: La aplicación contará con diferentes roles de usuario, como administradores con privilegios para gestionar empleados y horarios, y empleados con acceso limitado para ver su propio horario y solicitar vacaciones.  10 de abril al 20 de abril
+
+Carga Masiva de Empleados: Se implementará la funcionalidad de carga masiva de empleados mediante archivos en formatos .xlsx, .json, y/o .csv, lo que permitirá una rápida incorporación de nuevos trabajadores a la base de datos.  1 de abril al 20 de abril
+
+Las Fechas del proyecto fueron desde inicios de enero 12, hasta abril 23 que fue la presentación
+
 
 # Historias de usuario
 link para ir al documento de historias de usuarios y vistas  
@@ -52,16 +69,32 @@ https://drive.google.com/drive/folders/1Nv_AF-x10P9LZguG8e3vkTzGBoggA4bN?usp=dri
 8. **Manejo de Errores:** Mostrar mensajes de error al usuario cuando sea necesario.
 9. **Documentación del Código:** Documentar el código de manera adecuada.
 10. **Nomenclatura de variables:** utilizar camelCase para definir variables, estados y funciones
+11. **Mantenibilidad** Diseñar el código de manera modular y desacoplada para facilitar futuras modificaciones y mantenimiento.
+Refactorizar el código de forma regular para eliminar la duplicación, mejorar la legibilidad y reducir la complejidad.
+
 
 # Estándar de Base de Datos
 
-1. **Nombres de Campos Descriptivos:** Utilizar nombres descriptivos para los campos.
-2. **Esquemas de colecciones con terminación "Schema"**: Los modelos para la base de datos deben de terminar en "Schema", por ejemplo: administradorSchema.
+1. **Nombres de Campos Descriptivos:** Utilizar nombres descriptivos para los campos. Utilizar camelCase para nombrar variables y funciones (ejemplo: miVariable, miFuncion()).
+Evitar nombres genéricos o abreviaturas poco claras. Priorizar la claridad y la expresividad en los nombres.
+2. **Esquemas de colecciones con terminación "Schema"**: Los modelos para la base de datos deben de terminar en "Schema", por ejemplo: administradorSchema. Documentar el código de manera clara y concisa utilizando comentarios descriptivos.
+Incluir comentarios en partes del código que puedan resultar difíciles de entender para otros desarrolladores.
+Utilizar comentarios tipo docstring para documentar funciones y métodos, especificando su propósito, parámetros, tipo de retorno y posibles excepciones.
 3. **Las rutas deben de terminar en terminación "Routes"**: Los archivos de rutas deben de terminar en "Routes", por ejemplo: administradorRoutes
 4. **Tipo de Dato Correcto:** Seleccionar el tipo de dato apropiado para cada campo.
 5. **Anidamiento de Documentos:** Anidar documentos según sea necesario.
 6. **Evitar Arrays Extensos:** Evitar la creación de arrays grandes.
 7. **Campos Obligatorios:** Hacer obligatorios los campos importantes que no dependan de otras colecciones.
+8. **Manejo de errores** Implementar manejo de errores adecuado, incluyendo captura de excepciones y mensajes de error descriptivos.
+Utilizar bloques try-catch para capturar excepciones y manejar errores de manera controlada.
+9. **Seguridad** Implementar manejo de errores adecuado, incluyendo captura de excepciones y mensajes de error descriptivos.
+Utilizar bloques try-catch para capturar excepciones y manejar errores de manera controlada.
+10. **Nombre de colecciones** Las colecciónes las llamamos, Actividades, Training, Sedes, Areas, Usuarios, Empleados.
+11. **Versionamiento** Utilizar un sistema de control de versiones como Git para gestionar el código y realizar un seguimiento de los cambios.
+Especificar claramente el propósito de cada cambio en los mensajes de commit.
+Reutilización y modularidad:
+Favorecer la reutilización de código mediante la creación de funciones y módulos independientes y bien definidos.
+
 
 
 
